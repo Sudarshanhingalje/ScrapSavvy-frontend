@@ -1,6 +1,4 @@
-import React, { useEffect, useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
-import Navbar from "../Common/Navbar";
+import { Visibility, VisibilityOff } from "@mui/icons-material";
 import {
   Box,
   FormControl,
@@ -10,12 +8,14 @@ import {
   OutlinedInput,
   TextField,
 } from "@mui/material";
-import { ValidateEmail, ValidatePassword } from "./Validation";
-import Toast from "../Common/Snackbar";
-import AuthService from "../../Services/AuthService";
+import { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
+import { Link, useNavigate } from "react-router-dom";
+import AuthService from "../../Services/AuthService";
 import { ActionCreator } from "../../State/Actions/ActionCreator";
-import { Visibility, VisibilityOff } from "@mui/icons-material";
+import Navbar from "../Common/Navbar";
+import Toast from "../Common/Snackbar";
+import { ValidateEmail, ValidatePassword } from "./Validation";
 
 const Signin = () => {
   const navigate = useNavigate();
@@ -41,18 +41,6 @@ const Signin = () => {
     return isValid;
   };
 
-  // const LoggedInUser = (userProfileId)=>{
-  //   if (userProfileId !== undefined){
-  //     AuthService.VerifyUser(userProfileId)
-  //     .then(response =>{
-  //       redirectBasedOnRole(response.data.userProfile.userRole)
-  //     })
-  //     .catch(error=>{
-  //       // localStorage.clear();
-  //       //navigate("/signin");
-  //     })
-  //   }
-  // }
   const redirectBasedOnRole = (role) => {
     setTimeout(() => {
       if (role === "company") {
@@ -64,6 +52,7 @@ const Signin = () => {
       }
     }, 2000);
   };
+
   const handleSignin = async (e) => {
     e.preventDefault();
     if (validate()) {
@@ -82,7 +71,7 @@ const Signin = () => {
             localStorage.setItem("token", response.data.token);
             localStorage.setItem(
               "userId",
-              response.data.userProfile.userProfileId
+              response.data.userProfile.userProfileId,
             );
             redirectBasedOnRole(response.data.userProfile.userRole);
             dispatch(ActionCreator.SetUserToken(response.data.token));
@@ -132,17 +121,6 @@ const Signin = () => {
               helperText={errors.email}
               margin="normal"
             />
-
-            {/* <TextField
-              
-              
-              onChange={(e) => setPassword(e.target.value)}
-              error={!!errors.password}
-              helperText={errors.password}
-              margin="normal"
-            /> */}
-
-            {/* <button onClick={changeVisibility} >Visibility</button> */}
 
             <FormControl variant="outlined">
               <InputLabel htmlFor="outlined-adornment-password">

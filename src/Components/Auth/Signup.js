@@ -34,6 +34,7 @@ const Signup = () => {
   const [confirmPassword, setConfirmPassword] = useState("");
   const [userRole, setUserRole] = useState();
   const [errors, setErrors] = useState({});
+
   const [showPassword, setShowPassword] = useState(false);
   const [showCPassword, setShowCPassword] = useState(false);
 
@@ -320,7 +321,11 @@ const Signup = () => {
               </button>
             </Grid>
             <Grid item xs={12} sm={6}>
-              <Link type="button" className="btn btn-light w-100" to="/signin">
+              <Link
+                type="button"
+                className="btn btn-warning w-100"
+                to="/signin"
+              >
                 Have an account?
               </Link>
             </Grid>
