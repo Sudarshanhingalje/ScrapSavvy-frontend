@@ -10,7 +10,7 @@ import {
   Title,
   Tooltip,
 } from "chart.js";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Bar, Doughnut, Line } from "react-chartjs-2";
 import "../.././Static/Dashboard.css";
 import LogoutMenu from "../Common/LogoutMenu";
@@ -26,7 +26,7 @@ ChartJS.register(
   PointElement,
   Title,
   Tooltip,
-  Legend
+  Legend,
 );
 
 const ScrapyardDashboard = () => {
@@ -36,7 +36,43 @@ const ScrapyardDashboard = () => {
     ordersReceived: 78,
     paymentReceived: 285000,
   });
+  const [prices, setPrices] = useState({});
 
+  useEffect(() => {
+    const fetchPrices = () => {
+      fetch("http://localhost:8080/api/prices/all")
+        .then((res) => res.json())
+        .then((data) => {
+          const priceMap = {};
+          data.forEach((item) => {
+            priceMap[item.category] = item.price;
+          });
+          setPrices(priceMap);
+        });
+    };
+
+    fetchPrices(); // initial load
+
+    const interval = setInterval(fetchPrices, 5000); // 🔥 refresh every 5 sec
+
+    return () => clearInterval(interval);
+  }, []);
+
+  const [rates, setRates] = useState({
+    Metal: "",
+    Plastic: "",
+    Paper: "",
+    Glass: "",
+    Electronics: "",
+    Textiles: "",
+    Others: "",
+  });
+  const handleChange = (e) => {
+    setRates({
+      ...rates,
+      [e.target.name]: e.target.value,
+    });
+  };
   // Monthly collection data for chart
   const monthlyData = {
     labels: ["Jan", "Feb", "Mar", "Apr", "May", "Jun"],
@@ -116,6 +152,44 @@ const ScrapyardDashboard = () => {
     },
   };
 
+  const handleSubmit = async () => {
+    try {
+      const token = localStorage.getItem("token");
+
+      for (const key in rates) {
+        if (rates[key]) {
+          await fetch("http://localhost:8080/api/prices/update", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${token}`,
+            },
+            body: JSON.stringify({
+              category: key,
+              price: Number(rates[key]),
+            }),
+          });
+        }
+      }
+
+      alert("Prices Updated Successfully ✅");
+
+      // Optional: clear inputs after update
+      setRates({
+        Metal: "",
+        Plastic: "",
+        Paper: "",
+        Glass: "",
+        Electronics: "",
+        Textiles: "",
+        Others: "",
+      });
+    } catch (err) {
+      console.error(err);
+      alert("Error updating prices ❌");
+    }
+  };
+
   return (
     <div className="d-flex">
       <ScrapyardSidebar />
@@ -163,6 +237,27 @@ const ScrapyardDashboard = () => {
               </div>
             </div>
           </div>
+          <div className="card mb-4">
+            <div className="card-body">
+              <h3>Current Scrap Prices</h3>
+
+              <div className="row">
+                <div className="col-md-3">🔩 Metal: ₹{prices.Metal || 0}</div>
+                <div className="col-md-3">
+                  🧴 Plastic: ₹{prices.Plastic || 0}
+                </div>
+                <div className="col-md-3">📄 Paper: ₹{prices.Paper || 0}</div>
+                <div className="col-md-3">🪟 Glass: ₹{prices.Glass || 0}</div>
+                <div className="col-md-3">
+                  💻 Electronics: ₹{prices.Electronics || 0}
+                </div>
+                <div className="col-md-3">
+                  👕 Textiles: ₹{prices.Textiles || 0}
+                </div>
+                <div className="col-md-3">♻️ Others: ₹{prices.Others || 0}</div>
+              </div>
+            </div>
+          </div>
 
           {/* Chart Widgets Row */}
           <div className="row">
@@ -193,6 +288,41 @@ const ScrapyardDashboard = () => {
           </div>
 
           {/* Additional Analytics Row */}
+
+          {/* ═════════ PRICE UPDATE SECTION ═════════ */}
+          <div className="row mb-4">
+            <div className="col-12">
+              <div className="card">
+                <div className="card-body">
+                  <h3 style={{ marginBottom: "20px" }}>Update Scrap Prices</h3>
+
+                  <div className="row">
+                    {Object.keys(rates).map((item) => (
+                      <div className="col-md-3 mb-3" key={item}>
+                        <label>{item}</label>
+                        <input
+                          type="number"
+                          name={item}
+                          value={rates[item]}
+                          onChange={handleChange}
+                          className="form-control"
+                          placeholder={`Enter ${item} price`}
+                        />
+                      </div>
+                    ))}
+                  </div>
+
+                  <button
+                    className="btn btn-success mt-3"
+                    onClick={handleSubmit}
+                  >
+                    Update Prices
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+
           <div className="row">
             <div className="col-lg-8 mb-4">
               <div className="card" style={{ height: "400px" }}>

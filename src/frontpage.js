@@ -123,9 +123,30 @@ const MATERIALS = [
 function Frontpage() {
   const [scrolled, setScrolled] = useState(false);
 
+  const [prices, setPrices] = useState({});
+
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 50);
     window.addEventListener("scroll", onScroll, { passive: true });
+
+    // 🔥 FETCH FROM BACKEND
+    fetch("http://localhost:8080/api/prices/all")
+      .then((res) => res.json())
+      .then((data) => {
+        console.log("API DATA:", data);
+
+        const priceMap = {};
+
+        data.forEach((item) => {
+          priceMap[item.category] = item.price;
+        });
+
+        console.log("Mapped Prices:", priceMap);
+
+        setPrices(priceMap); // 🔥 IMPORTANT
+      })
+      .catch((err) => console.error(err));
+
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
@@ -337,7 +358,9 @@ function Frontpage() {
               <div className="rate-card" key={m.name}>
                 <div className="rate-card__emoji">{m.emoji}</div>
                 <div className="rate-card__name">{m.name}</div>
-                <div className="rate-card__price">{m.price}</div>
+                <div className="rate-card__price">
+                  {prices[m.name] ? `₹${prices[m.name]}/kg` : m.price}
+                </div>
                 <div className="rate-card__note">{m.note}</div>
               </div>
             ))}
