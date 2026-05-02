@@ -80,12 +80,43 @@ const SERVICES = [
 ];
 
 const MATERIALS = [
-  { emoji: "🔩", name: "Iron", price: "₹28/kg" },
-  { emoji: "🥫", name: "Steel", price: "₹35/kg" },
-  { emoji: "🪙", name: "Copper", price: "₹450/kg" },
-  { emoji: "📄", name: "Paper", price: "₹12/kg" },
-  { emoji: "🔋", name: "Battery", price: "₹8/kg" },
-  { emoji: "📺", name: "E-Waste", price: "₹25/kg" },
+  { emoji: "🔩", name: "Metal", price: "₹28–₹40/kg", note: "Iron / Steel mix" },
+  {
+    emoji: "🧴",
+    name: "Plastic",
+    price: "₹12–₹25/kg",
+    note: "PET / HDPE type dependent",
+  },
+  {
+    emoji: "📄",
+    name: "Paper",
+    price: "₹8–₹15/kg",
+    note: "Cardboard fetches more",
+  },
+  {
+    emoji: "🪟",
+    name: "Glass",
+    price: "₹5–₹10/kg",
+    note: "Bottles / panes accepted",
+  },
+  {
+    emoji: "🔌",
+    name: "Electronics",
+    price: "₹20–₹80/kg",
+    note: "Depends on components",
+  },
+  {
+    emoji: "👕",
+    name: "Textiles",
+    price: "₹10–₹20/kg",
+    note: "Old clothes / fabric scrap",
+  },
+  {
+    emoji: "📦",
+    name: "Others",
+    price: "₹5–₹15/kg",
+    note: "Mixed / miscellaneous scrap",
+  },
 ];
 
 /* ─── COMPONENT ─── */
@@ -307,6 +338,7 @@ function Frontpage() {
                 <div className="rate-card__emoji">{m.emoji}</div>
                 <div className="rate-card__name">{m.name}</div>
                 <div className="rate-card__price">{m.price}</div>
+                <div className="rate-card__note">{m.note}</div>
               </div>
             ))}
           </div>

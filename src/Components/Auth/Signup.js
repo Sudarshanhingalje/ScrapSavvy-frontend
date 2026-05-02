@@ -12,7 +12,6 @@ import {
   TextField,
 } from "@mui/material";
 import { useState } from "react";
-import { useDispatch } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
 import AuthService from "../../Services/AuthService";
 import Navbar from "../Common/Navbar";
@@ -38,7 +37,7 @@ const Signup = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [showCPassword, setShowCPassword] = useState(false);
 
-  const dispatch = useDispatch();
+  //const dispatch = useDispatch();
 
   const handleSnackbarClose = () => {
     setSnackbarOpen(false);

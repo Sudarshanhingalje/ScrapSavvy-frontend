@@ -2,7 +2,7 @@
 
 /* ─── TOKENS ─── */
 :root {
-  --olive: #e9ee4d;
+  --olive: #3f6420;
   --olive-dark: #2e3a1a;
   --olive-mid: #4a5c2f;
   --olive-light: #a5ce4d;
@@ -19,7 +19,7 @@
   --font-body: "DM Sans", sans-serif;
   --font-mono: "Space Mono", monospace;
 
-  --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-out: cubic-bezier(0.28, 1, 0.36, 1);
   --radius-sm: 3px;
   --radius-pill: 100px;
 }
@@ -238,7 +238,7 @@ img {
 ════════════════════════════════════ */
 .sp-hero {
   min-height: 100vh;
-  background: var(--olive-dark);
+  background: #2e3a1a;
   display: grid;
   grid-template-columns: 1fr 1fr;
   align-items: center;

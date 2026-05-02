@@ -25,7 +25,7 @@ const Navbar = () => {
     <header className={isScrolled ? "scrolled" : ""}>
       <div className="header-content">
         <div className="logo">
-          <Link to="/" className="sp-nav__logo">
+          <Link to="/ " className="sp-nav__logo">
             <span className="sp-nav__logo-mark">♻</span>
             <span className="sp-nav__logo-text">ScrapSavvy</span>
           </Link>
