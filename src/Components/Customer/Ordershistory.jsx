@@ -4,13 +4,15 @@ import CustomerSidebar from "../Common/CustomerSidebar";
 const getStatusColor = (status) => {
   switch (status) {
     case "PENDING":
-      return "orange";
+      return "#f0ad4e";
     case "ACCEPTED":
-      return "blue";
+      return "#0275d8";
+    case "SCHEDULED":
+      return "#f39c12";
     case "COMPLETED":
-      return "green";
+      return "#5cb85c";
     case "REJECTED":
-      return "red";
+      return "#d9534f";
     default:
       return "gray";
   }
@@ -23,7 +25,6 @@ const OrdersHistory = () => {
     const token = localStorage.getItem("token");
 
     if (!token) {
-      console.error("No token found");
       setOrders([]);
       return;
     }
@@ -34,12 +35,14 @@ const OrdersHistory = () => {
       },
     })
       .then((res) => {
-        if (!res.ok) throw new Error("Failed to fetch");
+        if (res.status === 401 || res.status === 403) {
+          localStorage.removeItem("token");
+          window.location.href = "/login";
+          return;
+        }
         return res.json();
       })
       .then((data) => {
-        console.log("Orders:", data);
-
         const safeData = Array.isArray(data)
           ? data
           : Array.isArray(data?.orders)
@@ -48,30 +51,32 @@ const OrdersHistory = () => {
 
         setOrders(safeData);
       })
-      .catch((err) => {
-        console.error(err);
-        setOrders([]);
-      });
+      .catch(() => setOrders([]));
   };
 
   useEffect(() => {
     fetchOrders();
-
-    // AUTO REFRESH
     const interval = setInterval(fetchOrders, 5000);
     return () => clearInterval(interval);
   }, []);
 
+  const formatDate = (date) => {
+    if (!date) return "—";
+    return new Date(date).toLocaleDateString("en-IN", {
+      day: "2-digit",
+      month: "short",
+      year: "numeric",
+    });
+  };
+
   return (
     <div className="d-flex">
-      {/* SIDEBAR */}
       <CustomerSidebar />
 
-      {/* MAIN CONTENT */}
       <div className="flex-grow-1 p-4">
         <div className="container-fluid">
-          <h2 className="mb-2">📦 Scrap Sale History</h2>
-          <p className="text-muted">Track your order status</p>
+          <h2 className="mb-2">📦 Scrap Order History</h2>
+          <p className="text-muted">Track your orders & pickup status</p>
           <hr />
 
           {orders.length === 0 ? (
@@ -81,13 +86,10 @@ const OrdersHistory = () => {
               {orders.map((order) => (
                 <div className="col-md-4 mb-3" key={order.id}>
                   <div className="card shadow-sm p-3 h-100">
-                    {/* CUSTOMER NAME */}
-                    <h5 className="mb-2">{order.customerName}</h5>
+                    {/* TITLE */}
+                    <h5 className="mb-2">{order.scrapType}</h5>
 
-                    {/* DETAILS */}
-                    <p>
-                      <b>Scrap Type:</b> {order.scrapType}
-                    </p>
+                    {/* BASIC DETAILS */}
                     <p>
                       <b>Quantity:</b> {order.quantity} kg
                     </p>
@@ -97,23 +99,60 @@ const OrdersHistory = () => {
                     <p>
                       <b>Contact:</b> {order.contactNo}
                     </p>
-
                     <p>
-                      <b>Date:</b>{" "}
-                      {order.orderDate
-                        ? new Date(order.orderDate).toLocaleDateString(
-                            "en-IN",
-                            {
-                              day: "2-digit",
-                              month: "short",
-                              year: "numeric",
-                            },
-                          )
-                        : "—"}
+                      <b>Order Date:</b> {formatDate(order.createdAt)}
                     </p>
 
-                    {/* STATUS */}
-                    <div className="mt-auto">
+                    {/* PICKUP INFO (SCHEDULED ONLY) */}
+                    {order.status === "SCHEDULED" && (
+                      <>
+                        <hr />
+                        <p>
+                          <b>Pickup Date:</b> {formatDate(order.pickupDate)}
+                        </p>
+                        <p>
+                          <b>Pickup Time:</b> {order.pickupTime || "—"}
+                        </p>
+                        <p>
+                          <b>Payment Method:</b> {order.paymentMethod || "—"}
+                        </p>
+
+                        {/* ✅ DRIVER INFO ADDED */}
+                        <p>
+                          <b>Driver Name:</b>{" "}
+                          {order.assignedDriver || "Not Assigned"}
+                        </p>
+                        <p>
+                          <b>Driver Contact:</b>{" "}
+                          {order.driverContactNo || "Not Available"}
+                        </p>
+                      </>
+                    )}
+
+                    {/* ACCEPTED INFO (optional display) */}
+                    {order.status === "ACCEPTED" && (
+                      <>
+                        <hr />
+                        <p style={{ color: "#0275d8" }}>
+                          ✔ Your order is accepted. Scheduling pending...
+                        </p>
+                      </>
+                    )}
+
+                    {/* TIMELINE */}
+                    <div className="mt-3">
+                      <b>Status:</b>
+                      <div style={{ fontSize: "13px", marginTop: "5px" }}>
+                        🟡 Order Placed <br />
+                        {order.status !== "PENDING" && "🔵 Accepted"} <br />
+                        {order.status === "SCHEDULED" && "🟠 Scheduled"} <br />
+                        {order.status === "COMPLETED" && "🟢 Completed"} <br />
+                        {order.status === "REJECTED" && "🔴 Rejected"}
+                      </div>
+                    </div>
+
+                    {/* STATUS BADGE */}
+                    <div className="mt-auto pt-2">
                       <span
                         style={{
                           padding: "6px 12px",

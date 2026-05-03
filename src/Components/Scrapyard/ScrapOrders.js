@@ -19,7 +19,15 @@ const getStatusColor = (status) => {
 const ScrapOrders = () => {
   const [orders, setOrders] = useState([]);
   const [filter, setFilter] = useState("ALL");
+  const [selectedOrder, setSelectedOrder] = useState(null);
+  const [showSchedule, setShowSchedule] = useState(false);
 
+  const [scheduleData, setScheduleData] = useState({
+    pickupDate: "",
+    pickupTime: "",
+    assignedDriver: "",
+    driverContactNo: "",
+  });
   const fetchOrders = () => {
     fetch("http://localhost:8080/api/scrap-orders/all")
       .then((res) => res.json())
@@ -44,10 +52,21 @@ const ScrapOrders = () => {
   };
 
   const updateStatus = (id, status) => {
+    const token = localStorage.getItem("token");
+
     fetch(
       `http://localhost:8080/api/scrap-orders/${id}/status?status=${status}`,
-      { method: "PUT" },
+      {
+        method: "PUT",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      },
     )
+      .then((res) => {
+        if (!res.ok) throw new Error("Failed to update status");
+        return res.json();
+      })
       .then(() => fetchOrders())
       .catch((err) => console.error(err));
   };
@@ -62,6 +81,29 @@ const ScrapOrders = () => {
     { label: "Completed", value: "COMPLETED", cls: "btn-success" },
     { label: "Rejected", value: "REJECTED", cls: "btn-danger" },
   ];
+
+  const scheduleOrder = () => {
+    const token = localStorage.getItem("token");
+
+    fetch(
+      `http://localhost:8080/api/scrap-orders/${selectedOrder.id}/schedule`,
+      {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify(scheduleData),
+      },
+    )
+      .then((res) => res.json())
+      .then(() => {
+        setShowSchedule(false);
+        setSelectedOrder(null);
+        fetchOrders();
+      })
+      .catch((err) => console.error(err));
+  };
 
   return (
     <div className="d-flex" style={{ minHeight: "100vh" }}>
@@ -229,7 +271,11 @@ const ScrapOrders = () => {
                     <>
                       <button
                         className="btn btn-success btn-sm"
-                        onClick={() => updateStatus(order.id, "ACCEPTED")}
+                        onClick={() => {
+                          updateStatus(order.id, "ACCEPTED");
+                          setSelectedOrder(order);
+                          setShowSchedule(true);
+                        }}
                       >
                         Accept
                       </button>
@@ -340,9 +386,13 @@ const ScrapOrders = () => {
                               <>
                                 <button
                                   className="btn btn-success btn-sm me-1"
-                                  onClick={() =>
-                                    updateStatus(order.id, "ACCEPTED")
-                                  }
+                                  onClick={() => {
+                                    updateStatus(order.id, "ACCEPTED");
+                                    setTimeout(() => {
+                                      setSelectedOrder(order);
+                                      setShowSchedule(true);
+                                    }, 300);
+                                  }}
                                 >
                                   Accept
                                 </button>
@@ -401,6 +451,87 @@ const ScrapOrders = () => {
         </div>
         {/* ── END ROW 3 ── */}
       </div>
+      {showSchedule && selectedOrder && (
+        <div
+          style={{
+            position: "fixed",
+            top: 0,
+            left: 0,
+            right: 0,
+            bottom: 0,
+            background: "rgba(0,0,0,0.5)",
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            zIndex: 9999,
+          }}
+        >
+          <div
+            style={{
+              background: "#fff",
+              padding: "20px",
+              borderRadius: "10px",
+              width: "350px",
+            }}
+          >
+            <h5>Schedule Pickup</h5>
+
+            <input
+              type="date"
+              className="form-control mb-2"
+              onChange={(e) =>
+                setScheduleData({ ...scheduleData, pickupDate: e.target.value })
+              }
+            />
+
+            <input
+              type="time"
+              className="form-control mb-2"
+              onChange={(e) =>
+                setScheduleData({ ...scheduleData, pickupTime: e.target.value })
+              }
+            />
+
+            <input
+              type="text"
+              placeholder="Driver Name"
+              className="form-control mb-2"
+              onChange={(e) =>
+                setScheduleData({
+                  ...scheduleData,
+                  assignedDriver: e.target.value,
+                })
+              }
+            />
+
+            <input
+              type="text"
+              placeholder="Driver Contact"
+              className="form-control mb-3"
+              onChange={(e) =>
+                setScheduleData({
+                  ...scheduleData,
+                  driverContactNo: e.target.value,
+                })
+              }
+            />
+
+            <button
+              className="btn btn-success btn-sm me-2"
+              onClick={scheduleOrder}
+            >
+              Save Schedule
+            </button>
+
+            <button
+              className="btn btn-secondary btn-sm"
+              onClick={() => setShowSchedule(false)}
+            >
+              Cancel
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
