@@ -9,6 +9,8 @@ const getStatusColor = (status) => {
       return "#0275d8";
     case "SCHEDULED":
       return "#f39c12";
+    case "OUT_FOR_PICKUP":
+      return "#17a2b8";
     case "COMPLETED":
       return "#5cb85c";
     case "REJECTED":
@@ -69,6 +71,18 @@ const OrdersHistory = () => {
     });
   };
 
+  const steps = [
+    "PENDING",
+    "ACCEPTED",
+    "SCHEDULED",
+    "OUT_FOR_PICKUP",
+    "COMPLETED",
+  ];
+
+  const getStepIndex = (status) => {
+    return steps.indexOf(status);
+  };
+
   return (
     <div className="d-flex">
       <CustomerSidebar />
@@ -83,91 +97,116 @@ const OrdersHistory = () => {
             <p>No orders found</p>
           ) : (
             <div className="row">
-              {orders.map((order) => (
-                <div className="col-md-4 mb-3" key={order.id}>
-                  <div className="card shadow-sm p-3 h-100">
-                    {/* TITLE */}
-                    <h5 className="mb-2">{order.scrapType}</h5>
+              {orders.map((order) => {
+                const currentStep = getStepIndex(order.status);
 
-                    {/* BASIC DETAILS */}
-                    <p>
-                      <b>Quantity:</b> {order.quantity} kg
-                    </p>
-                    <p>
-                      <b>Total:</b> ₹{order.totalPrice}
-                    </p>
-                    <p>
-                      <b>Contact:</b> {order.contactNo}
-                    </p>
-                    <p>
-                      <b>Order Date:</b> {formatDate(order.createdAt)}
-                    </p>
+                return (
+                  <div className="col-md-4 mb-3" key={order.id}>
+                    <div className="card shadow-sm p-3 h-100">
+                      {/* TITLE */}
+                      <h5 className="mb-2">{order.scrapType}</h5>
 
-                    {/* PICKUP INFO (SCHEDULED ONLY) */}
-                    {order.status === "SCHEDULED" && (
-                      <>
-                        <hr />
-                        <p>
-                          <b>Pickup Date:</b> {formatDate(order.pickupDate)}
-                        </p>
-                        <p>
-                          <b>Pickup Time:</b> {order.pickupTime || "—"}
-                        </p>
-                        <p>
-                          <b>Payment Method:</b> {order.paymentMethod || "—"}
-                        </p>
+                      {/* BASIC DETAILS */}
+                      <p>
+                        <b>Quantity:</b> {order.quantity} kg
+                      </p>
+                      <p>
+                        <b>Total:</b> ₹{order.totalPrice}
+                      </p>
+                      <p>
+                        <b>Contact:</b> {order.contactNo}
+                      </p>
+                      <p>
+                        <b>Order Date:</b> {formatDate(order.createdAt)}
+                      </p>
 
-                        {/* ✅ DRIVER INFO ADDED */}
-                        <p>
-                          <b>Driver Name:</b>{" "}
-                          {order.assignedDriver || "Not Assigned"}
-                        </p>
-                        <p>
-                          <b>Driver Contact:</b>{" "}
-                          {order.driverContactNo || "Not Available"}
-                        </p>
-                      </>
-                    )}
+                      {/* SCHEDULED DETAILS */}
+                      {order.status === "SCHEDULED" && (
+                        <>
+                          <hr />
+                          <p>
+                            <b>Pickup Date:</b> {formatDate(order.pickupDate)}
+                          </p>
+                          <p>
+                            <b>Pickup Time:</b> {order.pickupTime || "—"}
+                          </p>
+                          <p>
+                            <b>Payment Method:</b> {order.paymentMethod || "—"}
+                          </p>
+                        </>
+                      )}
 
-                    {/* ACCEPTED INFO (optional display) */}
-                    {order.status === "ACCEPTED" && (
-                      <>
-                        <hr />
-                        <p style={{ color: "#0275d8" }}>
-                          ✔ Your order is accepted. Scheduling pending...
-                        </p>
-                      </>
-                    )}
+                      {/* OUT FOR PICKUP DRIVER INFO (ONLY HERE) */}
+                      {order.status === "OUT_FOR_PICKUP" && (
+                        <>
+                          <hr />
+                          <p style={{ color: "#17a2b8", fontWeight: "600" }}>
+                            🚚 Driver is on the way
+                          </p>
+                          <p>
+                            <b>Driver Name:</b>{" "}
+                            {order.assignedDriver || "Not Assigned"}
+                          </p>
+                          <p>
+                            <b>Driver Contact:</b>{" "}
+                            {order.driverContactNo || "Not Available"}
+                          </p>
+                        </>
+                      )}
 
-                    {/* TIMELINE */}
-                    <div className="mt-3">
-                      <b>Status:</b>
-                      <div style={{ fontSize: "13px", marginTop: "5px" }}>
-                        🟡 Order Placed <br />
-                        {order.status !== "PENDING" && "🔵 Accepted"} <br />
-                        {order.status === "SCHEDULED" && "🟠 Scheduled"} <br />
-                        {order.status === "COMPLETED" && "🟢 Completed"} <br />
-                        {order.status === "REJECTED" && "🔴 Rejected"}
+                      {/* ACCEPTED INFO */}
+                      {order.status === "ACCEPTED" && (
+                        <>
+                          <hr />
+                          <p style={{ color: "#0275d8" }}>
+                            ✔ Order accepted. Waiting for schedule...
+                          </p>
+                        </>
+                      )}
+
+                      {/* TIMELINE */}
+                      <div className="mt-3">
+                        <b>Live Tracking:</b>
+
+                        <div style={{ marginTop: "8px", fontSize: "13px" }}>
+                          {steps.map((step, index) => {
+                            const isActive = currentStep >= index;
+
+                            return (
+                              <div key={step} style={{ marginBottom: "4px" }}>
+                                <span
+                                  style={{
+                                    color: isActive ? "green" : "#aaa",
+                                    fontWeight: isActive ? "600" : "400",
+                                  }}
+                                >
+                                  {isActive ? "✔" : "○"} {step}
+                                </span>
+                              </div>
+                            );
+                          })}
+                        </div>
+                      </div>
+
+                      {/* STATUS BADGE ONLY */}
+                      <div className="mt-auto pt-2">
+                        <span
+                          style={{
+                            padding: "6px 12px",
+                            borderRadius: "20px",
+                            background: getStatusColor(order.status),
+                            color: "white",
+                            fontSize: "12px",
+                            display: "inline-block",
+                          }}
+                        >
+                          {order.status}
+                        </span>
                       </div>
                     </div>
-
-                    {/* STATUS BADGE */}
-                    <div className="mt-auto pt-2">
-                      <span
-                        style={{
-                          padding: "6px 12px",
-                          borderRadius: "20px",
-                          background: getStatusColor(order.status),
-                          color: "white",
-                          fontSize: "12px",
-                        }}
-                      >
-                        {order.status}
-                      </span>
-                    </div>
                   </div>
-                </div>
-              ))}
+                );
+              })}
             </div>
           )}
         </div>

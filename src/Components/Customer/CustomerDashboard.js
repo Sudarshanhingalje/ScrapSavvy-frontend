@@ -128,7 +128,7 @@ const CustomerDashboard = () => {
             </div>
           </div>
 
-          {/* STATS GRID */}
+          {/* STATS GRID
           <div style={styles.statsGrid}>
             {[
               {
@@ -158,7 +158,7 @@ const CustomerDashboard = () => {
                 <h3 style={styles.statValue}>{stat.value}</h3>
               </div>
             ))}
-          </div>
+          </div> */}
 
           {/* LIVE RATES */}
           <div style={styles.section}>

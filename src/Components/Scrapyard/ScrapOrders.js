@@ -438,6 +438,37 @@ const ScrapOrders = () => {
                                 ✖ Rejected
                               </span>
                             )}
+                            {order.status === "SCHEDULED" && (
+                              <button
+                                className="btn btn-warning btn-sm"
+                                onClick={() =>
+                                  updateStatus(order.id, "OUT_FOR_PICKUP")
+                                }
+                              >
+                                Start Pickup 🚚
+                              </button>
+                            )}
+                            {order.status === "OUT_FOR_PICKUP" && (
+                              <>
+                                <button
+                                  className="btn btn-success btn-sm me-1"
+                                  onClick={() =>
+                                    updateStatus(order.id, "COMPLETED")
+                                  }
+                                >
+                                  Mark Completed ✔
+                                </button>
+
+                                <button
+                                  className="btn btn-danger btn-sm"
+                                  onClick={() =>
+                                    updateStatus(order.id, "REJECTED")
+                                  }
+                                >
+                                  Reject ❌
+                                </button>
+                              </>
+                            )}
                           </td>
                         </tr>
                       ))}
