@@ -1,18 +1,17 @@
-import React, { useState } from "react";
 import {
   Box,
-  Container,
-  Typography,
   Card,
   CardContent,
-  TextField,
+  Container,
   Grid,
-  Button,
+  TextField,
+  Typography,
 } from "@mui/material";
-import CompanySidebar from "../Common/CompanySidebar";
-import Toast from "../Common/Snackbar";
-import { useNavigate } from "react-router-dom";
+import { useState } from "react";
 import { useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
+import CustomerSidebar from "../Common/CustomerSidebar";
+import Toast from "../Common/Snackbar";
 
 const CustomerProfile = () => {
   const navigate = useNavigate();
@@ -72,7 +71,7 @@ const CustomerProfile = () => {
 
   return (
     <Box className="d-flex">
-      <CompanySidebar />
+      <CustomerSidebar />
       <Container maxWidth="lg">
         <Box className="dashboard-content" sx={{ mt: 4 }}>
           <Typography
@@ -157,50 +156,50 @@ const CustomerProfile = () => {
                 Bank Details
               </Typography>
               <Grid container spacing={2}>
-              <Grid item xs={12} sm={6} md={4}>
-                <TextField
-                  label="Bank name"
-                  variant="outlined"
-                  fullWidth
-                  value={bankName}
-                  onChange={(e) => setBankName(e.target.value)}
-                />
-              </Grid>
-              <Grid item xs={12} sm={6} md={4}>
-                <TextField
-                  label="Account number"
-                  variant="outlined"
-                  fullWidth
-                  value={accountNumber}
-                  onChange={(e) => setAccountNumber(e.target.value)}
-                />
-              </Grid>
-              <Grid item xs={12} sm={6} md={4}>
-                <TextField
-                  label="IFSC code"
-                  variant="outlined"
-                  fullWidth
-                  value={ifscCode}
-                  onChange={(e) => setIfscCode(e.target.value)}
-                />
-              </Grid>
-              <Grid item xs={12} sm={6} md={4}>
-                <TextField
-                  label="Branch"
-                  variant="outlined"
-                  fullWidth
-                  value={branchName}
-                  onChange={(e) => setBranchName(e.target.value)}
-                />
-              </Grid>
-              <Grid item xs={12}>
-                <button
-                  className="btn btn-primary mt-2"
-                  onClick={handleBankDetailsChange}
-                >
-                  Save Changes
-                </button>
-              </Grid>
+                <Grid item xs={12} sm={6} md={4}>
+                  <TextField
+                    label="Bank name"
+                    variant="outlined"
+                    fullWidth
+                    value={bankName}
+                    onChange={(e) => setBankName(e.target.value)}
+                  />
+                </Grid>
+                <Grid item xs={12} sm={6} md={4}>
+                  <TextField
+                    label="Account number"
+                    variant="outlined"
+                    fullWidth
+                    value={accountNumber}
+                    onChange={(e) => setAccountNumber(e.target.value)}
+                  />
+                </Grid>
+                <Grid item xs={12} sm={6} md={4}>
+                  <TextField
+                    label="IFSC code"
+                    variant="outlined"
+                    fullWidth
+                    value={ifscCode}
+                    onChange={(e) => setIfscCode(e.target.value)}
+                  />
+                </Grid>
+                <Grid item xs={12} sm={6} md={4}>
+                  <TextField
+                    label="Branch"
+                    variant="outlined"
+                    fullWidth
+                    value={branchName}
+                    onChange={(e) => setBranchName(e.target.value)}
+                  />
+                </Grid>
+                <Grid item xs={12}>
+                  <button
+                    className="btn btn-primary mt-2"
+                    onClick={handleBankDetailsChange}
+                  >
+                    Save Changes
+                  </button>
+                </Grid>
               </Grid>
             </CardContent>
           </Card>

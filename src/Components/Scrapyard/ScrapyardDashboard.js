@@ -16,7 +16,6 @@ import "../.././Static/Dashboard.css";
 import LogoutMenu from "../Common/LogoutMenu";
 import ScrapyardSidebar from "../Common/ScrapyardSidebar";
 
-// Register Chart.js components
 ChartJS.register(
   CategoryScale,
   LinearScale,
@@ -29,15 +28,49 @@ ChartJS.register(
   Legend,
 );
 
-const ScrapyardDashboard = () => {
-  const [stats] = useState({
-    totalScrap: 5250,
-    scrapSold: 4200,
-    ordersReceived: 78,
-    paymentReceived: 285000,
-  });
-  const [prices, setPrices] = useState({});
+const MONTH_NAMES = [
+  "Jan",
+  "Feb",
+  "Mar",
+  "Apr",
+  "May",
+  "Jun",
+  "Jul",
+  "Aug",
+  "Sep",
+  "Oct",
+  "Nov",
+  "Dec",
+];
 
+const ScrapyardDashboard = () => {
+  const [orders, setOrders] = useState([]);
+  const [prices, setPrices] = useState({});
+  const [rates, setRates] = useState({
+    Metal: "",
+    Plastic: "",
+    Paper: "",
+    Glass: "",
+    Electronics: "",
+    Textiles: "",
+    Others: "",
+  });
+
+  // ── Fetch orders every 5s ──
+  const fetchOrders = () => {
+    fetch("http://localhost:8080/api/scrap-orders/all")
+      .then((res) => res.json())
+      .then((data) => setOrders(data))
+      .catch((err) => console.error(err));
+  };
+
+  useEffect(() => {
+    fetchOrders();
+    const interval = setInterval(fetchOrders, 5000);
+    return () => clearInterval(interval);
+  }, []);
+
+  // ── Fetch prices every 5s ──
   useEffect(() => {
     const fetchPrices = () => {
       fetch("http://localhost:8080/api/prices/all")
@@ -48,38 +81,84 @@ const ScrapyardDashboard = () => {
             priceMap[item.category] = item.price;
           });
           setPrices(priceMap);
-        });
+        })
+        .catch((err) => console.error(err));
     };
-
-    fetchPrices(); // initial load
-
-    const interval = setInterval(fetchPrices, 5000); // 🔥 refresh every 5 sec
-
+    fetchPrices();
+    const interval = setInterval(fetchPrices, 5000);
     return () => clearInterval(interval);
   }, []);
 
-  const [rates, setRates] = useState({
-    Metal: "",
-    Plastic: "",
-    Paper: "",
-    Glass: "",
-    Electronics: "",
-    Textiles: "",
-    Others: "",
+  // ══════════════════════════════════════════════
+  //  DERIVED DATA FROM REAL ORDERS
+  // ══════════════════════════════════════════════
+
+  // ── Stats ──
+  const totalOrders = orders.length;
+  const completedOrders = orders.filter((o) => o.status === "COMPLETED");
+  const totalScrapSold = completedOrders.reduce(
+    (sum, o) => sum + (o.quantity || 0),
+    0,
+  );
+  const totalRevenue = completedOrders.reduce(
+    (sum, o) => sum + (o.totalPrice || 0),
+    0,
+  );
+
+  // total scrap across ALL orders (not just completed)
+  const totalScrapReceived = orders.reduce(
+    (sum, o) => sum + (o.quantity || 0),
+    0,
+  );
+
+  // ── Scrap Type Distribution (Doughnut) ──
+  // Group quantity by scrapType from all orders
+  const scrapTypeMap = {};
+  orders.forEach((o) => {
+    const type = o.scrapType || "Others";
+    scrapTypeMap[type] = (scrapTypeMap[type] || 0) + (o.quantity || 0);
   });
-  const handleChange = (e) => {
-    setRates({
-      ...rates,
-      [e.target.name]: e.target.value,
-    });
+  const scrapTypeLabels = Object.keys(scrapTypeMap);
+  const scrapTypeValues = Object.values(scrapTypeMap);
+  const doughnutColors = [
+    "#4CAF50",
+    "#2196F3",
+    "#FFC107",
+    "#9C27B0",
+    "#FF5722",
+    "#00BCD4",
+    "#FF9800",
+  ];
+
+  const scrapTypeData = {
+    labels: scrapTypeLabels.length ? scrapTypeLabels : ["No Data"],
+    datasets: [
+      {
+        data: scrapTypeValues.length ? scrapTypeValues : [1],
+        backgroundColor: doughnutColors.slice(0, scrapTypeLabels.length || 1),
+        borderWidth: 2,
+      },
+    ],
   };
-  // Monthly collection data for chart
+
+  // ── Monthly Collection Trends (Bar) ──
+  // Group quantity by month from order date
+  const monthlyMap = {};
+  orders.forEach((o) => {
+    if (!o.orderDate) return;
+    const month = MONTH_NAMES[new Date(o.orderDate).getMonth()];
+    monthlyMap[month] = (monthlyMap[month] || 0) + (o.quantity || 0);
+  });
+  // Keep only months that have data, in calendar order
+  const monthlyLabels = MONTH_NAMES.filter((m) => monthlyMap[m] !== undefined);
+  const monthlyValues = monthlyLabels.map((m) => monthlyMap[m]);
+
   const monthlyData = {
-    labels: ["Jan", "Feb", "Mar", "Apr", "May", "Jun"],
+    labels: monthlyLabels.length ? monthlyLabels : ["No Data"],
     datasets: [
       {
         label: "Scrap Collected (kg)",
-        data: [650, 780, 520, 890, 1020, 840],
+        data: monthlyValues.length ? monthlyValues : [0],
         backgroundColor: "rgba(76, 175, 80, 0.6)",
         borderColor: "rgba(76, 175, 80, 1)",
         borderWidth: 2,
@@ -87,37 +166,28 @@ const ScrapyardDashboard = () => {
     ],
   };
 
-  // Scrap type distribution data for doughnut chart
-  const scrapTypeData = {
-    labels: [
-      "Metal Scrap",
-      "Paper & Cardboard",
-      "Plastic Waste",
-      "Glass Materials",
-      "E-Waste",
-    ],
-    datasets: [
-      {
-        data: [40, 25, 18, 12, 5],
-        backgroundColor: [
-          "#4CAF50",
-          "#2196F3",
-          "#FFC107",
-          "#9C27B0",
-          "#FF5722",
-        ],
-        borderWidth: 2,
-      },
-    ],
-  };
+  // ── Weekly Revenue Analysis (Line) ──
+  // Group totalPrice of COMPLETED orders by ISO week number
+  const weeklyRevenueMap = {};
+  completedOrders.forEach((o) => {
+    if (!o.orderDate) return;
+    const d = new Date(o.orderDate);
+    const jan = new Date(d.getFullYear(), 0, 1);
+    const week = Math.ceil(((d - jan) / 86400000 + jan.getDay() + 1) / 7);
+    const key = `Week ${week}`;
+    weeklyRevenueMap[key] = (weeklyRevenueMap[key] || 0) + (o.totalPrice || 0);
+  });
+  const weeklyLabels = Object.keys(weeklyRevenueMap).sort((a, b) => {
+    return parseInt(a.split(" ")[1]) - parseInt(b.split(" ")[1]);
+  });
+  const weeklyValues = weeklyLabels.map((k) => weeklyRevenueMap[k]);
 
-  // Weekly revenue data for line chart
   const weeklyRevenueData = {
-    labels: ["Week 1", "Week 2", "Week 3", "Week 4"],
+    labels: weeklyLabels.length ? weeklyLabels : ["No Data"],
     datasets: [
       {
         label: "Revenue (₹)",
-        data: [65000, 72000, 58000, 90000],
+        data: weeklyValues.length ? weeklyValues : [0],
         borderColor: "#4CAF50",
         backgroundColor: "rgba(76, 175, 80, 0.1)",
         borderWidth: 3,
@@ -127,35 +197,33 @@ const ScrapyardDashboard = () => {
     ],
   };
 
-  const chartOptions = {
-    responsive: true,
-    maintainAspectRatio: false,
-    plugins: {
-      legend: {
-        position: "top",
-      },
-    },
-    scales: {
-      y: {
-        beginAtZero: true,
-      },
-    },
-  };
+  // ── Inventory Summary (from scrapTypeMap, only PENDING/ACCEPTED = in stock) ──
+  const inventoryMap = {};
+  orders
+    .filter((o) => o.status === "PENDING" || o.status === "ACCEPTED")
+    .forEach((o) => {
+      const type = o.scrapType || "Others";
+      inventoryMap[type] = (inventoryMap[type] || 0) + (o.quantity || 0);
+    });
+  const inventoryItems = Object.entries(inventoryMap).map(
+    ([label, qty], i) => ({
+      label,
+      qty: `${qty.toLocaleString()} kg`,
+      color: doughnutColors[i % doughnutColors.length],
+    }),
+  );
+  const totalStock = Object.values(inventoryMap).reduce((s, v) => s + v, 0);
 
-  const doughnutOptions = {
-    responsive: true,
-    maintainAspectRatio: false,
-    plugins: {
-      legend: {
-        position: "bottom",
-      },
-    },
+  // ══════════════════════════════════════════════
+  //  PRICE UPDATE
+  // ══════════════════════════════════════════════
+  const handleChange = (e) => {
+    setRates({ ...rates, [e.target.name]: e.target.value });
   };
 
   const handleSubmit = async () => {
     try {
       const token = localStorage.getItem("token");
-
       for (const key in rates) {
         if (rates[key]) {
           await fetch("http://localhost:8080/api/prices/update", {
@@ -164,17 +232,11 @@ const ScrapyardDashboard = () => {
               "Content-Type": "application/json",
               Authorization: `Bearer ${token}`,
             },
-            body: JSON.stringify({
-              category: key,
-              price: Number(rates[key]),
-            }),
+            body: JSON.stringify({ category: key, price: Number(rates[key]) }),
           });
         }
       }
-
       alert("Prices Updated Successfully ✅");
-
-      // Optional: clear inputs after update
       setRates({
         Metal: "",
         Plastic: "",
@@ -190,96 +252,116 @@ const ScrapyardDashboard = () => {
     }
   };
 
+  // ── Chart options ──
+  const chartOptions = {
+    responsive: true,
+    maintainAspectRatio: false,
+    plugins: { legend: { position: "top" } },
+    scales: { y: { beginAtZero: true } },
+  };
+
+  const doughnutOptions = {
+    responsive: true,
+    maintainAspectRatio: false,
+    plugins: { legend: { position: "bottom" } },
+  };
+
+  // ── Current price display ──
+  const priceItems = [
+    { icon: "🔩", label: "Metal", key: "Metal" },
+    { icon: "🧴", label: "Plastic", key: "Plastic" },
+    { icon: "📄", label: "Paper", key: "Paper" },
+    { icon: "🪟", label: "Glass", key: "Glass" },
+    { icon: "💻", label: "Electronics", key: "Electronics" },
+    { icon: "👕", label: "Textiles", key: "Textiles" },
+    { icon: "♻️", label: "Others", key: "Others" },
+  ];
+
   return (
     <div className="d-flex">
       <ScrapyardSidebar />
-      <div className="container">
+
+      <div className="container-fluid" style={{ padding: "0 20px" }}>
         <div className="dashboard-content">
-          <div className="d-flex justify-content-between align-items-center">
-            <h1 className="dashboard-title">Dashboard - Scrapyard</h1>
+          {/* ── Header ── */}
+          <div className="d-flex justify-content-between align-items-center mb-3">
+            <h1 className="dashboard-title" style={{ margin: 0 }}>
+              Dashboard — Scrapyard
+            </h1>
             <LogoutMenu />
           </div>
 
-          {/* Stats Cards Row */}
-          <div className="row">
-            <div className="col-lg-3 col-md-6 mb-4">
-              <div className="card stats-card">
-                <div className="card-body">
-                  <div className="stat-number">{stats.totalScrap} kg</div>
-                  <div className="stat-label">Quantity Available</div>
-                </div>
-              </div>
-            </div>
-            <div className="col-lg-3 col-md-6 mb-4">
-              <div className="card stats-card blue">
-                <div className="card-body">
-                  <div className="stat-number">{stats.scrapSold} kg</div>
-                  <div className="stat-label">Quantity Sold</div>
-                </div>
-              </div>
-            </div>
-            <div className="col-lg-3 col-md-6 mb-4">
-              <div className="card stats-card orange">
-                <div className="card-body">
-                  <div className="stat-number">{stats.ordersReceived}</div>
-                  <div className="stat-label">Orders Received</div>
-                </div>
-              </div>
-            </div>
-            <div className="col-lg-3 col-md-6 mb-4">
-              <div className="card stats-card purple">
-                <div className="card-body">
-                  <div className="stat-number">
-                    ₹{stats.paymentReceived.toLocaleString()}
+          {/* ── Stats Cards (all from real orders) ── */}
+          <div className="row mb-3">
+            {[
+              {
+                label: "Total Scrap Received",
+                value: `${totalScrapReceived.toLocaleString()} kg`,
+                cls: "",
+              },
+              {
+                label: "Scrap Sold",
+                value: `${totalScrapSold.toLocaleString()} kg`,
+                cls: "blue",
+              },
+              { label: "Orders Received", value: totalOrders, cls: "orange" },
+              {
+                label: "Revenue Collected",
+                value: `₹${totalRevenue.toLocaleString()}`,
+                cls: "purple",
+              },
+            ].map(({ label, value, cls }) => (
+              <div className="col-lg-3 col-md-6 mb-3" key={label}>
+                <div className={`card stats-card ${cls}`}>
+                  <div className="card-body">
+                    <div className="stat-number">{value}</div>
+                    <div className="stat-label">{label}</div>
                   </div>
-                  <div className="stat-label">Payment Received</div>
                 </div>
+              </div>
+            ))}
+          </div>
+
+          {/* ── Current Scrap Prices ── */}
+          <div className="card mb-3">
+            <div className="card-body py-3">
+              <h5 className="mb-3">Current Scrap Prices</h5>
+              <div className="row g-2">
+                {priceItems.map(({ icon, label, key }) => (
+                  <div className="col-md-3 col-6" key={key}>
+                    <div
+                      style={{
+                        background: "#f8f9fa",
+                        borderRadius: "8px",
+                        padding: "8px 12px",
+                        fontSize: "13px",
+                      }}
+                    >
+                      {icon} <b>{label}:</b> ₹{prices[key] || 0}/kg
+                    </div>
+                  </div>
+                ))}
               </div>
             </div>
           </div>
-          <div className="card mb-4">
-            <div className="card-body">
-              <h3>Current Scrap Prices</h3>
 
-              <div className="row">
-                <div className="col-md-3">🔩 Metal: ₹{prices.Metal || 0}</div>
-                <div className="col-md-3">
-                  🧴 Plastic: ₹{prices.Plastic || 0}
-                </div>
-                <div className="col-md-3">📄 Paper: ₹{prices.Paper || 0}</div>
-                <div className="col-md-3">🪟 Glass: ₹{prices.Glass || 0}</div>
-                <div className="col-md-3">
-                  💻 Electronics: ₹{prices.Electronics || 0}
-                </div>
-                <div className="col-md-3">
-                  👕 Textiles: ₹{prices.Textiles || 0}
-                </div>
-                <div className="col-md-3">♻️ Others: ₹{prices.Others || 0}</div>
-              </div>
-            </div>
-          </div>
-
-          {/* Chart Widgets Row */}
-          <div className="row">
-            <div className="col-lg-6 mb-4">
-              <div className="card" style={{ height: "400px" }}>
+          {/* ── Charts Row 1: Bar + Doughnut ── */}
+          <div className="row mb-3">
+            <div className="col-lg-6 mb-3">
+              <div className="card h-100">
                 <div className="card-body">
-                  <h3 style={{ marginBottom: "20px", color: "#333" }}>
-                    Monthly Collection Trends
-                  </h3>
-                  <div style={{ height: "300px" }}>
+                  <h5 className="mb-3">Monthly Collection Trends</h5>
+                  <div style={{ height: "280px" }}>
                     <Bar data={monthlyData} options={chartOptions} />
                   </div>
                 </div>
               </div>
             </div>
-            <div className="col-lg-6 mb-4">
-              <div className="card" style={{ height: "400px" }}>
+            <div className="col-lg-6 mb-3">
+              <div className="card h-100">
                 <div className="card-body">
-                  <h3 style={{ marginBottom: "20px", color: "#333" }}>
-                    Scrap Type Distribution
-                  </h3>
-                  <div style={{ height: "300px" }}>
+                  <h5 className="mb-3">Scrap Type Distribution</h5>
+                  <div style={{ height: "280px" }}>
                     <Doughnut data={scrapTypeData} options={doughnutOptions} />
                   </div>
                 </div>
@@ -287,298 +369,98 @@ const ScrapyardDashboard = () => {
             </div>
           </div>
 
-          {/* Additional Analytics Row */}
-
-          {/* ═════════ PRICE UPDATE SECTION ═════════ */}
-          <div className="row mb-4">
-            <div className="col-12">
-              <div className="card">
-                <div className="card-body">
-                  <h3 style={{ marginBottom: "20px" }}>Update Scrap Prices</h3>
-
-                  <div className="row">
-                    {Object.keys(rates).map((item) => (
-                      <div className="col-md-3 mb-3" key={item}>
-                        <label>{item}</label>
-                        <input
-                          type="number"
-                          name={item}
-                          value={rates[item]}
-                          onChange={handleChange}
-                          className="form-control"
-                          placeholder={`Enter ${item} price`}
-                        />
-                      </div>
-                    ))}
+          {/* ── Update Prices ── */}
+          <div className="card mb-3">
+            <div className="card-body">
+              <h5 className="mb-3">Update Scrap Prices</h5>
+              <div className="row g-2">
+                {Object.keys(rates).map((item) => (
+                  <div className="col-md-3 col-6" key={item}>
+                    <label
+                      style={{
+                        fontSize: "13px",
+                        marginBottom: "4px",
+                        display: "block",
+                      }}
+                    >
+                      {item}
+                    </label>
+                    <input
+                      type="number"
+                      name={item}
+                      value={rates[item]}
+                      onChange={handleChange}
+                      className="form-control form-control-sm"
+                      placeholder="₹ per kg"
+                    />
                   </div>
-
-                  <button
-                    className="btn btn-success mt-3"
-                    onClick={handleSubmit}
-                  >
-                    Update Prices
-                  </button>
-                </div>
+                ))}
               </div>
+              <button
+                className="btn btn-success btn-sm mt-3"
+                onClick={handleSubmit}
+              >
+                Update Prices
+              </button>
             </div>
           </div>
 
-          <div className="row">
-            <div className="col-lg-8 mb-4">
-              <div className="card" style={{ height: "400px" }}>
+          {/* ── Charts Row 2: Line + Inventory ── */}
+          <div className="row mb-4">
+            <div className="col-lg-8 mb-3">
+              <div className="card h-100">
                 <div className="card-body">
-                  <h3 style={{ marginBottom: "20px", color: "#333" }}>
-                    Weekly Revenue Analysis
-                  </h3>
-                  <div style={{ height: "300px" }}>
+                  <h5 className="mb-3">Weekly Revenue Analysis</h5>
+                  <div style={{ height: "280px" }}>
                     <Line data={weeklyRevenueData} options={chartOptions} />
                   </div>
                 </div>
               </div>
             </div>
-            <div className="col-lg-4 mb-4">
-              <div className="card" style={{ height: "400px" }}>
+            <div className="col-lg-4 mb-3">
+              <div className="card h-100">
                 <div className="card-body">
-                  <h3 style={{ marginBottom: "20px", color: "#333" }}>
-                    Inventory Summary
-                  </h3>
-                  <div style={{ fontSize: "14px", color: "#666" }}>
-                    <div
-                      style={{
-                        display: "flex",
-                        justifyContent: "space-between",
-                        padding: "12px 0",
-                        borderBottom: "1px solid #eee",
-                      }}
-                    >
-                      <span>🔩 Metal Scrap</span>
-                      <span style={{ fontWeight: "bold", color: "#4caf50" }}>
-                        2,100 kg
-                      </span>
-                    </div>
-                    <div
-                      style={{
-                        display: "flex",
-                        justifyContent: "space-between",
-                        padding: "12px 0",
-                        borderBottom: "1px solid #eee",
-                      }}
-                    >
-                      <span>📄 Paper & Cardboard</span>
-                      <span style={{ fontWeight: "bold", color: "#2196f3" }}>
-                        1,312 kg
-                      </span>
-                    </div>
-                    <div
-                      style={{
-                        display: "flex",
-                        justifyContent: "space-between",
-                        padding: "12px 0",
-                        borderBottom: "1px solid #eee",
-                      }}
-                    >
-                      <span>🧴 Plastic Waste</span>
-                      <span style={{ fontWeight: "bold", color: "#ffc107" }}>
-                        945 kg
-                      </span>
-                    </div>
-                    <div
-                      style={{
-                        display: "flex",
-                        justifyContent: "space-between",
-                        padding: "12px 0",
-                        borderBottom: "1px solid #eee",
-                      }}
-                    >
-                      <span>🪟 Glass Materials</span>
-                      <span style={{ fontWeight: "bold", color: "#9c27b0" }}>
-                        630 kg
-                      </span>
-                    </div>
-                    <div
-                      style={{
-                        display: "flex",
-                        justifyContent: "space-between",
-                        padding: "12px 0",
-                        borderBottom: "1px solid #eee",
-                      }}
-                    >
-                      <span>💻 E-Waste</span>
-                      <span style={{ fontWeight: "bold", color: "#ff5722" }}>
-                        263 kg
-                      </span>
-                    </div>
-                    <div
-                      style={{
-                        display: "flex",
-                        justifyContent: "space-between",
-                        padding: "15px 0",
-                        borderTop: "2px solid #4caf50",
-                        marginTop: "10px",
-                        fontSize: "16px",
-                        fontWeight: "bold",
-                      }}
-                    >
-                      <span>Total Stock</span>
-                      <span style={{ color: "#2e7d32" }}>5,250 kg</span>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
+                  <h5 className="mb-3">Inventory Summary</h5>
 
-          {/* Recent Activities Row */}
-          <div className="row">
-            <div className="col-lg-6 mb-4">
-              <div className="card">
-                <div className="card-body">
-                  <h3 style={{ marginBottom: "20px", color: "#333" }}>
-                    Top Buyers This Month
-                  </h3>
-                  <div style={{ fontSize: "14px", color: "#666" }}>
-                    <div
-                      style={{
-                        display: "flex",
-                        justifyContent: "space-between",
-                        padding: "12px 0",
-                        borderBottom: "1px solid #eee",
-                      }}
-                    >
-                      <span>🏭 GreenTech Industries</span>
-                      <span style={{ fontWeight: "bold", color: "#4caf50" }}>
-                        ₹85,000
-                      </span>
-                    </div>
-                    <div
-                      style={{
-                        display: "flex",
-                        justifyContent: "space-between",
-                        padding: "12px 0",
-                        borderBottom: "1px solid #eee",
-                      }}
-                    >
-                      <span>🏢 EcoRecycle Corp</span>
-                      <span style={{ fontWeight: "bold", color: "#4caf50" }}>
-                        ₹72,000
-                      </span>
-                    </div>
-                    <div
-                      style={{
-                        display: "flex",
-                        justifyContent: "space-between",
-                        padding: "12px 0",
-                        borderBottom: "1px solid #eee",
-                      }}
-                    >
-                      <span>🌱 Sustainable Solutions</span>
-                      <span style={{ fontWeight: "bold", color: "#4caf50" }}>
-                        ₹58,000
-                      </span>
-                    </div>
-                    <div
-                      style={{
-                        display: "flex",
-                        justifyContent: "space-between",
-                        padding: "12px 0",
-                        borderBottom: "1px solid #eee",
-                      }}
-                    >
-                      <span>♻️ Metro Recyclers</span>
-                      <span style={{ fontWeight: "bold", color: "#4caf50" }}>
-                        ₹45,000
-                      </span>
-                    </div>
-                    <div
-                      style={{
-                        display: "flex",
-                        justifyContent: "space-between",
-                        padding: "12px 0",
-                      }}
-                    >
-                      <span>🔄 Urban Waste Management</span>
-                      <span style={{ fontWeight: "bold", color: "#4caf50" }}>
-                        ₹25,000
-                      </span>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div className="col-lg-6 mb-4">
-              <div className="card">
-                <div className="card-body">
-                  <h3 style={{ marginBottom: "20px", color: "#333" }}>
-                    Recent Activities
-                  </h3>
-                  <div style={{ fontSize: "14px", color: "#666" }}>
-                    <div
-                      className="activity-item"
-                      style={{
-                        padding: "8px 0",
-                        borderBottom: "1px solid #f0f0f0",
-                      }}
-                    >
-                      📦 New shipment received - 500kg mixed metals
-                    </div>
-                    <div
-                      className="activity-item"
-                      style={{
-                        padding: "8px 0",
-                        borderBottom: "1px solid #f0f0f0",
-                      }}
-                    >
-                      💰 Payment confirmed - ₹45,000 from EcoRecycle Corp
-                    </div>
-                    <div
-                      className="activity-item"
-                      style={{
-                        padding: "8px 0",
-                        borderBottom: "1px solid #f0f0f0",
-                      }}
-                    >
-                      🚛 Dispatch completed - Paper waste to GreenTech
-                    </div>
-                    <div
-                      className="activity-item"
-                      style={{
-                        padding: "8px 0",
-                        borderBottom: "1px solid #f0f0f0",
-                      }}
-                    >
-                      📊 Inventory audit completed successfully
-                    </div>
-                    <div
-                      className="activity-item"
-                      style={{
-                        padding: "8px 0",
-                        borderBottom: "1px solid #f0f0f0",
-                      }}
-                    >
-                      ✅ Quality verification - Plastic batch approved
-                    </div>
-                    <div
-                      className="activity-item"
-                      style={{
-                        padding: "8px 0",
-                        borderBottom: "1px solid #f0f0f0",
-                      }}
-                    >
-                      🔄 Stock replenishment - E-waste section updated
-                    </div>
-                    <div
-                      className="activity-item"
-                      style={{
-                        padding: "8px 0",
-                        borderBottom: "1px solid #f0f0f0",
-                      }}
-                    >
-                      📞 New inquiry - Glass materials bulk order
-                    </div>
-                    <div className="activity-item" style={{ padding: "8px 0" }}>
-                      🎯 Daily target achieved - 98% efficiency rate
-                    </div>
-                  </div>
+                  {inventoryItems.length === 0 ? (
+                    <p style={{ fontSize: "13px", color: "#888" }}>
+                      No active stock.
+                    </p>
+                  ) : (
+                    <>
+                      {inventoryItems.map(({ label, qty, color }) => (
+                        <div
+                          key={label}
+                          style={{
+                            display: "flex",
+                            justifyContent: "space-between",
+                            padding: "10px 0",
+                            borderBottom: "1px solid #eee",
+                            fontSize: "13px",
+                          }}
+                        >
+                          <span>{label}</span>
+                          <span style={{ fontWeight: 700, color }}>{qty}</span>
+                        </div>
+                      ))}
+                      <div
+                        style={{
+                          display: "flex",
+                          justifyContent: "space-between",
+                          padding: "10px 0 0",
+                          borderTop: "2px solid #4caf50",
+                          marginTop: "6px",
+                          fontSize: "14px",
+                          fontWeight: 700,
+                        }}
+                      >
+                        <span>Total Stock</span>
+                        <span style={{ color: "#2e7d32" }}>
+                          {totalStock.toLocaleString()} kg
+                        </span>
+                      </div>
+                    </>
+                  )}
                 </div>
               </div>
             </div>

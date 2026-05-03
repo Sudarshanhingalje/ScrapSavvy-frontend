@@ -1,23 +1,36 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import "../../Static/Dashboard.css";
 import CustomerSidebar from "../Common/CustomerSidebar";
 import LogoutMenu from "../Common/LogoutMenu";
 
 const CustomerDashboard = () => {
   const navigate = useNavigate();
 
-  // Sample data - in real app, this would come from API
-  const [dailyRates, setDailyRates] = useState({
-    iron: 45,
-    steel: 52,
-    copper: 680,
-    aluminum: 185,
-    brass: 320,
-    plastic: 15,
+  const [form, setForm] = useState({
+    customerName: "",
+    scrapType: "",
+    quantity: 0,
+    pickupAddress: "",
   });
 
-  const [availableItems, setAvailableItems] = useState([
+  const handleChange = (e) => {
+    setForm({ ...form, [e.target.name]: e.target.value });
+  };
+
+  const placeOrder = () => {
+    fetch("http://localhost:8080/api/scrap-orders/create", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ ...form, status: "PENDING" }),
+    })
+      .then((res) => res.json())
+      .then(() => alert("Order placed successfully"))
+      .catch((err) => console.error(err));
+  };
+
+  const [dailyRates, setDailyRates] = useState({});
+
+  const [availableItems] = useState([
     {
       id: 1,
       item: "Second Hand Motor",
@@ -48,44 +61,14 @@ const CustomerDashboard = () => {
         "https://images.unsplash.com/photo-1504328345606-18bbc8c9d7d1?w=400&h=300&fit=crop",
       inStock: 50,
     },
-    {
-      id: 4,
-      item: "Steel Dumbbells",
-      price: 600,
-      condition: "Excellent",
-      seller: "Singh Metal Works",
-      image:
-        "https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=400&h=300&fit=crop",
-      inStock: 8,
-    },
-    {
-      id: 5,
-      item: "Copper Wires",
-      price: 300,
-      condition: "Good",
-      seller: "Gupta Recycling",
-      image:
-        "https://images.unsplash.com/photo-1558618047-3c8c76ca7d13?w=400&h=300&fit=crop",
-      inStock: 25,
-    },
-    {
-      id: 6,
-      item: "Aluminum Sheets",
-      price: 450,
-      condition: "Fair",
-      seller: "Shah Scrapyard",
-      image:
-        "https://images.unsplash.com/photo-1587293852726-70cdb56c2866?w=400&h=300&fit=crop",
-      inStock: 15,
-    },
   ]);
 
   const [runningAds] = useState([
-    "🔥 Best Rates for Iron Scrap - ₹45/kg Today at Sharma Scrapyard!",
-    "⚡ Premium Second Hand Motors - Quality Guaranteed by Kumar Metals!",
-    "🛠️ Steel Machine Parts Clearance Sale - Up to 30% Off!",
-    "💰 Copper Wire Collection - Premium Rates ₹680/kg - Gupta Recycling",
-    "🏋️ Heavy Duty Steel Dumbbells Available - Singh Metal Works",
+    "🔥 Best Scrap Rates Updated Live!",
+    "⚡ Sell Scrap & Earn Instant Cash!",
+    "💰 Copper & Iron High Demand Today!",
+    "♻️ Eco-friendly Scrap Recycling System!",
+    "🚛 Free Doorstep Pickup Available!",
   ]);
 
   const [customerStats] = useState({
@@ -97,278 +80,483 @@ const CustomerDashboard = () => {
 
   const [wishlist, setWishlist] = useState([
     { id: 1, item: "Electric Motor (5HP)", maxPrice: 2000 },
-    { id: 2, item: "Stainless Steel Screws", maxPrice: 300 },
-    { id: 3, item: "Copper Pipes", maxPrice: 500 },
+    { id: 2, item: "Copper Pipes", maxPrice: 500 },
+    { id: 3, item: "Steel Rods", maxPrice: 700 },
   ]);
 
-  const addToWishlist = (itemId) => {
-    console.log("Added to wishlist:", itemId);
-    // In real app, this would add to wishlist
-    alert("Item added to wishlist!");
-  };
+  useEffect(() => {
+    const fetchRates = () => {
+      fetch("http://localhost:8080/api/prices/all")
+        .then((res) => res.json())
+        .then((data) => {
+          const mapped = {};
+          data.forEach((item) => {
+            mapped[item.category] = item.price;
+          });
+          setDailyRates(mapped);
+        })
+        .catch((err) => console.error("Rate fetch error:", err));
+    };
+    fetchRates();
+    const interval = setInterval(fetchRates, 10000);
+    return () => clearInterval(interval);
+  }, []);
 
-  const removeFromWishlist = (itemId) => {
-    setWishlist(wishlist.filter((item) => item.id !== itemId));
-  };
-
-  const placeOrder = (itemId) => {
-    console.log("Placing order for:", itemId);
-    // In real app, this would navigate to order page
-    alert("Redirecting to order page...");
-    // navigate('/place-order');
+  const removeFromWishlist = (id) => {
+    setWishlist(wishlist.filter((w) => w.id !== id));
   };
 
   return (
-    <div className="dashboard-layout">
+    <div style={styles.layout}>
       <CustomerSidebar />
-      <div className="dashboard-main">
-        <div className="dashboard-content">
-          <div className="logout-menu-container">
-            <LogoutMenu />
-          </div>
 
-          <div className="dashboard-title">
-            <h1>Customer Dashboard</h1>
-            <p className="dashboard-subtitle">Scrap Buyer Portal</p>
-            <hr />
+      <div style={styles.main}>
+        {/* TOPBAR */}
+        <div style={styles.topbar}>
+          <div>
+            <h1 style={styles.pageTitle}>Customer Dashboard</h1>
+            <p style={styles.pageSubtitle}>Scrap Buyer Portal</p>
           </div>
+          <LogoutMenu />
+        </div>
 
-          {/* Running Ads Marquee */}
-          <div className="ads-container">
-            <div className="ads-marquee">
-              <div className="ads-content">{runningAds.join(" • ")}</div>
-            </div>
-          </div>
-
-          {/* Customer Statistics */}
-          <div className="stats-grid">
-            <div className="stat-card stat-info">
-              <div className="stat-content">
-                <h3>{customerStats.itemsViewed}</h3>
-                <h5>Items Viewed</h5>
-                <small>This month</small>
-              </div>
-            </div>
-            <div className="stat-card stat-success">
-              <div className="stat-content">
-                <h3>{customerStats.itemsPurchased}</h3>
-                <h5>Items Purchased</h5>
-                <small>Successfully bought</small>
-              </div>
-            </div>
-            <div className="stat-card stat-warning">
-              <div className="stat-content">
-                <h3>{customerStats.ordersPlaced}</h3>
-                <h5>Orders Placed</h5>
-                <small>Total orders</small>
-              </div>
-            </div>
-            <div className="stat-card stat-primary">
-              <div className="stat-content">
-                <h3>₹{customerStats.totalSpent.toLocaleString()}</h3>
-                <h5>Total Spent</h5>
-                <small>All time spending</small>
-              </div>
+        <div style={styles.content}>
+          {/* MARQUEE ADS */}
+          <div style={styles.adsBar}>
+            <div style={styles.adsMarquee}>
+              <div style={styles.adsContent}>{runningAds.join("   •   ")}</div>
             </div>
           </div>
 
-          {/* Daily Scrap Rates */}
-          <div className="rates-section">
-            <div className="section-card">
-              <div className="section-header">
-                <h5>Today's Scrap Rates (Per Kg) - Live Updates</h5>
-                <small>Rates updated by scrapyard owners</small>
+          {/* STATS GRID */}
+          <div style={styles.statsGrid}>
+            {[
+              {
+                label: "Items Viewed",
+                value: customerStats.itemsViewed,
+                icon: "👁",
+              },
+              {
+                label: "Purchased",
+                value: customerStats.itemsPurchased,
+                icon: "🛒",
+              },
+              {
+                label: "Orders Placed",
+                value: customerStats.ordersPlaced,
+                icon: "📦",
+              },
+              {
+                label: "Total Spent",
+                value: `₹${customerStats.totalSpent.toLocaleString()}`,
+                icon: "💰",
+              },
+            ].map((stat) => (
+              <div key={stat.label} style={styles.statCard}>
+                <span style={styles.statIcon}>{stat.icon}</span>
+                <p style={styles.statLabel}>{stat.label}</p>
+                <h3 style={styles.statValue}>{stat.value}</h3>
               </div>
-              <div className="rates-grid">
+            ))}
+          </div>
+
+          {/* LIVE RATES */}
+          <div style={styles.section}>
+            <div style={styles.sectionHeader}>
+              <h2 style={styles.sectionTitle}>Today's Scrap Rates (Per Kg)</h2>
+              <span style={styles.liveBadge}>● LIVE</span>
+            </div>
+            <p style={styles.sectionSub}>
+              Synced with owner dashboard updates every 10 seconds
+            </p>
+
+            {Object.keys(dailyRates).length === 0 ? (
+              <p style={styles.loadingText}>Loading latest rates...</p>
+            ) : (
+              <div style={styles.ratesGrid}>
                 {Object.entries(dailyRates).map(([material, rate]) => (
-                  <div key={material} className="rate-item">
-                    <div className="rate-card">
-                      <h6 className="material-name">
-                        {material.charAt(0).toUpperCase() + material.slice(1)}
-                      </h6>
-                      <h4 className="rate-price">₹{rate}</h4>
-                      <small>per kg</small>
-                    </div>
+                  <div key={material} style={styles.rateCard}>
+                    <p style={styles.rateMaterial}>
+                      {material.charAt(0).toUpperCase() + material.slice(1)}
+                    </p>
+                    <h3 style={styles.ratePrice}>₹{rate}</h3>
+                    <span style={styles.rateUnit}>per kg</span>
                   </div>
                 ))}
               </div>
-              <div className="rates-info">
-                <small>
-                  <i className="info-icon">ℹ️</i> Rates are updated daily by
-                  scrapyard owners. Contact them directly for bulk purchases.
-                </small>
-              </div>
+            )}
+          </div>
+
+          {/* AVAILABLE ITEMS */}
+          <div style={styles.section}>
+            <h2 style={styles.sectionTitle}>Available Items</h2>
+            <div style={styles.itemsGrid}>
+              {availableItems.map((item) => (
+                <div key={item.id} style={styles.itemCard}>
+                  <img
+                    src={item.image}
+                    alt={item.item}
+                    style={styles.itemImage}
+                  />
+                  <div style={styles.itemBody}>
+                    <h4 style={styles.itemName}>{item.item}</h4>
+                    <div style={styles.itemMeta}>
+                      <span style={styles.itemConditionBadge}>
+                        {item.condition}
+                      </span>
+                      <span style={styles.itemSeller}>{item.seller}</span>
+                    </div>
+                    <p style={styles.itemStock}>
+                      In stock: {item.inStock} units
+                    </p>
+                    <div style={styles.itemFooter}>
+                      <span style={styles.itemPrice}>₹{item.price}</span>
+                      <button
+                        style={styles.buyBtn}
+                        onClick={() => placeOrder(item.id)}
+                      >
+                        Buy Now
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              ))}
             </div>
           </div>
 
-          {/* Main Content Grid */}
-          <div className="main-content-grid">
-            {/* Available Items */}
-            <div className="items-section">
-              <div className="section-card">
-                <div className="section-header">
-                  <h5>Available Second Hand Items</h5>
-                  <small>Browse items from various scrapyards</small>
-                </div>
-                <div className="items-grid">
-                  {availableItems.map((item) => (
-                    <div key={item.id} className="item-card">
-                      <div className="item-image">
-                        <img src={item.image} alt={item.item} />
-                        <span
-                          className={`condition-badge condition-${item.condition.toLowerCase()}`}
-                        >
-                          {item.condition}
-                        </span>
-                      </div>
-                      <div className="item-details">
-                        <h6 className="item-title">{item.item}</h6>
-                        <div className="item-info">
-                          <div className="item-price">₹{item.price}</div>
-                          <div className="item-seller">{item.seller}</div>
-                          <div className="item-stock">
-                            In Stock: {item.inStock} units
-                          </div>
-                        </div>
-                        <div className="item-actions">
-                          <button
-                            className="btn btn-outline"
-                            onClick={() => addToWishlist(item.id)}
-                          >
-                            Add to Wishlist
-                          </button>
-                          <button
-                            className="btn btn-primary"
-                            onClick={() => placeOrder(item.id)}
-                          >
-                            Buy Now
-                          </button>
-                        </div>
-                      </div>
+          {/* WISHLIST */}
+          <div style={styles.section}>
+            <h2 style={styles.sectionTitle}>My Wishlist</h2>
+            {wishlist.length === 0 ? (
+              <p style={styles.emptyText}>Your wishlist is empty.</p>
+            ) : (
+              <div style={styles.wishlistList}>
+                {wishlist.map((item) => (
+                  <div key={item.id} style={styles.wishlistItem}>
+                    <div>
+                      <p style={styles.wishlistName}>{item.item}</p>
+                      <p style={styles.wishlistPrice}>
+                        Max Budget: ₹{item.maxPrice}
+                      </p>
                     </div>
-                  ))}
-                </div>
-                <div className="section-footer">
-                  <button className="btn btn-primary">View All Items</button>
-                </div>
+                    <button
+                      style={styles.removeBtn}
+                      onClick={() => removeFromWishlist(item.id)}
+                    >
+                      Remove
+                    </button>
+                  </div>
+                ))}
               </div>
-            </div>
-
-            {/* Sidebar */}
-            <div className="sidebar-section">
-              {/* Wishlist */}
-              <div className="section-card wishlist-card">
-                <div className="section-header">
-                  <h5>My Wishlist</h5>
-                </div>
-                <div className="wishlist-items">
-                  {wishlist.map((item) => (
-                    <div key={item.id} className="wishlist-item">
-                      <div className="wishlist-content">
-                        <h6>{item.item}</h6>
-                        <p>Max Budget: ₹{item.maxPrice}</p>
-                        <button
-                          className="btn btn-remove"
-                          onClick={() => removeFromWishlist(item.id)}
-                        >
-                          Remove
-                        </button>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-                <button className="btn btn-info wishlist-manage">
-                  Manage Wishlist
-                </button>
-              </div>
-
-              {/* Quick Actions */}
-              <div className="section-card quick-actions-card">
-                <div className="section-header">
-                  <h5>Quick Actions</h5>
-                </div>
-                <div className="quick-actions">
-                  <button className="btn btn-action btn-primary">
-                    Search Items
-                  </button>
-                  <button className="btn btn-action btn-success">
-                    My Orders
-                  </button>
-                  <button className="btn btn-action btn-warning">
-                    Contact Sellers
-                  </button>
-                  <button className="btn btn-action btn-info">
-                    Rate Calculator
-                  </button>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          {/* Recent Activity & Recommendations */}
-          <div className="bottom-content-grid">
-            <div className="activity-section">
-              <div className="section-card">
-                <div className="section-header">
-                  <h5>Recent Activity</h5>
-                </div>
-                <div className="activity-list">
-                  <div className="activity-item">
-                    Purchased Steel Motor from Kumar Metals - ₹1500
-                  </div>
-                  <div className="activity-item">
-                    Added Copper Wires to wishlist
-                  </div>
-                  <div className="activity-item">
-                    Viewed Iron Screws at Patel Scrap Co.
-                  </div>
-                  <div className="activity-item">
-                    Order placed for Steel Dumbbells - ₹600
-                  </div>
-                  <div className="activity-item">
-                    Rate alert: Copper prices increased to ₹680/kg
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <div className="recommendations-section">
-              <div className="section-card">
-                <div className="section-header">
-                  <h5>Recommended for You</h5>
-                </div>
-                <div className="recommendations-list">
-                  <div className="recommendation-item">
-                    <div className="recommendation-content">
-                      <h6>Industrial Motor (3HP)</h6>
-                      <p>Based on your recent purchases</p>
-                      <div className="recommendation-footer">
-                        <span className="recommendation-price">₹1200</span>
-                        <button className="btn btn-outline">View</button>
-                      </div>
-                    </div>
-                  </div>
-                  <div className="recommendation-item">
-                    <div className="recommendation-content">
-                      <h6>Copper Coils (5kg)</h6>
-                      <p>High quality recycled copper</p>
-                      <div className="recommendation-footer">
-                        <span className="recommendation-price">₹3400</span>
-                        <button className="btn btn-outline">View</button>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                <button className="btn btn-primary">
-                  View All Recommendations
-                </button>
-              </div>
-            </div>
+            )}
           </div>
         </div>
       </div>
+
+      <style>{`
+        @keyframes marquee {
+          0%   { transform: translateX(100%); }
+          100% { transform: translateX(-100%); }
+        }
+        .buy-btn:hover { background: #15803d !important; }
+        .remove-btn:hover { background: #fee2e2 !important; color: #dc2626 !important; }
+      `}</style>
     </div>
   );
+};
+
+const styles = {
+  /* ── Outer shell ── */
+  layout: {
+    display: "flex",
+    minHeight: "100vh",
+    backgroundColor: "#f5f5f4",
+    fontFamily: "'Segoe UI', sans-serif",
+  },
+  main: {
+    flex: 1,
+    display: "flex",
+    flexDirection: "column",
+    minWidth: 0,
+  },
+
+  /* ── Top bar ── */
+  topbar: {
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "space-between",
+    padding: "20px 28px 16px",
+    backgroundColor: "#ffffff",
+    borderBottom: "1px solid #e5e7eb",
+    position: "sticky",
+    top: 0,
+    zIndex: 10,
+  },
+  pageTitle: {
+    margin: 0,
+    fontSize: "22px",
+    fontWeight: 600,
+    color: "#111827",
+  },
+  pageSubtitle: {
+    margin: "2px 0 0",
+    fontSize: "13px",
+    color: "#6b7280",
+  },
+
+  /* ── Scrollable body ── */
+  content: {
+    flex: 1,
+    overflowY: "auto",
+    padding: "24px 28px",
+    display: "flex",
+    flexDirection: "column",
+    gap: "28px",
+  },
+
+  /* ── Ads marquee ── */
+  adsBar: {
+    backgroundColor: "#16a34a",
+    borderRadius: "10px",
+    padding: "10px 0",
+    overflow: "hidden",
+  },
+  adsMarquee: {
+    overflow: "hidden",
+    whiteSpace: "nowrap",
+  },
+  adsContent: {
+    display: "inline-block",
+    animation: "marquee 28s linear infinite",
+    color: "#ffffff",
+    fontSize: "13px",
+    fontWeight: 500,
+    letterSpacing: "0.3px",
+    paddingLeft: "100%",
+  },
+
+  /* ── Stats ── */
+  statsGrid: {
+    display: "grid",
+    gridTemplateColumns: "repeat(4, 1fr)",
+    gap: "16px",
+  },
+  statCard: {
+    backgroundColor: "#ffffff",
+    border: "1px solid #e5e7eb",
+    borderRadius: "12px",
+    padding: "18px 20px",
+    display: "flex",
+    flexDirection: "column",
+    gap: "6px",
+  },
+  statIcon: {
+    fontSize: "20px",
+  },
+  statLabel: {
+    margin: 0,
+    fontSize: "12px",
+    color: "#6b7280",
+    textTransform: "uppercase",
+    letterSpacing: "0.5px",
+  },
+  statValue: {
+    margin: 0,
+    fontSize: "22px",
+    fontWeight: 700,
+    color: "#111827",
+  },
+
+  /* ── Sections ── */
+  section: {
+    backgroundColor: "#ffffff",
+    border: "1px solid #e5e7eb",
+    borderRadius: "12px",
+    padding: "20px 24px",
+  },
+  sectionHeader: {
+    display: "flex",
+    alignItems: "center",
+    gap: "12px",
+    marginBottom: "4px",
+  },
+  sectionTitle: {
+    margin: 0,
+    fontSize: "16px",
+    fontWeight: 600,
+    color: "#111827",
+  },
+  sectionSub: {
+    margin: "0 0 16px",
+    fontSize: "12px",
+    color: "#9ca3af",
+  },
+  liveBadge: {
+    fontSize: "11px",
+    fontWeight: 600,
+    color: "#16a34a",
+    backgroundColor: "#dcfce7",
+    padding: "3px 10px",
+    borderRadius: "20px",
+  },
+  loadingText: {
+    fontSize: "14px",
+    color: "#6b7280",
+  },
+
+  /* ── Rates ── */
+  ratesGrid: {
+    display: "grid",
+    gridTemplateColumns: "repeat(auto-fill, minmax(120px, 1fr))",
+    gap: "12px",
+  },
+  rateCard: {
+    backgroundColor: "#f0fdf4",
+    border: "1px solid #bbf7d0",
+    borderRadius: "10px",
+    padding: "14px 16px",
+    textAlign: "center",
+  },
+  rateMaterial: {
+    margin: "0 0 6px",
+    fontSize: "12px",
+    fontWeight: 600,
+    color: "#166534",
+    textTransform: "capitalize",
+  },
+  ratePrice: {
+    margin: "0 0 4px",
+    fontSize: "20px",
+    fontWeight: 700,
+    color: "#15803d",
+  },
+  rateUnit: {
+    fontSize: "11px",
+    color: "#6b7280",
+  },
+
+  /* ── Items ── */
+  itemsGrid: {
+    display: "grid",
+    gridTemplateColumns: "repeat(auto-fill, minmax(240px, 1fr))",
+    gap: "16px",
+    marginTop: "16px",
+  },
+  itemCard: {
+    border: "1px solid #e5e7eb",
+    borderRadius: "12px",
+    overflow: "hidden",
+    display: "flex",
+    flexDirection: "column",
+  },
+  itemImage: {
+    width: "100%",
+    height: "160px",
+    objectFit: "cover",
+  },
+  itemBody: {
+    padding: "14px 16px",
+    display: "flex",
+    flexDirection: "column",
+    gap: "8px",
+    flex: 1,
+  },
+  itemName: {
+    margin: 0,
+    fontSize: "14px",
+    fontWeight: 600,
+    color: "#111827",
+  },
+  itemMeta: {
+    display: "flex",
+    alignItems: "center",
+    gap: "8px",
+  },
+  itemConditionBadge: {
+    fontSize: "11px",
+    fontWeight: 500,
+    backgroundColor: "#fffbeb",
+    color: "#92400e",
+    border: "1px solid #fde68a",
+    borderRadius: "6px",
+    padding: "2px 8px",
+  },
+  itemSeller: {
+    fontSize: "12px",
+    color: "#6b7280",
+  },
+  itemStock: {
+    margin: 0,
+    fontSize: "12px",
+    color: "#9ca3af",
+  },
+  itemFooter: {
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "space-between",
+    marginTop: "auto",
+    paddingTop: "8px",
+    borderTop: "1px solid #f3f4f6",
+  },
+  itemPrice: {
+    fontSize: "18px",
+    fontWeight: 700,
+    color: "#111827",
+  },
+  buyBtn: {
+    backgroundColor: "#16a34a",
+    color: "#ffffff",
+    border: "none",
+    borderRadius: "8px",
+    padding: "8px 16px",
+    fontSize: "13px",
+    fontWeight: 500,
+    cursor: "pointer",
+    transition: "background 0.15s",
+  },
+
+  /* ── Wishlist ── */
+  wishlistList: {
+    display: "flex",
+    flexDirection: "column",
+    gap: "10px",
+    marginTop: "16px",
+  },
+  wishlistItem: {
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "space-between",
+    padding: "14px 16px",
+    backgroundColor: "#f9fafb",
+    border: "1px solid #e5e7eb",
+    borderRadius: "10px",
+  },
+  wishlistName: {
+    margin: "0 0 4px",
+    fontSize: "14px",
+    fontWeight: 500,
+    color: "#111827",
+  },
+  wishlistPrice: {
+    margin: 0,
+    fontSize: "12px",
+    color: "#6b7280",
+  },
+  removeBtn: {
+    backgroundColor: "transparent",
+    color: "#ef4444",
+    border: "1px solid #fca5a5",
+    borderRadius: "8px",
+    padding: "6px 14px",
+    fontSize: "13px",
+    cursor: "pointer",
+    transition: "background 0.15s",
+  },
+  emptyText: {
+    fontSize: "14px",
+    color: "#9ca3af",
+    marginTop: "12px",
+  },
 };
 
 export default CustomerDashboard;

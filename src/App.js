@@ -6,6 +6,7 @@ import "../src/Static/Style.css";
 import ForgotPassword from "./Components/Auth/ForgotPassword";
 import Signin from "./Components/Auth/Signin";
 import Signup from "./Components/Auth/Signup";
+import SplashScreen from "./Components/Common/SplashScreen";
 import CompanyDashboard from "./Components/Company/CompanyDashboard";
 import CompanyProfile from "./Components/Company/CompanyProfile";
 import CompPaymentsReceivedTable from "./Components/Company/CompPaymentsReceivedTable";
@@ -14,16 +15,17 @@ import CScrapsTable from "./Components/Customer/CScrapsTable";
 import CustomerDashboard from "./Components/Customer/CustomerDashboard";
 import CustomerProfile from "./Components/Customer/CustomerProfile";
 import CustomerTransactions from "./Components/Customer/CustomerTransactions";
+import Ordershistory from "./Components/Customer/Ordershistory";
+import ScrapSale from "./Components/Customer/ScrapSale";
 import PaymentsMadeTable from "./Components/Payment/PaymentsMadeTable";
 import PaymentsReceivedTable from "./Components/Payment/PaymentsReceivedTable";
 import MySScrapsTable from "./Components/Scrapyard/MySScrapsTable";
+import ScrapOrders from "./Components/Scrapyard/ScrapOrders";
 import ScrapyardDashboard from "./Components/Scrapyard/ScrapyardDashboard";
 import ScrapyardPayments from "./Components/Scrapyard/ScrapyardPayments";
 import ScrapyardProfile from "./Components/Scrapyard/ScrapyardProfile";
 import SScrapsTable from "./Components/Scrapyard/SScrapsTable";
 import Frontpage from "./frontpage";
-
-import SplashScreen from "./Components/Common/SplashScreen";
 
 function App() {
   const [loading, setLoading] = useState(true);
@@ -50,6 +52,7 @@ function App() {
           <Route path="/forgotPassword" element={<ForgotPassword />} />
 
           <Route path="/company-dashboard" element={<CompanyDashboard />} />
+
           <Route path="/com-list-of-scraps" element={<CompScrapsTable />} />
           <Route
             path="/company-payments"
@@ -58,12 +61,21 @@ function App() {
           <Route path="/company-profile" element={<CompanyProfile />} />
 
           <Route path="/scrapyard-dashboard" element={<ScrapyardDashboard />} />
+          <Route path="/scrap-orders" element={<ScrapOrders />} />
           <Route path="/sr-list-of-scraps" element={<SScrapsTable />} />
           <Route path="/mysr-list-of-scraps" element={<MySScrapsTable />} />
           <Route path="/scrapyard-payments" element={<ScrapyardPayments />} />
           <Route path="/scrapyard-profile" element={<ScrapyardProfile />} />
 
           <Route path="/customer-dashboard" element={<CustomerDashboard />} />
+          <Route
+            path="/customer-dashboard/scrap-sale"
+            element={<ScrapSale />}
+          />
+          <Route
+            path="/customer-dashboard/orders-history"
+            element={<Ordershistory />}
+          />
           <Route path="/cus-list-of-scraps" element={<CScrapsTable />} />
           <Route
             path="/customer-transactions"

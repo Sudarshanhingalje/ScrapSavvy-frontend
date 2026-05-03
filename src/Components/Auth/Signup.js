@@ -245,7 +245,7 @@ const Signup = () => {
                   helperText={errors.userRole}
                 >
                   <MenuItem value="company">Company</MenuItem>
-                  <MenuItem value="scrapyard">Scrapyard</MenuItem>
+                  {/* <MenuItem value="scrapyard">Scrapyard</MenuItem> */}
                   <MenuItem value="customer">Customer</MenuItem>
                 </Select>
               </FormControl>

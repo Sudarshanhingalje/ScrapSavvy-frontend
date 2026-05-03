@@ -1,0 +1,600 @@
+/* =====================================================
+   ScrapSale.css
+   Layout: Sidebar LEFT | Main content RIGHT
+   No outer page scroll — form col scrolls internally
+   ===================================================== */
+
+/* ── Global reset for this page ── */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+/* ── Outermost shell: full viewport row ── */
+.ss-shell {
+  display: flex;
+  flex-direction: row;
+  height: 100vh;
+  overflow: hidden;
+  background-color: #f5f5f4;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  color: #111827;
+}
+
+/* =====================================================
+   RIGHT MAIN AREA
+   Fills remaining width, stacks topbar + stepbar + page
+   ===================================================== */
+.ss-main {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  overflow: hidden;
+  min-width: 0;
+  position: relative;
+}
+
+/* =====================================================
+   CONFETTI CANVAS
+   ===================================================== */
+.ss-confetti-canvas {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 9999;
+}
+
+/* =====================================================
+   CELEBRATION OVERLAY
+   ===================================================== */
+.ss-celeb-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.55);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9998;
+}
+
+.ss-celeb-card {
+  background: #ffffff;
+  border-radius: 20px;
+  padding: 40px 36px;
+  max-width: 400px;
+  width: 90%;
+  text-align: center;
+  animation: ss-pop-in 0.45s ease forwards;
+  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.2);
+}
+
+.ss-celeb-emoji {
+  font-size: 56px;
+  animation: ss-bounce 1s ease infinite;
+  display: block;
+  margin-bottom: 12px;
+}
+
+.ss-celeb-title {
+  margin: 0 0 8px;
+  font-size: 26px;
+  font-weight: 700;
+  color: #111827;
+}
+
+.ss-celeb-msg {
+  margin: 0 0 16px;
+  font-size: 14px;
+  color: #6b7280;
+  line-height: 1.6;
+}
+
+.ss-celeb-divider {
+  height: 1px;
+  background: #e5e7eb;
+  margin: 16px 0;
+}
+
+.ss-celeb-countdown {
+  margin: 0 0 12px;
+  font-size: 14px;
+  color: #374151;
+}
+
+.ss-progress-bar {
+  height: 6px;
+  background: #e5e7eb;
+  border-radius: 99px;
+  overflow: hidden;
+  margin-bottom: 20px;
+}
+
+.ss-progress-fill {
+  height: 100%;
+  width: 100%;
+  background: linear-gradient(90deg, #16a34a, #22c55e);
+  border-radius: 99px;
+  animation: ss-shrink 4s linear forwards;
+}
+
+.ss-go-now-btn {
+  background: #16a34a;
+  color: #ffffff;
+  border: none;
+  border-radius: 10px;
+  padding: 11px 24px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  width: 100%;
+  transition: background 0.15s;
+}
+
+.ss-go-now-btn:hover {
+  background: #15803d;
+}
+
+/* =====================================================
+   TOP NAV BAR
+   ===================================================== */
+.ss-topbar {
+  flex-shrink: 0;
+  background: #ffffff;
+  border-bottom: 1px solid #e5e7eb;
+  padding: 13px 24px;
+  display: flex;
+  align-items: center;
+}
+
+.ss-logo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.ss-logo-icon {
+  width: 34px;
+  height: 34px;
+  background: #16a34a;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.ss-logo-name {
+  font-size: 18px;
+  font-weight: 700;
+  color: #111827;
+}
+
+.ss-logo-name span {
+  color: #16a34a;
+}
+
+/* =====================================================
+   STEP BAR
+   ===================================================== */
+.ss-stepbar {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 11px 24px;
+  background: #f9fafb;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.ss-step {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 13px;
+  font-weight: 400;
+  color: #9ca3af;
+}
+
+.ss-step--done {
+  color: #16a34a;
+  font-weight: 500;
+}
+
+.ss-step--active {
+  color: #111827;
+  font-weight: 600;
+}
+
+.ss-step-num {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: #e5e7eb;
+  color: #9ca3af;
+  font-size: 12px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.ss-step--done .ss-step-num {
+  background: #dcfce7;
+  color: #16a34a;
+}
+
+.ss-step--active .ss-step-num {
+  background: #16a34a;
+  color: #ffffff;
+}
+
+.ss-step-arrow {
+  color: #d1d5db;
+  font-size: 20px;
+  margin: 0 4px;
+  line-height: 1;
+}
+
+/* =====================================================
+   PAGE BODY
+   Fills remaining height — form LEFT | summary RIGHT
+   ===================================================== */
+.ss-page {
+  flex: 1;
+  display: flex;
+  flex-direction: row;
+  gap: 20px;
+  padding: 20px 24px;
+  overflow: hidden; /* no outer scroll on page body */
+  min-height: 0;
+}
+
+/* ── Form column: scrolls internally ── */
+.ss-form-col {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  overflow-y: auto;
+  min-width: 0;
+  padding-right: 4px;
+}
+
+/* Thin scrollbar for form column */
+.ss-form-col::-webkit-scrollbar {
+  width: 4px;
+}
+.ss-form-col::-webkit-scrollbar-track {
+  background: transparent;
+}
+.ss-form-col::-webkit-scrollbar-thumb {
+  background: #d1d5db;
+  border-radius: 99px;
+}
+
+/* =====================================================
+   CARDS
+   ===================================================== */
+.ss-card {
+  background: #ffffff;
+  border: 1px solid #e5e7eb;
+  border-radius: 14px;
+  overflow: hidden;
+  flex-shrink: 0;
+}
+
+.ss-card-header {
+  padding: 16px 20px 13px;
+  border-bottom: 1px solid #f3f4f6;
+}
+
+.ss-card-header h2 {
+  margin: 0;
+  font-size: 15px;
+  font-weight: 600;
+  color: #111827;
+}
+
+.ss-card-header p {
+  margin: 3px 0 0;
+  font-size: 12px;
+  color: #9ca3af;
+}
+
+.ss-card-body {
+  padding: 18px 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+/* =====================================================
+   FORM FIELDS
+   ===================================================== */
+.ss-field {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.ss-field label {
+  font-size: 13px;
+  font-weight: 500;
+  color: #374151;
+}
+
+.ss-field input,
+.ss-field textarea {
+  border: 1px solid #d1d5db;
+  border-radius: 8px;
+  padding: 9px 12px;
+  font-size: 14px;
+  color: #111827;
+  background: #ffffff;
+  outline: none;
+  width: 100%;
+  font-family: inherit;
+  transition:
+    border-color 0.15s,
+    box-shadow 0.15s;
+}
+
+.ss-field input:focus,
+.ss-field textarea:focus {
+  border-color: #16a34a;
+  box-shadow: 0 0 0 3px rgba(22, 163, 74, 0.1);
+}
+
+.ss-field textarea {
+  resize: none;
+}
+
+.ss-input-error {
+  border-color: #ef4444 !important;
+  background: #fff5f5 !important;
+}
+
+.ss-field-error {
+  margin: 0;
+  font-size: 12px;
+  color: #ef4444;
+}
+
+/* Two-column row */
+.ss-row2 {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+}
+
+/* ── Chips ── */
+.ss-chip-group {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.ss-chip {
+  padding: 6px 14px;
+  border-radius: 20px;
+  border: 1px solid #d1d5db;
+  font-size: 13px;
+  color: #374151;
+  background: #ffffff;
+  cursor: pointer;
+  user-select: none;
+  transition: all 0.15s;
+}
+
+.ss-chip:hover {
+  border-color: #16a34a;
+  color: #16a34a;
+}
+
+.ss-chip--active {
+  background: #16a34a;
+  color: #ffffff;
+  border-color: #16a34a;
+}
+
+/* =====================================================
+   SUMMARY SIDEBAR
+   Fixed width, full height of .ss-page, no inner scroll
+   ===================================================== */
+.ss-summary {
+  width: 280px;
+  flex-shrink: 0;
+  background: #ffffff;
+  border: 1px solid #e5e7eb;
+  border-radius: 14px;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  align-self: stretch;
+}
+
+.ss-summary-head {
+  flex-shrink: 0;
+  padding: 16px 18px 13px;
+  border-bottom: 1px solid #f3f4f6;
+}
+
+.ss-summary-head h3 {
+  margin: 0;
+  font-size: 15px;
+  font-weight: 600;
+  color: #111827;
+}
+
+.ss-summary-head p {
+  margin: 3px 0 0;
+  font-size: 12px;
+  color: #9ca3af;
+}
+
+.ss-summary-body {
+  flex: 1;
+  padding: 14px 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  overflow-y: auto;
+}
+
+.ss-sum-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 13px;
+}
+
+.ss-sum-row span:first-child {
+  color: #6b7280;
+}
+
+.ss-sum-row span:last-child {
+  font-weight: 500;
+  color: #111827;
+}
+
+.ss-rate-pill {
+  font-size: 12px;
+  font-weight: 600;
+  background: #dcfce7;
+  color: #166534;
+  padding: 3px 10px;
+  border-radius: 20px;
+}
+
+.ss-total-box {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: #f0fdf4;
+  border: 1px solid #bbf7d0;
+  border-radius: 10px;
+  padding: 12px 14px;
+}
+
+.ss-total-box span:first-child {
+  font-size: 13px;
+  color: #166534;
+  font-weight: 500;
+}
+
+.ss-total-amount {
+  font-size: 20px;
+  font-weight: 700;
+  color: #15803d;
+}
+
+.ss-pickup-note {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  background: #fffbeb;
+  border: 1px solid #fde68a;
+  border-radius: 8px;
+  padding: 10px 12px;
+}
+
+.ss-pickup-note p {
+  margin: 0;
+  font-size: 12px;
+  color: #92400e;
+  line-height: 1.5;
+}
+
+/* ── Action buttons ── */
+.ss-summary-actions {
+  flex-shrink: 0;
+  padding: 12px 18px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  border-top: 1px solid #f3f4f6;
+}
+
+.ss-btn-primary {
+  background: #16a34a;
+  color: #ffffff;
+  border: none;
+  border-radius: 10px;
+  padding: 11px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  width: 100%;
+  transition: background 0.15s;
+}
+
+.ss-btn-primary:hover:not(:disabled) {
+  background: #15803d;
+}
+
+.ss-btn-primary:disabled {
+  background: #86efac;
+  cursor: not-allowed;
+}
+
+.ss-btn-ghost {
+  background: transparent;
+  color: #6b7280;
+  border: 1px solid #d1d5db;
+  border-radius: 10px;
+  padding: 10px;
+  font-size: 14px;
+  cursor: pointer;
+  width: 100%;
+  font-family: inherit;
+  transition:
+    background 0.15s,
+    color 0.15s;
+}
+
+.ss-btn-ghost:hover {
+  background: #f3f4f6;
+  color: #374151;
+}
+
+/* =====================================================
+   ANIMATIONS
+   ===================================================== */
+@keyframes ss-pop-in {
+  0% {
+    transform: scale(0.7);
+    opacity: 0;
+  }
+  70% {
+    transform: scale(1.05);
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+@keyframes ss-bounce {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
+@keyframes ss-shrink {
+  from {
+    width: 100%;
+  }
+  to {
+    width: 0%;
+  }
+}
