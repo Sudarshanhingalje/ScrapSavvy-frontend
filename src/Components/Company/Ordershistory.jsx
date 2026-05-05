@@ -1,5 +1,7 @@
 import { useEffect, useState } from "react";
-import CustomerSidebar from "../Common/CustomerSidebar";
+import CompanySidebar from "../Common/CompanySidebar";
+import { generateInvoice } from "../Common/Invoice";
+import Razorpay from "../Common/Razorpay";
 
 const getStatusColor = (status) => {
   switch (status) {
@@ -9,7 +11,7 @@ const getStatusColor = (status) => {
       return "#0275d8";
     case "SCHEDULED":
       return "#f39c12";
-    case "OUT_FOR_PICKUP":
+    case "OUT_FOR_DELIVERY":
       return "#17a2b8";
     case "COMPLETED":
       return "#5cb85c";
@@ -23,6 +25,69 @@ const getStatusColor = (status) => {
 const OrdersHistory = () => {
   const [orders, setOrders] = useState([]);
 
+  const updateStatus = (id, status) => {
+    const token = localStorage.getItem("token");
+
+    return fetch(
+      `http://localhost:8080/api/scrap-orders/${id}/status?status=${status}`,
+      {
+        method: "PUT",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      },
+    )
+      .then((res) => {
+        if (!res.ok) throw new Error("Status update failed");
+        return res.json();
+      })
+      .then(() => fetchOrders())
+      .catch((err) => console.error(err));
+  };
+  const handleCash = (order) => {
+    updatePayment(order.id, "COD", "PENDING", order.totalPrice);
+    updateStatus(order.id, "COMPLETED");
+  };
+
+  const handleUPI = (order) => {
+    const upiId = "sudarshanhingalje1-1@oksbi"; // ✅ correct
+    const amount = order.totalPrice;
+
+    const upiUrl = `upi://pay?pa=${upiId}&pn=ScrapSavvy&am=${amount}&cu=INR`;
+
+    window.location.href = upiUrl;
+
+    // ✅ set payment method as UPI but not paid yet
+    updatePayment(order.id, "UPI", "PENDING", order.totalPrice);
+  };
+
+  const handleRazorpay = async (order) => {
+    try {
+      const paymentId = await Razorpay(order.totalPrice);
+
+      updatePayment(order.id, "RAZORPAY", "PAID", order.totalPrice, paymentId);
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  const updatePayment = (id, method, status, amount, paymentId = "") => {
+    const token = localStorage.getItem("token");
+
+    fetch(`http://localhost:8080/api/scrap-orders/${id}/payment-success`, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify({
+        paymentMethod: method,
+        paymentStatus: status,
+        paidAmount: amount,
+        paymentId: paymentId,
+      }),
+    }).then(() => fetchOrders());
+  };
   const fetchOrders = () => {
     const token = localStorage.getItem("token");
 
@@ -75,7 +140,7 @@ const OrdersHistory = () => {
     "PENDING",
     "ACCEPTED",
     "SCHEDULED",
-    "OUT_FOR_PICKUP",
+    "OUT_FOR_DELIVERY",
     "COMPLETED",
   ];
 
@@ -85,7 +150,7 @@ const OrdersHistory = () => {
 
   return (
     <div className="d-flex">
-      <CustomerSidebar />
+      <CompanySidebar />
 
       <div className="flex-grow-1 p-4">
         <div className="container-fluid">
@@ -137,7 +202,7 @@ const OrdersHistory = () => {
                       )}
 
                       {/* OUT FOR PICKUP DRIVER INFO (ONLY HERE) */}
-                      {order.status === "OUT_FOR_PICKUP" && (
+                      {order.status === "OUT_FOR_DELIVERY" && (
                         <>
                           <hr />
                           <p style={{ color: "#17a2b8", fontWeight: "600" }}>
@@ -187,9 +252,82 @@ const OrdersHistory = () => {
                           })}
                         </div>
                       </div>
+                      {/* ================= PAYMENT SECTION ================= */}
+                      {order.status === "OUT_FOR_DELIVERY" && (
+                        <>
+                          <hr />
 
+                          <p>
+                            <b>Payment Method:</b>{" "}
+                            {order.paymentMethod || "Not Selected"}
+                          </p>
+                          <p>
+                            <b>Payment Status:</b>{" "}
+                            {order.paymentStatus || "PENDING"}
+                          </p>
+
+                          {/* PAYMENT BUTTONS */}
+                          {order.paymentStatus !== "PAID" && (
+                            <>
+                              <div
+                                style={{
+                                  display: "flex",
+                                  gap: "6px",
+                                  flexWrap: "wrap",
+                                }}
+                              >
+                                <button
+                                  className="btn btn-dark btn-sm"
+                                  onClick={() => handleCash(order)}
+                                >
+                                  Cash 💵
+                                </button>
+
+                                <button
+                                  className="btn btn-info btn-sm"
+                                  onClick={() => handleUPI(order)}
+                                >
+                                  UPI 📲
+                                </button>
+
+                                <button
+                                  className="btn btn-warning btn-sm"
+                                  onClick={() => handleRazorpay(order)}
+                                >
+                                  Pay Online 💳
+                                </button>
+                              </div>
+
+                              {/* ✅ ADD THIS HERE */}
+                              {order.paymentMethod === "UPI" && (
+                                <button
+                                  className="btn btn-success btn-sm mt-2"
+                                  onClick={() => {
+                                    updatePayment(
+                                      order.id,
+                                      "UPI",
+                                      "PAID",
+                                      order.totalPrice,
+                                    );
+                                  }}
+                                >
+                                  I Have Paid ✅
+                                </button>
+                              )}
+                            </>
+                          )}
+
+                          {/* PAID STATUS */}
+                          {order.paymentStatus === "PAID" && (
+                            <p style={{ color: "green", fontWeight: "bold" }}>
+                              ✔ Payment Successful
+                            </p>
+                          )}
+                        </>
+                      )}
                       {/* STATUS BADGE ONLY */}
-                      <div className="mt-auto pt-2">
+                      <div className="d-flex justify-content-between align-items-center mt-2">
+                        {/* Left: Status */}
                         <span
                           style={{
                             padding: "6px 12px",
@@ -202,6 +340,19 @@ const OrdersHistory = () => {
                         >
                           {order.status}
                         </span>
+
+                        {/* Middle gap (optional visual spacing) */}
+                        <div style={{ width: "10px" }}></div>
+
+                        {/* Right: Button */}
+                        {order.status?.toUpperCase() === "COMPLETED" && (
+                          <button
+                            className="btn btn-success btn-sm"
+                            onClick={() => generateInvoice(order)}
+                          >
+                            📄 Download Invoice
+                          </button>
+                        )}
                       </div>
                     </div>
                   </div>

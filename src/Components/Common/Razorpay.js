@@ -1,4 +1,3 @@
-
 const Razorpay = (amount) => {
   const RAZORPAY_KEY_ID = "rzp_test_q5pCm6YsxMpdnN";
   const name = localStorage.getItem("name");
@@ -16,7 +15,7 @@ const Razorpay = (amount) => {
   };
 
   return new Promise(async (resolve, reject) => {
-    if (amount !== undefined && amount >= 100) {
+    if (amount !== undefined && amount >= 10) {
       const scriptLoaded = await loadRazorpayScript();
       if (!scriptLoaded) {
         alert("Razorpay SDK failed to load. Are you online?");
@@ -47,14 +46,10 @@ const Razorpay = (amount) => {
         },
         config: {
           display: {
-            hide: [
-            { method: 'card' },
-            { method: 'wallet' },
-            { method: 'emi' }
-          ],
-          preferences: { show_default_blocks: true }
-          }
-        }
+            hide: [{ method: "card" }, { method: "wallet" }, { method: "emi" }],
+            preferences: { show_default_blocks: true },
+          },
+        },
       };
 
       const rzp = new window.Razorpay(options);
@@ -65,11 +60,10 @@ const Razorpay = (amount) => {
 
       rzp.open();
     } else {
-      alert("Amount should be more than 100 rs");
-      reject("Amount should be more than 100 rs");
+      alert("Amount should be more than 10 rs");
+      reject("Amount should be more than 10 rs");
     }
   });
 };
-
 
 export default Razorpay;

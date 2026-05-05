@@ -7,6 +7,14 @@ const getStatusColor = (status) => {
       return "#fd7e14";
     case "ACCEPTED":
       return "#0d6efd";
+    case "SCHEDULED":
+      return "#6610f2";
+    case "OUT_FOR_DELIVERY":
+      return "#20c997";
+    case "PAYMENT_PENDING":
+      return "#ffc107";
+    case "PAID":
+      return "#198754";
     case "COMPLETED":
       return "#198754";
     case "REJECTED":
@@ -130,7 +138,7 @@ const ScrapOrders = () => {
           }}
         >
           <p style={{ margin: 0, color: "#555", fontSize: "14px" }}>
-            Live customer scrap orders
+            Live Company scrap orders
           </p>
 
           <div style={{ display: "flex", gap: "6px", flexWrap: "nowrap" }}>
@@ -201,7 +209,7 @@ const ScrapOrders = () => {
                       color: "#212529",
                     }}
                   >
-                    customer name - {order.customerName}
+                    Company name - {order.companyName}
                   </h6>
                   <button
                     onClick={() => clearOrder(order.id)}
@@ -252,16 +260,18 @@ const ScrapOrders = () => {
                   <span
                     style={{
                       display: "inline-block",
-                      padding: "4px 12px",
+                      padding: "3px 10px",
                       borderRadius: "20px",
-                      background: getStatusColor(order.status),
                       color: "#fff",
                       fontSize: "11px",
-                      fontWeight: 700,
-                      letterSpacing: "0.5px",
+                      fontWeight: 600,
+                      background:
+                        order.paymentStatus === "PAID" ? "#198754" : "#ffc107",
                     }}
                   >
-                    {order.status}
+                    {order.paymentStatus === "PAID"
+                      ? "PAID"
+                      : "PAYMENT PENDING"}
                   </span>
                 </div>
 
@@ -349,11 +359,12 @@ const ScrapOrders = () => {
                   >
                     <thead className="table-light">
                       <tr>
-                        <th>Customer</th>
+                        <th>Company Name</th>
                         <th>Scrap Type</th>
                         <th>Qty</th>
                         <th>Price/kg</th>
                         <th>Total</th>
+                        <th>Payment</th>
                         <th>Status</th>
                         <th>Action</th>
                       </tr>
@@ -361,11 +372,36 @@ const ScrapOrders = () => {
                     <tbody>
                       {filteredOrders.map((order) => (
                         <tr key={order.id}>
-                          <td>{order.customerName}</td>
+                          <td>{order.companyName}</td>
                           <td>{order.scrapType}</td>
                           <td>{order.quantity}</td>
                           <td>₹{order.pricePerKg}</td>
                           <td>₹{order.totalPrice}</td>
+                          <td>
+                            <span
+                              style={{
+                                display: "inline-block",
+                                padding: "3px 10px",
+                                borderRadius: "20px",
+                                color: "#fff",
+                                fontSize: "11px",
+                                fontWeight: 600,
+                                background:
+                                  order.paymentStatus === "PAID"
+                                    ? "#198754"
+                                    : order.paymentStatus === "PENDING"
+                                      ? "#ffc107"
+                                      : "#6c757d",
+                              }}
+                            >
+                              {order.paymentStatus === "PAID"
+                                ? "PAID"
+                                : order.paymentStatus === "PENDING"
+                                  ? "PAYMENT PENDING"
+                                  : order.paymentStatus || "PENDING"}
+                            </span>
+                          </td>
+
                           <td>
                             <span
                               style={{
@@ -381,6 +417,7 @@ const ScrapOrders = () => {
                               {order.status}
                             </span>
                           </td>
+
                           <td style={{ whiteSpace: "nowrap" }}>
                             {order.status === "PENDING" && (
                               <>
@@ -442,13 +479,13 @@ const ScrapOrders = () => {
                               <button
                                 className="btn btn-warning btn-sm"
                                 onClick={() =>
-                                  updateStatus(order.id, "OUT_FOR_PICKUP")
+                                  updateStatus(order.id, "OUT_FOR_DELIVERY")
                                 }
                               >
-                                Start Pickup 🚚
+                                Start Delivery 🚚
                               </button>
                             )}
-                            {order.status === "OUT_FOR_PICKUP" && (
+                            {order.status === "OUT_FOR_DELIVERY" && (
                               <>
                                 <button
                                   className="btn btn-success btn-sm me-1"

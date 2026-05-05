@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "../../Static/ScrapSale.css";
-import CustomerSidebar from "../Common/CustomerSidebar";
+import CompanySidebar from "../Common/CompanySidebar";
 
 const MOCK_RATES = {
   Metal: 28,
@@ -41,7 +41,7 @@ const ScrapSale = () => {
   const animFrameRef = useRef(null);
 
   const [form, setForm] = useState({
-    customerName: "",
+    companyName: "",
     contactNo: "",
     scrapType: "Metal",
     quantity: "",
@@ -72,7 +72,8 @@ const ScrapSale = () => {
   useEffect(() => {
     const price = rates[form.scrapType] || 0;
     const qty = Number(form.quantity || 0);
-    setTotal(price * qty);
+    const total = Number(price * qty * 1.18);
+    setTotal(total);
   }, [form.scrapType, form.quantity, rates]);
 
   /* ── Confetti ── */
@@ -140,7 +141,7 @@ const ScrapSale = () => {
       if (count <= 0) {
         clearInterval(timer);
         stopConfetti();
-        navigate("/customer-dashboard");
+        navigate("/company-dashboard");
       }
     }, 1000);
   };
@@ -154,7 +155,7 @@ const ScrapSale = () => {
 
   const validate = () => {
     const e = {};
-    if (!form.customerName.trim()) e.customerName = "Please enter your name";
+    if (!form.companyName.trim()) e.companyName = "Please enter your name";
     if (!form.pickupAddress.trim())
       e.pickupAddress = "Please enter a pickup address";
     if (!form.quantity || Number(form.quantity) <= 0)
@@ -165,7 +166,7 @@ const ScrapSale = () => {
 
   const resetForm = () => {
     setForm({
-      customerName: "",
+      companyName: "",
       contactNo: "",
       scrapType: "Metal",
       quantity: "",
@@ -195,10 +196,11 @@ const ScrapSale = () => {
         Authorization: `Bearer ${token}`, // ✅ ADD THIS
       },
       body: JSON.stringify({
-        customerName: form.customerName,
+        companyName: form.companyName,
         contactNo: form.contactNo,
         scrapType: form.scrapType,
         quantity: Number(form.quantity),
+        pricePerKg: rates[form.scrapType],
         pickupAddress: form.pickupAddress,
         preferredDate: form.preferredDate,
         totalPrice: total,
@@ -229,7 +231,7 @@ const ScrapSale = () => {
     /* ── Outermost shell: full viewport, sidebar LEFT + main RIGHT ── */
     <div className="ss-shell">
       {/* LEFT: Sidebar */}
-      <CustomerSidebar />
+      <CompanySidebar />
 
       {/* RIGHT: Everything else, stacked vertically, no outer scroll */}
       <div className="ss-main">
@@ -256,7 +258,7 @@ const ScrapSale = () => {
                 className="ss-go-now-btn"
                 onClick={() => {
                   stopConfetti();
-                  navigate("/customer-dashboard");
+                  navigate("/company-dashboard");
                 }}
               >
                 Go to Dashboard now →
@@ -290,22 +292,22 @@ const ScrapSale = () => {
             {/* Card 1: Customer Info */}
             <div className="ss-card">
               <div className="ss-card-header">
-                <h2>Customer information</h2>
+                <h2>Company information</h2>
                 <p>Your contact details for the pickup</p>
               </div>
               <div className="ss-card-body">
                 <div className="ss-field">
-                  <label>Full name</label>
+                  <label>Company name</label>
                   <input
                     type="text"
-                    name="customerName"
-                    value={form.customerName}
+                    name="companyName"
+                    value={form.companyName}
                     placeholder="e.g. Ramesh Patil"
                     onChange={handleChange}
-                    className={errors.customerName ? "ss-input-error" : ""}
+                    className={errors.companyName ? "ss-input-error" : ""}
                   />
-                  {errors.customerName && (
-                    <p className="ss-field-error">{errors.customerName}</p>
+                  {errors.companyName && (
+                    <p className="ss-field-error">{errors.companyName}</p>
                   )}
                 </div>
                 <div className="ss-field">

@@ -55,13 +55,64 @@ const ScrapyardDashboard = () => {
     Textiles: "",
     Others: "",
   });
+  const [inventory, setInventory] = useState([]);
+  const [transactions, setTransactions] = useState([]);
+
+  const lowStockItems = inventory.filter((item) => item.quantity < 30);
+
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+
+    const fetchTx = () => {
+      fetch("http://localhost:8080/api/transactions", {
+        headers: { Authorization: `Bearer ${token}` },
+      })
+        .then((res) => res.json())
+        .then((data) => setTransactions(Array.isArray(data) ? data : []))
+        .catch(() => setTransactions([]));
+    };
+
+    fetchTx();
+    const interval = setInterval(fetchTx, 5000);
+
+    return () => clearInterval(interval);
+  }, []);
+
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+
+    fetch("http://localhost:8080/api/inventory", {
+      headers: {
+        Authorization: "Bearer " + token,
+      },
+    })
+      .then((res) => res.json())
+      .then((data) => setInventory(Array.isArray(data) ? data : []))
+      .catch((err) => console.error(err));
+  }, []);
 
   // ── Fetch orders every 5s ──
   const fetchOrders = () => {
-    fetch("http://localhost:8080/api/scrap-orders/all")
+    const token = localStorage.getItem("token");
+
+    fetch("http://localhost:8080/api/scrap-orders/owner", {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    })
       .then((res) => res.json())
-      .then((data) => setOrders(data))
-      .catch((err) => console.error(err));
+      .then((data) => {
+        if (Array.isArray(data)) {
+          setOrders(data);
+        } else if (Array.isArray(data.content)) {
+          setOrders(data.content);
+        } else if (Array.isArray(data.orders)) {
+          setOrders(data.orders);
+        } else {
+          console.error("Unexpected orders response:", data);
+          setOrders([]);
+        }
+      });
   };
 
   useEffect(() => {
@@ -114,9 +165,10 @@ const ScrapyardDashboard = () => {
   // ── Scrap Type Distribution (Doughnut) ──
   // Group quantity by scrapType from all orders
   const scrapTypeMap = {};
-  orders.forEach((o) => {
-    const type = o.scrapType || "Others";
-    scrapTypeMap[type] = (scrapTypeMap[type] || 0) + (o.quantity || 0);
+
+  inventory.forEach((item) => {
+    const type = item.materialType || "Others";
+    scrapTypeMap[type] = (scrapTypeMap[type] || 0) + (item.quantity || 0);
   });
   const scrapTypeLabels = Object.keys(scrapTypeMap);
   const scrapTypeValues = Object.values(scrapTypeMap);
@@ -145,8 +197,8 @@ const ScrapyardDashboard = () => {
   // Group quantity by month from order date
   const monthlyMap = {};
   orders.forEach((o) => {
-    if (!o.orderDate) return;
-    const month = MONTH_NAMES[new Date(o.orderDate).getMonth()];
+    if (!o.createdAt) return;
+    const month = MONTH_NAMES[new Date(o.createdAt).getMonth()];
     monthlyMap[month] = (monthlyMap[month] || 0) + (o.quantity || 0);
   });
   // Keep only months that have data, in calendar order
@@ -170,8 +222,8 @@ const ScrapyardDashboard = () => {
   // Group totalPrice of COMPLETED orders by ISO week number
   const weeklyRevenueMap = {};
   completedOrders.forEach((o) => {
-    if (!o.orderDate) return;
-    const d = new Date(o.orderDate);
+    if (!o.createdAt) return;
+    const d = new Date(o.createdAt);
     const jan = new Date(d.getFullYear(), 0, 1);
     const week = Math.ceil(((d - jan) / 86400000 + jan.getDay() + 1) / 7);
     const key = `Week ${week}`;
@@ -198,21 +250,37 @@ const ScrapyardDashboard = () => {
   };
 
   // ── Inventory Summary (from scrapTypeMap, only PENDING/ACCEPTED = in stock) ──
-  const inventoryMap = {};
-  orders
-    .filter((o) => o.status === "PENDING" || o.status === "ACCEPTED")
-    .forEach((o) => {
-      const type = o.scrapType || "Others";
-      inventoryMap[type] = (inventoryMap[type] || 0) + (o.quantity || 0);
-    });
-  const inventoryItems = Object.entries(inventoryMap).map(
-    ([label, qty], i) => ({
-      label,
-      qty: `${qty.toLocaleString()} kg`,
-      color: doughnutColors[i % doughnutColors.length],
-    }),
+  const inventoryItems = inventory.map((item, i) => ({
+    label: item.materialType,
+    quantity: item.quantity, // ✅ IMPORTANT
+    qty: `${item.quantity.toLocaleString()} kg`,
+    color: doughnutColors[i % doughnutColors.length],
+  }));
+
+  const totalStock = inventory.reduce(
+    (sum, item) => sum + (item.quantity || 0),
+    0,
   );
-  const totalStock = Object.values(inventoryMap).reduce((s, v) => s + v, 0);
+
+  const lowStockAlert = lowStockItems.length > 0 && (
+    <div
+      style={{
+        background: "#fff3cd",
+        border: "1px solid #ffeeba",
+        padding: "10px",
+        borderRadius: "6px",
+        marginBottom: "10px",
+        fontSize: "13px",
+      }}
+    >
+      ⚠️ Low Stock Alert:
+      {lowStockItems.map((item) => (
+        <div key={item.id}>
+          {item.materialType} → {item.quantity} kg
+        </div>
+      ))}
+    </div>
+  );
 
   // ══════════════════════════════════════════════
   //  PRICE UPDATE
@@ -343,6 +411,45 @@ const ScrapyardDashboard = () => {
                 ))}
               </div>
             </div>
+            <div className="card mt-3">
+              <div className="card-body">
+                <h5>Recent Transactions</h5>
+
+                {(Array.isArray(transactions) ? transactions : [])
+                  .slice(0, 5)
+                  .map((tx) => (
+                    <div
+                      key={tx.id}
+                      style={{
+                        padding: "10px 0",
+                        borderBottom: "1px solid #eee",
+                        fontSize: "13px",
+                      }}
+                    >
+                      <div style={{ fontWeight: 600 }}>
+                        {tx.type === "ADD"
+                          ? "🟢 Stock Added"
+                          : "🔴 Stock Removed"}
+                      </div>
+
+                      <div>Material: {tx.materialType}</div>
+                      <div>Quantity: {tx.quantity} kg</div>
+                      <div>Price: ₹{tx.pricePerKg || 0}/kg</div>
+
+                      <div style={{ color: "#666" }}>
+                        Source: {tx.source || "-"} | Ref:{" "}
+                        {tx.referenceId || "-"}
+                      </div>
+
+                      <div style={{ fontSize: "12px", color: "#999" }}>
+                        {tx.createdAt
+                          ? new Date(tx.createdAt).toLocaleString()
+                          : "No Date"}
+                      </div>
+                    </div>
+                  ))}
+              </div>
+            </div>
           </div>
 
           {/* ── Charts Row 1: Bar + Doughnut ── */}
@@ -428,7 +535,7 @@ const ScrapyardDashboard = () => {
                     </p>
                   ) : (
                     <>
-                      {inventoryItems.map(({ label, qty, color }) => (
+                      {inventoryItems.map(({ label, qty, color, quantity }) => (
                         <div
                           key={label}
                           style={{
@@ -440,7 +547,14 @@ const ScrapyardDashboard = () => {
                           }}
                         >
                           <span>{label}</span>
-                          <span style={{ fontWeight: 700, color }}>{qty}</span>
+                          <span
+                            style={{
+                              fontWeight: 700,
+                              color: quantity < 30 ? "#d32f2f" : color,
+                            }}
+                          >
+                            {qty}
+                          </span>
                         </div>
                       ))}
                       <div

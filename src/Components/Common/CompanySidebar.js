@@ -1,17 +1,17 @@
 // Sidebar.js
-import React, { useState } from "react";
-import { Link } from "react-router-dom";
-import "../.././Static/Sidebar.css";
-import { BRANDNAME } from "../../Services/Utils";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faBoxOpen,
   faCreditCard,
   faHome,
+  faShop,
   faTachometerAlt,
   faUser,
 } from "@fortawesome/free-solid-svg-icons";
-
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { useState } from "react";
+import { Link } from "react-router-dom";
+import "../.././Static/Sidebar.css";
+import { BRANDNAME } from "../../Services/Utils";
 
 const CompanySidebar = () => {
   const [isOffcanvasOpen, setOffcanvasOpen] = useState(false);
@@ -21,14 +21,14 @@ const CompanySidebar = () => {
   };
 
   return (
-    <div >
+    <div>
       {/* Sidebar for larger screens */}
       <div
         className="bg-dark border-right d-none d-lg-block"
         id="sidebar-wrapper"
       >
         <div className="sidebar-heading">{BRANDNAME}</div>
-        <div className="list-group list-group-flush" >
+        <div className="list-group list-group-flush">
           <Link
             to="/company-dashboard"
             className="list-group-item list-group-item-action text-light"
@@ -36,6 +36,21 @@ const CompanySidebar = () => {
             <FontAwesomeIcon icon={faTachometerAlt} className="icon" />
             Dashboard
           </Link>
+          <Link
+            to="/company-dashboard/scrap-sale"
+            className="list-group-item list-group-item-action text-light"
+          >
+            <FontAwesomeIcon icon={faShop} className="icon" />
+            Scrap sale
+          </Link>
+          <Link
+            to="/company-dashboard/orders-history"
+            className="list-group-item list-group-item-action text-light"
+          >
+            <FontAwesomeIcon icon={faTachometerAlt} className="icon" />
+            orders history
+          </Link>
+
           <Link
             to="/com-list-of-scraps"
             className="list-group-item list-group-item-action text-light"
@@ -61,7 +76,7 @@ const CompanySidebar = () => {
       </div>
 
       {/* Offcanvas for smaller screens */}
-      <div style={{height: '20px'}}>
+      <div style={{ height: "20px" }}>
         <button
           className="btn btn-primary"
           type="button"
@@ -129,8 +144,6 @@ const CompanySidebar = () => {
 
       {/* Page content wrapper */}
       <div id="page-content-wrapper">{/* Content goes here */}</div>
-
-      
     </div>
   );
 };
