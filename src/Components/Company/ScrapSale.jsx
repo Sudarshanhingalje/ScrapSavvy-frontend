@@ -57,16 +57,30 @@ const ScrapSale = () => {
   const [countdown, setCountdown] = useState(4);
 
   useEffect(() => {
-    fetch("http://localhost:8080/api/prices/all")
-      .then((res) => res.json())
-      .then((data) => {
+    const fetchPrices = async () => {
+      try {
+        const res = await fetch("http://localhost:8080/api/prices/all");
+
+        if (!res.ok) {
+          console.error("Failed to fetch prices");
+          return;
+        }
+
+        const text = await res.text();
+        const data = text ? JSON.parse(text) : [];
+
         const map = {};
         data.forEach((item) => {
-          map[item.category] = item.price;
+          map[item.materialType] = item.companyPrice; // ✅ company buying rate
         });
+
         setRates(map);
-      })
-      .catch(() => {});
+      } catch (err) {
+        console.error("Price fetch error:", err);
+      }
+    };
+
+    fetchPrices();
   }, []);
 
   useEffect(() => {
@@ -200,10 +214,14 @@ const ScrapSale = () => {
         contactNo: form.contactNo,
         scrapType: form.scrapType,
         quantity: Number(form.quantity),
-        pricePerKg: rates[form.scrapType],
         pickupAddress: form.pickupAddress,
         preferredDate: form.preferredDate,
-        totalPrice: total,
+
+        orderType: "COMPANY",
+
+        // ❌ REMOVE THESE (backend should decide price)
+        // pricePerKg: rates[form.scrapType],
+        // totalPrice: total,
       }),
     })
       .then((res) => {

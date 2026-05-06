@@ -8,16 +8,35 @@ const CompanyDashboard = () => {
 
   // 🔥 FETCH LIVE RATES
   useEffect(() => {
-    fetch("http://localhost:8080/api/prices/all")
-      .then((res) => res.json())
-      .then((data) => {
+    const fetchPrices = async () => {
+      try {
+        const ownerId = localStorage.getItem("userId");
+
+        const res = await fetch(
+          `http://localhost:8080/api/prices/all?ownerId=${ownerId}`,
+        );
+
+        if (!res.ok) {
+          console.error("Failed to fetch prices");
+          return;
+        }
+
+        const text = await res.text();
+
+        const data = text ? JSON.parse(text) : [];
+
         const map = {};
         data.forEach((item) => {
-          map[item.category] = item.price;
+          map[item.materialType] = item.companyPrice; // ✅ company rates
         });
+
         setPrices(map);
-      })
-      .catch((err) => console.error(err));
+      } catch (err) {
+        console.error("Price fetch error:", err);
+      }
+    };
+
+    fetchPrices();
   }, []);
 
   return (

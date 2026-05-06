@@ -47,13 +47,13 @@ const ScrapyardDashboard = () => {
   const [orders, setOrders] = useState([]);
   const [prices, setPrices] = useState({});
   const [rates, setRates] = useState({
-    Metal: "",
-    Plastic: "",
-    Paper: "",
-    Glass: "",
-    Electronics: "",
-    Textiles: "",
-    Others: "",
+    Metal: { customer: "", company: "" },
+    Plastic: { customer: "", company: "" },
+    Paper: { customer: "", company: "" },
+    Glass: { customer: "", company: "" },
+    Electronics: { customer: "", company: "" },
+    Textiles: { customer: "", company: "" },
+    Others: { customer: "", company: "" },
   });
   const [inventory, setInventory] = useState([]);
   const [transactions, setTransactions] = useState([]);
@@ -67,7 +67,14 @@ const ScrapyardDashboard = () => {
       fetch("http://localhost:8080/api/transactions", {
         headers: { Authorization: `Bearer ${token}` },
       })
-        .then((res) => res.json())
+        .then(async (res) => {
+          if (!res.ok) {
+            console.error("Transactions API failed:", res.status);
+            return [];
+          }
+          const text = await res.text();
+          return text ? JSON.parse(text) : [];
+        })
         .then((data) => setTransactions(Array.isArray(data) ? data : []))
         .catch(() => setTransactions([]));
     };
@@ -86,7 +93,10 @@ const ScrapyardDashboard = () => {
         Authorization: "Bearer " + token,
       },
     })
-      .then((res) => res.json())
+      .then(async (res) => {
+        const text = await res.text();
+        return text ? JSON.parse(text) : [];
+      })
       .then((data) => setInventory(Array.isArray(data) ? data : []))
       .catch((err) => console.error(err));
   }, []);
@@ -100,19 +110,16 @@ const ScrapyardDashboard = () => {
         Authorization: `Bearer ${token}`,
       },
     })
-      .then((res) => res.json())
-      .then((data) => {
-        if (Array.isArray(data)) {
-          setOrders(data);
-        } else if (Array.isArray(data.content)) {
-          setOrders(data.content);
-        } else if (Array.isArray(data.orders)) {
-          setOrders(data.orders);
-        } else {
-          console.error("Unexpected orders response:", data);
-          setOrders([]);
+      .then(async (res) => {
+        if (!res.ok) {
+          console.error("Orders API failed:", res.status);
+          return [];
         }
-      });
+        const text = await res.text();
+        return text ? JSON.parse(text) : [];
+      })
+      .then((data) => setOrders(Array.isArray(data) ? data : []))
+      .catch(() => setOrders([]));
   };
 
   useEffect(() => {
@@ -124,17 +131,29 @@ const ScrapyardDashboard = () => {
   // ── Fetch prices every 5s ──
   useEffect(() => {
     const fetchPrices = () => {
-      fetch("http://localhost:8080/api/prices/all")
-        .then((res) => res.json())
+      const ownerId = localStorage.getItem("userId");
+
+      fetch(`http://localhost:8080/api/prices/all?ownerId=${ownerId}`)
+        .then(async (res) => {
+          if (!res.ok) return [];
+          const text = await res.text();
+          return text ? JSON.parse(text) : [];
+        })
         .then((data) => {
           const priceMap = {};
+
           data.forEach((item) => {
-            priceMap[item.category] = item.price;
+            priceMap[item.materialType] = {
+              customer: item.customerPrice,
+              company: item.companyPrice,
+            };
           });
+
           setPrices(priceMap);
         })
         .catch((err) => console.error(err));
     };
+
     fetchPrices();
     const interval = setInterval(fetchPrices, 5000);
     return () => clearInterval(interval);
@@ -285,35 +304,40 @@ const ScrapyardDashboard = () => {
   // ══════════════════════════════════════════════
   //  PRICE UPDATE
   // ══════════════════════════════════════════════
-  const handleChange = (e) => {
-    setRates({ ...rates, [e.target.name]: e.target.value });
+  const handleChange = (e, type) => {
+    const { name, value } = e.target;
+
+    setRates((prev) => ({
+      ...prev,
+      [name]: {
+        ...prev[name],
+        [type]: value,
+      },
+    }));
   };
 
   const handleSubmit = async () => {
     try {
-      const token = localStorage.getItem("token");
+      const ownerId = localStorage.getItem("userId");
+
       for (const key in rates) {
-        if (rates[key]) {
+        if (rates[key].customer || rates[key].company) {
           await fetch("http://localhost:8080/api/prices/update", {
             method: "POST",
             headers: {
               "Content-Type": "application/json",
-              Authorization: `Bearer ${token}`,
             },
-            body: JSON.stringify({ category: key, price: Number(rates[key]) }),
+            body: JSON.stringify({
+              ownerId: Number(ownerId),
+              materialType: key,
+              customerPrice: Number(rates[key].customer),
+              companyPrice: Number(rates[key].company),
+            }),
           });
         }
       }
+
       alert("Prices Updated Successfully ✅");
-      setRates({
-        Metal: "",
-        Plastic: "",
-        Paper: "",
-        Glass: "",
-        Electronics: "",
-        Textiles: "",
-        Others: "",
-      });
     } catch (err) {
       console.error(err);
       alert("Error updating prices ❌");
@@ -405,7 +429,8 @@ const ScrapyardDashboard = () => {
                         fontSize: "13px",
                       }}
                     >
-                      {icon} <b>{label}:</b> ₹{prices[key] || 0}/kg
+                      {icon} <b>{label}:</b> ₹ ₹{prices[key]?.customer ?? "--"}{" "}
+                      / ₹{prices[key]?.company ?? "--"} /kg
                     </div>
                   </div>
                 ))}
@@ -483,22 +508,24 @@ const ScrapyardDashboard = () => {
               <div className="row g-2">
                 {Object.keys(rates).map((item) => (
                   <div className="col-md-3 col-6" key={item}>
-                    <label
-                      style={{
-                        fontSize: "13px",
-                        marginBottom: "4px",
-                        display: "block",
-                      }}
-                    >
-                      {item}
-                    </label>
+                    <label style={{ fontSize: "13px" }}>{item}</label>
+
                     <input
                       type="number"
                       name={item}
-                      value={rates[item]}
-                      onChange={handleChange}
+                      value={rates[item].customer}
+                      onChange={(e) => handleChange(e, "customer")}
+                      placeholder="Customer ₹/kg"
+                      className="form-control form-control-sm mb-1"
+                    />
+
+                    <input
+                      type="number"
+                      name={item}
+                      value={rates[item].company}
+                      onChange={(e) => handleChange(e, "company")}
+                      placeholder="Company ₹/kg"
                       className="form-control form-control-sm"
-                      placeholder="₹ per kg"
                     />
                   </div>
                 ))}

@@ -107,9 +107,12 @@ const OrdersHistory = () => {
           window.location.href = "/login";
           return;
         }
-        return res.json();
+
+        return res.text(); // ✅ no await
       })
-      .then((data) => {
+      .then((text) => {
+        const data = text ? JSON.parse(text) : [];
+
         const safeData = Array.isArray(data)
           ? data
           : Array.isArray(data?.orders)
@@ -118,7 +121,10 @@ const OrdersHistory = () => {
 
         setOrders(safeData);
       })
-      .catch(() => setOrders([]));
+      .catch((err) => {
+        console.error(err);
+        setOrders([]);
+      });
   };
 
   useEffect(() => {

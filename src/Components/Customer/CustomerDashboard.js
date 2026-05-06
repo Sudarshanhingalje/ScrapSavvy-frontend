@@ -21,13 +21,19 @@ const CustomerDashboard = () => {
     fetch("http://localhost:8080/api/scrap-orders/create", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ ...form, status: "PENDING" }),
+      body: JSON.stringify({
+        ...form,
+        orderType: "CUSTOMER", // ✅ VERY IMPORTANT
+        status: "PENDING",
+      }),
     })
-      .then((res) => res.json())
+      .then(async (res) => {
+        const text = await res.text();
+        return text ? JSON.parse(text) : {};
+      })
       .then(() => alert("Order placed successfully"))
       .catch((err) => console.error(err));
   };
-
   const [dailyRates, setDailyRates] = useState({});
 
   const [availableItems] = useState([
@@ -85,17 +91,48 @@ const CustomerDashboard = () => {
   ]);
 
   useEffect(() => {
-    const fetchRates = () => {
-      fetch("http://localhost:8080/api/prices/all")
-        .then((res) => res.json())
-        .then((data) => {
-          const mapped = {};
-          data.forEach((item) => {
-            mapped[item.category] = item.price;
-          });
-          setDailyRates(mapped);
-        })
-        .catch((err) => console.error("Rate fetch error:", err));
+    const ownerId = localStorage.getItem("userId");
+
+    if (!ownerId) {
+      console.error("❌ ownerId missing in localStorage");
+      return;
+    }
+
+    const fetchRates = async () => {
+      try {
+        const ownerId = localStorage.getItem("userId");
+
+        const res = await fetch(
+          `http://localhost:8080/api/prices/all?ownerId=${ownerId}`,
+        );
+
+        if (!res.ok) {
+          console.error("API error:", res.status);
+          setDailyRates({});
+          return;
+        }
+
+        const text = await res.text();
+        const data = text ? JSON.parse(text) : [];
+
+        const mapped = {};
+
+        data.forEach((item) => {
+          const material = item.materialType;
+          const customer = item.customerPrice;
+          const company = item.companyPrice;
+
+          mapped[material] = {
+            customerPrice: customer,
+            companyPrice: company,
+          };
+        });
+
+        setDailyRates(mapped);
+      } catch (err) {
+        console.error("Rate fetch error:", err);
+        setDailyRates({});
+      }
     };
     fetchRates();
     const interval = setInterval(fetchRates, 10000);
@@ -179,7 +216,9 @@ const CustomerDashboard = () => {
                     <p style={styles.rateMaterial}>
                       {material.charAt(0).toUpperCase() + material.slice(1)}
                     </p>
-                    <h3 style={styles.ratePrice}>₹{rate}</h3>
+                    <h3 style={styles.ratePrice}>
+                      ₹{rate?.customerPrice ?? "--"}
+                    </h3>
                     <span style={styles.rateUnit}>per kg</span>
                   </div>
                 ))}
