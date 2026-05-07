@@ -3,6 +3,7 @@ import {
   BarElement,
   CategoryScale,
   Chart as ChartJS,
+  Filler,
   Legend,
   LinearScale,
   LineElement,
@@ -13,6 +14,7 @@ import {
 import { useEffect, useState } from "react";
 import { Bar, Doughnut, Line } from "react-chartjs-2";
 import "../.././Static/Dashboard.css";
+import { connectSocket, disconnectSocket } from "../../Services/SocketService";
 import LogoutMenu from "../Common/LogoutMenu";
 import ScrapyardSidebar from "../Common/ScrapyardSidebar";
 
@@ -25,6 +27,7 @@ ChartJS.register(
   PointElement,
   Title,
   Tooltip,
+  Filler,
   Legend,
 );
 
@@ -61,6 +64,45 @@ const ScrapyardDashboard = () => {
   const lowStockItems = inventory.filter((item) => item.quantity < 30);
 
   useEffect(() => {
+    connectSocket((type, data) => {
+      console.log("LIVE:", type);
+
+      // INVENTORY
+      if (type === "inventory") {
+        setInventory(data);
+      }
+
+      // TRANSACTIONS
+      if (type === "transactions") {
+        setTransactions(data);
+      }
+
+      // ORDERS
+      if (type === "orders") {
+        setOrders(data);
+      }
+
+      // PRICES
+      if (type === "prices") {
+        const map = {};
+
+        data.forEach((item) => {
+          map[item.materialType] = {
+            customer: item.customerPrice,
+            company: item.companyPrice,
+          };
+        });
+
+        setPrices(map);
+      }
+    });
+
+    return () => {
+      disconnectSocket();
+    };
+  }, []);
+
+  useEffect(() => {
     const token = localStorage.getItem("token");
 
     const fetchTx = () => {
@@ -80,9 +122,6 @@ const ScrapyardDashboard = () => {
     };
 
     fetchTx();
-    const interval = setInterval(fetchTx, 5000);
-
-    return () => clearInterval(interval);
   }, []);
 
   useEffect(() => {
@@ -122,18 +161,15 @@ const ScrapyardDashboard = () => {
       .catch(() => setOrders([]));
   };
 
-  useEffect(() => {
-    fetchOrders();
-    const interval = setInterval(fetchOrders, 5000);
-    return () => clearInterval(interval);
-  }, []);
-
   // ── Fetch prices every 5s ──
   useEffect(() => {
     const fetchPrices = () => {
       const ownerId = localStorage.getItem("userId");
 
-      fetch(`http://localhost:8080/api/prices/all?ownerId=${ownerId}`)
+      const token = localStorage.getItem("token");
+      fetch(`http://localhost:8080/api/prices/all?ownerId=${ownerId}`, {
+        headers: { Authorization: `Bearer ${token}` },
+      })
         .then(async (res) => {
           if (!res.ok) return [];
           const text = await res.text();
@@ -155,8 +191,6 @@ const ScrapyardDashboard = () => {
     };
 
     fetchPrices();
-    const interval = setInterval(fetchPrices, 5000);
-    return () => clearInterval(interval);
   }, []);
 
   // ══════════════════════════════════════════════
@@ -215,11 +249,13 @@ const ScrapyardDashboard = () => {
   // ── Monthly Collection Trends (Bar) ──
   // Group quantity by month from order date
   const monthlyMap = {};
-  orders.forEach((o) => {
-    if (!o.createdAt) return;
-    const month = MONTH_NAMES[new Date(o.createdAt).getMonth()];
-    monthlyMap[month] = (monthlyMap[month] || 0) + (o.quantity || 0);
-  });
+  transactions
+    .filter((tx) => tx.type === "ADD")
+    .forEach((tx) => {
+      if (!tx.createdAt) return;
+      const month = MONTH_NAMES[new Date(tx.createdAt).getMonth()];
+      monthlyMap[month] = (monthlyMap[month] || 0) + (tx.quantity || 0);
+    });
   // Keep only months that have data, in calendar order
   const monthlyLabels = MONTH_NAMES.filter((m) => monthlyMap[m] !== undefined);
   const monthlyValues = monthlyLabels.map((m) => monthlyMap[m]);
@@ -240,14 +276,21 @@ const ScrapyardDashboard = () => {
   // ── Weekly Revenue Analysis (Line) ──
   // Group totalPrice of COMPLETED orders by ISO week number
   const weeklyRevenueMap = {};
-  completedOrders.forEach((o) => {
-    if (!o.createdAt) return;
-    const d = new Date(o.createdAt);
-    const jan = new Date(d.getFullYear(), 0, 1);
-    const week = Math.ceil(((d - jan) / 86400000 + jan.getDay() + 1) / 7);
-    const key = `Week ${week}`;
-    weeklyRevenueMap[key] = (weeklyRevenueMap[key] || 0) + (o.totalPrice || 0);
-  });
+  transactions
+    .filter((tx) => tx.type === "REMOVE") // or SOLD if you use that
+    .forEach((tx) => {
+      if (!tx.createdAt) return;
+
+      const d = new Date(tx.createdAt);
+      const jan = new Date(d.getFullYear(), 0, 1);
+      const week = Math.ceil(((d - jan) / 86400000 + jan.getDay() + 1) / 7);
+      const key = `Week ${week}`;
+
+      const revenue = (tx.pricePerKg || 0) * (tx.quantity || 0);
+
+      weeklyRevenueMap[key] = (weeklyRevenueMap[key] || 0) + revenue;
+    });
+
   const weeklyLabels = Object.keys(weeklyRevenueMap).sort((a, b) => {
     return parseInt(a.split(" ")[1]) - parseInt(b.split(" ")[1]);
   });
@@ -454,7 +497,9 @@ const ScrapyardDashboard = () => {
                       <div style={{ fontWeight: 600 }}>
                         {tx.type === "ADD"
                           ? "🟢 Stock Added"
-                          : "🔴 Stock Removed"}
+                          : tx.type === "REMOVE"
+                            ? "🔴 Stock Sold"
+                            : "⚪ Activity"}
                       </div>
 
                       <div>Material: {tx.materialType}</div>

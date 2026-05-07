@@ -11,7 +11,7 @@ const getStatusColor = (status) => {
       return "#0275d8";
     case "SCHEDULED":
       return "#f39c12";
-    case "OUT_FOR_DELIVERY":
+    case "OUT_FOR_PICKUP":
       return "#17a2b8";
     case "COMPLETED":
       return "#5cb85c";
@@ -146,7 +146,7 @@ const OrdersHistory = () => {
     "PENDING",
     "ACCEPTED",
     "SCHEDULED",
-    "OUT_FOR_DELIVERY",
+    "OUT_FOR_PICKUP",
     "COMPLETED",
   ];
 
@@ -208,7 +208,7 @@ const OrdersHistory = () => {
                       )}
 
                       {/* OUT FOR PICKUP DRIVER INFO (ONLY HERE) */}
-                      {order.status === "OUT_FOR_DELIVERY" && (
+                      {order.status === "OUT_FOR_PICKUP" && (
                         <>
                           <hr />
                           <p style={{ color: "#17a2b8", fontWeight: "600" }}>
@@ -259,7 +259,7 @@ const OrdersHistory = () => {
                         </div>
                       </div>
                       {/* ================= PAYMENT SECTION ================= */}
-                      {order.status === "OUT_FOR_DELIVERY" && (
+                      {order.status === "OUT_FOR_PICKUP" && (
                         <>
                           <hr />
 

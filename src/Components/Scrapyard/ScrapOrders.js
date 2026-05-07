@@ -9,7 +9,7 @@ const getStatusColor = (status) => {
       return "#0d6efd";
     case "SCHEDULED":
       return "#6610f2";
-    case "OUT_FOR_DELIVERY":
+    case "OUT_FOR_PICKUP":
       return "#20c997";
     case "PAYMENT_PENDING":
       return "#ffc107";
@@ -479,13 +479,13 @@ const ScrapOrders = () => {
                               <button
                                 className="btn btn-warning btn-sm"
                                 onClick={() =>
-                                  updateStatus(order.id, "OUT_FOR_DELIVERY")
+                                  updateStatus(order.id, "OUT_FOR_PICKUP")
                                 }
                               >
                                 Start Delivery 🚚
                               </button>
                             )}
-                            {order.status === "OUT_FOR_DELIVERY" && (
+                            {order.status === "OUT_FOR_PICKUP" && (
                               <>
                                 <button
                                   className="btn btn-success btn-sm me-1"

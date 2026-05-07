@@ -59,7 +59,11 @@ const ScrapSale = () => {
   useEffect(() => {
     const fetchPrices = async () => {
       try {
-        const res = await fetch("http://localhost:8080/api/prices/all");
+        const ownerId = localStorage.getItem("userId");
+
+        const res = await fetch(
+          `http://localhost:8080/api/prices/all?ownerId=${ownerId}`,
+        );
 
         if (!res.ok) {
           console.error("Failed to fetch prices");
