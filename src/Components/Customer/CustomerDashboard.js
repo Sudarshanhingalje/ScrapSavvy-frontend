@@ -91,8 +91,8 @@ const CustomerDashboard = () => {
   ]);
 
   useEffect(() => {
-    const ownerId = localStorage.getItem("userId");
-
+    // const ownerId = localStorage.getItem("userId");
+    const ownerId = 2;
     if (!ownerId) {
       console.error("❌ ownerId missing in localStorage");
       return;
@@ -100,7 +100,7 @@ const CustomerDashboard = () => {
 
     const fetchRates = async () => {
       try {
-        const ownerId = localStorage.getItem("userId");
+        const ownerId = 2;
 
         const res = await fetch(
           `http://localhost:8080/api/prices/all?ownerId=${ownerId}`,

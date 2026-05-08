@@ -10,7 +10,7 @@ const CompanyDashboard = () => {
   useEffect(() => {
     const fetchPrices = async () => {
       try {
-        const ownerId = localStorage.getItem("userId");
+        const ownerId = 2;
 
         const res = await fetch(
           `http://localhost:8080/api/prices/all?ownerId=${ownerId}`,

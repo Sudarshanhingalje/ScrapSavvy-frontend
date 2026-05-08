@@ -164,8 +164,8 @@ const ScrapyardDashboard = () => {
   // ── Fetch prices every 5s ──
   useEffect(() => {
     const fetchPrices = () => {
-      const ownerId = localStorage.getItem("userId");
-
+      // const ownerId = localStorage.getItem("userId");
+      const ownerId = 2;
       const token = localStorage.getItem("token");
       fetch(`http://localhost:8080/api/prices/all?ownerId=${ownerId}`, {
         headers: { Authorization: `Bearer ${token}` },
@@ -361,7 +361,8 @@ const ScrapyardDashboard = () => {
 
   const handleSubmit = async () => {
     try {
-      const ownerId = localStorage.getItem("userId");
+      // const ownerId = localStorage.getItem("userId");
+      const ownerId = 2;
 
       for (const key in rates) {
         if (rates[key].customer || rates[key].company) {

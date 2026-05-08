@@ -4,13 +4,13 @@ import "../../Static/ScrapSale.css";
 import CompanySidebar from "../Common/CompanySidebar";
 
 const MOCK_RATES = {
-  Metal: 28,
-  Plastic: 12,
-  Paper: 8,
-  Glass: 15,
-  Electronics: 45,
-  Textiles: 6,
-  Others: 10,
+  Metal: 1,
+  Plastic: 1,
+  Paper: 1,
+  Glass: 1,
+  Electronics: 1,
+  Textiles: 1,
+  Others: 1,
 };
 
 const SCRAP_TYPES = [
@@ -59,7 +59,10 @@ const ScrapSale = () => {
   useEffect(() => {
     const fetchPrices = async () => {
       try {
-        const ownerId = localStorage.getItem("userId");
+        // const ownerId = localStorage.getItem("scrapyardOwnerId");
+        const ownerId = 2;
+
+        console.log("FETCHING PRICES FOR OWNER:", ownerId);
 
         const res = await fetch(
           `http://localhost:8080/api/prices/all?ownerId=${ownerId}`,
@@ -70,13 +73,17 @@ const ScrapSale = () => {
           return;
         }
 
-        const text = await res.text();
-        const data = text ? JSON.parse(text) : [];
+        const data = await res.json();
+
+        console.log("PRICE DATA:", data);
 
         const map = {};
+
         data.forEach((item) => {
-          map[item.materialType] = item.companyPrice; // ✅ company buying rate
+          map[item.materialType] = item.companyPrice;
         });
+
+        console.log("RATE MAP:", map);
 
         setRates(map);
       } catch (err) {
@@ -222,7 +229,7 @@ const ScrapSale = () => {
         preferredDate: form.preferredDate,
 
         orderType: "COMPANY",
-
+        ownerId: 2,
         // ❌ REMOVE THESE (backend should decide price)
         // pricePerKg: rates[form.scrapType],
         // totalPrice: total,
