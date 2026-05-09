@@ -65,11 +65,11 @@ const ScrapyardSidebar = () => {
             My products
           </Link>
           <Link
-            to="/scrapyard-payments"
+            to="/scrapyard-add-remove-stock"
             className="list-group-item list-group-item-action text-light"
           >
             <FontAwesomeIcon icon={faCreditCard} className="icon" />
-            Transactions
+            RecentTransactions
           </Link>
           <Link
             to="/scrapyard-profile"

@@ -23,9 +23,9 @@ import PaymentsMadeTable from "./Components/Payment/PaymentsMadeTable";
 import PaymentsReceivedTable from "./Components/Payment/PaymentsReceivedTable";
 import Customerorders from "./Components/Scrapyard/CustomerOrders";
 import MySScrapsTable from "./Components/Scrapyard/MySScrapsTable";
+import RecentTransactions from "./Components/Scrapyard/RecentTransactions";
 import ScrapOrders from "./Components/Scrapyard/ScrapOrders";
 import ScrapyardDashboard from "./Components/Scrapyard/ScrapyardDashboard";
-import ScrapyardPayments from "./Components/Scrapyard/ScrapyardPayments";
 import ScrapyardProfile from "./Components/Scrapyard/ScrapyardProfile";
 import SScrapsTable from "./Components/Scrapyard/SScrapsTable";
 import Frontpage from "./frontpage";
@@ -76,7 +76,10 @@ function App() {
           <Route path="/customer-orders" element={<Customerorders />} />
           <Route path="/sr-list-of-scraps" element={<SScrapsTable />} />
           <Route path="/mysr-list-of-scraps" element={<MySScrapsTable />} />
-          <Route path="/scrapyard-payments" element={<ScrapyardPayments />} />
+          <Route
+            path="//scrapyard-add-remove-stock"
+            element={<RecentTransactions />}
+          />
           <Route path="/scrapyard-profile" element={<ScrapyardProfile />} />
 
           <Route path="/customer-dashboard" element={<CustomerDashboard />} />

@@ -498,7 +498,7 @@ const ScrapyardDashboard = () => {
                 ))}
               </div>
             </div>
-            <div className="card mt-3">
+            {/* <div className="card mt-3">
               <div className="card-body">
                 <h5>Recent Transactions</h5>
 
@@ -538,7 +538,7 @@ const ScrapyardDashboard = () => {
                     </div>
                   ))}
               </div>
-            </div>
+            </div> */}
           </div>
 
           {/* ── Charts Row 1: Bar + Doughnut ── */}

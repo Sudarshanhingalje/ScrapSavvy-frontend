@@ -1,52 +1,53 @@
 import jsPDF from "jspdf";
 import autoTable from "jspdf-autotable";
 
-// ── Flipkart-style Blue Theme ──────────────────────────────────────────
-// Primary  : #2874F0  (Flipkart blue)
-// Dark     : #0D47A1  (deep navy)
-// Accent   : #FFD700  (gold – for highlights)
-// Light bg : #E8F0FE  (very light blue)
-// Mid blue : #1565C0
+// ── ScrapSavvy Industrial Green Theme ─────────────────────────────────
+// Primary  : #2E7D32  (forest green)
+// Dark     : #1B5E20  (deep dark green)
+// Accent   : #FF6F00  (rust/amber orange – for highlights)
+// Light bg : #E8F5E9  (very light green)
+// Mid      : #388E3C  (mid green)
+// Text     : #1A2E1A  (near-black green-tinted)
 
 export const generateCustomerInvoice = (order) => {
   const doc = new jsPDF();
   const W = doc.internal.pageSize.getWidth();
   const H = doc.internal.pageSize.getHeight();
 
-  // ── Outer navy border ───────────────────────────────────────────────
-  doc.setDrawColor(13, 71, 161);
+  // ── Outer dark green border ─────────────────────────────────────────
+  doc.setDrawColor(27, 94, 32);
   doc.setLineWidth(1.5);
   doc.rect(6, 6, W - 12, H - 12);
 
-  // Inner thin blue border
+  // Inner thin green border
   doc.setLineWidth(0.3);
-  doc.setDrawColor(40, 116, 240);
+  doc.setDrawColor(46, 125, 50);
   doc.rect(9, 9, W - 18, H - 18);
 
-  // ── Header (Flipkart blue bar) ──────────────────────────────────────
-  doc.setFillColor(40, 116, 240);
+  // ── Header (forest green bar) ───────────────────────────────────────
+  doc.setFillColor(46, 125, 50);
   doc.rect(9, 9, W - 18, 28, "F");
 
-  // Dark navy accent strip at bottom of header
-  doc.setFillColor(13, 71, 161);
+  // Dark green accent strip at bottom of header
+  doc.setFillColor(27, 94, 32);
   doc.rect(9, 35, W - 18, 2, "F");
 
   // Logo circle
   doc.setFillColor(255, 255, 255);
   doc.circle(22, 23, 8, "F");
-  doc.setFillColor(40, 116, 240);
+  doc.setFillColor(46, 125, 50);
   doc.triangle(17, 28, 22, 17, 27, 28, "F");
   doc.setFillColor(255, 255, 255);
   doc.circle(22, 27, 2, "F");
 
-  // customer name
+  // Company name
   doc.setFont("helvetica", "bold");
   doc.setFontSize(16);
   doc.setTextColor(255, 255, 255);
   doc.text("ScrapSavvy", 33, 21);
 
   doc.setFontSize(7);
-  doc.setTextColor(210, 227, 252);
+  doc.setTextColor(200, 230, 201);
   doc.text("RECYCLE  ·  REUSE  ·  REWARD", 33, 27);
 
   // Invoice number
@@ -58,7 +59,7 @@ export const generateCustomerInvoice = (order) => {
 
   doc.setFont("helvetica", "normal");
   doc.setFontSize(8);
-  doc.setTextColor(210, 227, 252);
+  doc.setTextColor(200, 230, 201);
   doc.text(
     `Date: ${new Date(order.created_at || order.createdAt).toLocaleDateString("en-IN")}`,
     W - 14,
@@ -69,10 +70,10 @@ export const generateCustomerInvoice = (order) => {
 
   // ── Section helper ──────────────────────────────────────────────────
   const sectionBar = (label, y) => {
-    doc.setFillColor(21, 101, 192);
+    doc.setFillColor(56, 142, 60);
     doc.rect(10, y, W - 20, 7, "F");
-    // Gold left accent
-    doc.setFillColor(255, 215, 0);
+    // Rust/orange left accent
+    doc.setFillColor(255, 111, 0);
     doc.rect(10, y, 3, 7, "F");
     doc.setFont("helvetica", "bold");
     doc.setFontSize(7);
@@ -83,41 +84,45 @@ export const generateCustomerInvoice = (order) => {
 
   // ── Field box helper ────────────────────────────────────────────────
   const fieldBox = (label, value, x, y, w, h = 14) => {
-    // Light blue fill
-    doc.setFillColor(232, 240, 254);
+    // Light green fill
+    doc.setFillColor(232, 245, 233);
     doc.rect(x, y, w, h, "F");
     // Label tint strip
-    doc.setFillColor(207, 226, 255);
+    doc.setFillColor(200, 230, 201);
     doc.rect(x, y, w, 5.5, "F");
     // Border
-    doc.setDrawColor(40, 116, 240);
+    doc.setDrawColor(46, 125, 50);
     doc.setLineWidth(0.3);
     doc.rect(x, y, w, h);
 
     doc.setFont("helvetica", "bold");
     doc.setFontSize(6.5);
-    doc.setTextColor(21, 101, 192);
+    doc.setTextColor(27, 94, 32);
     doc.text(label.toUpperCase(), x + 2.5, y + 4.5);
     doc.setFont("helvetica", "bold");
     doc.setFontSize(8.5);
-    doc.setTextColor(13, 27, 62);
+    doc.setTextColor(26, 46, 26);
     const val = String(value || "—");
     doc.text(val.substring(0, 36), x + 2.5, y + 10.5);
   };
 
-  // ── customer Information ────────────────────────────────────────────
-  let y = sectionBar("customer INFORMATION", 41);
+  // ── Customer Information ────────────────────────────────────────────
+  let y = sectionBar("CUSTOMER INFORMATION", 41);
 
   const hw = (W - 20) / 2;
   fieldBox(
-    "customer Name",
-    order.customer_name || order.customerName,
+    "Customer Name",
+    order.customer_name ||
+      order.customerName ||
+      order.userName ||
+      order.name ||
+      order.fullName,
     10,
     y,
     hw,
   );
   fieldBox(
-    "customer ID",
+    "Customer ID",
     `CUST-${order.customer_id || order.customerId || "N/A"}`,
     10 + hw,
     y,
@@ -172,7 +177,7 @@ export const generateCustomerInvoice = (order) => {
       ],
     ],
     headStyles: {
-      fillColor: [40, 116, 240],
+      fillColor: [46, 125, 50],
       textColor: [255, 255, 255],
       fontStyle: "bold",
       fontSize: 8,
@@ -180,12 +185,12 @@ export const generateCustomerInvoice = (order) => {
     },
     bodyStyles: {
       fontSize: 9,
-      textColor: [13, 27, 62],
+      textColor: [26, 46, 26],
       cellPadding: 3,
-      fillColor: [232, 240, 254],
+      fillColor: [232, 245, 233],
     },
     alternateRowStyles: { fillColor: [255, 255, 255] },
-    tableLineColor: [40, 116, 240],
+    tableLineColor: [46, 125, 50],
     tableLineWidth: 0.3,
     margin: { left: 10, right: 10 },
   });
@@ -233,10 +238,10 @@ export const generateCustomerInvoice = (order) => {
   const rightW = (W - 20) * 0.45;
   const boxH = 50;
 
-  // Payment box – light blue fill
-  doc.setFillColor(232, 240, 254);
+  // Payment box – light green fill
+  doc.setFillColor(232, 245, 233);
   doc.rect(10, y, leftW, boxH, "F");
-  doc.setDrawColor(40, 116, 240);
+  doc.setDrawColor(46, 125, 50);
   doc.setLineWidth(0.3);
   doc.rect(10, y, leftW, boxH);
 
@@ -246,14 +251,14 @@ export const generateCustomerInvoice = (order) => {
   const stampAreaW = leftW - payInfoW;
 
   // Vertical divider
-  doc.setDrawColor(150, 190, 255);
+  doc.setDrawColor(150, 210, 150);
   doc.setLineWidth(0.4);
   doc.line(stampAreaX, y + 2, stampAreaX, y + boxH - 2);
 
   // Payment Status
   doc.setFont("helvetica", "bold");
   doc.setFontSize(7);
-  doc.setTextColor(21, 101, 192);
+  doc.setTextColor(27, 94, 32);
   doc.text("PAYMENT STATUS", 13, y + 6);
 
   const isPaid =
@@ -261,7 +266,7 @@ export const generateCustomerInvoice = (order) => {
     "PAID";
 
   if (isPaid) {
-    doc.setFillColor(232, 245, 238);
+    doc.setFillColor(232, 245, 233);
     doc.rect(13, y + 8, 36, 8, "F");
     doc.setDrawColor(26, 122, 60);
     doc.setLineWidth(0.4);
@@ -283,20 +288,20 @@ export const generateCustomerInvoice = (order) => {
 
   doc.setFont("helvetica", "bold");
   doc.setFontSize(7);
-  doc.setTextColor(21, 101, 192);
+  doc.setTextColor(27, 94, 32);
   doc.text("PAYMENT METHOD", 13, y + 24);
   doc.setFont("helvetica", "bold");
   doc.setFontSize(9);
-  doc.setTextColor(13, 27, 62);
+  doc.setTextColor(26, 46, 26);
   doc.text(order.payment_method || order.paymentMethod || "—", 13, y + 30);
 
   doc.setFont("helvetica", "bold");
   doc.setFontSize(7);
-  doc.setTextColor(21, 101, 192);
+  doc.setTextColor(27, 94, 32);
   doc.text("PAYMENT ID", 13, y + 38);
   doc.setFont("helvetica", "normal");
   doc.setFontSize(8);
-  doc.setTextColor(13, 27, 62);
+  doc.setTextColor(26, 46, 26);
   doc.text(
     String(order.payment_id || order.paymentId || "—").substring(0, 32),
     13,
@@ -343,32 +348,32 @@ export const generateCustomerInvoice = (order) => {
 
   let ty = y;
   totRows.forEach(([label, val], i) => {
-    const rowFill = i % 2 === 0 ? [232, 240, 254] : [255, 255, 255];
+    const rowFill = i % 2 === 0 ? [232, 245, 233] : [255, 255, 255];
     doc.setFillColor(...rowFill);
     doc.rect(rx, ty, rightW, 9, "F");
-    doc.setDrawColor(40, 116, 240);
+    doc.setDrawColor(46, 125, 50);
     doc.setLineWidth(0.2);
     doc.rect(rx, ty, rightW, 9);
     doc.setFont("helvetica", "normal");
     doc.setFontSize(8);
-    doc.setTextColor(60, 80, 120);
+    doc.setTextColor(60, 100, 60);
     doc.text(label, rx + 3, ty + 6);
     doc.setFont("helvetica", "bold");
-    doc.setTextColor(13, 27, 62);
+    doc.setTextColor(26, 46, 26);
     doc.text(val, rx + rightW - 3, ty + 6, { align: "right" });
     ty += 9;
   });
 
-  // Grand Total – Flipkart blue bar with gold amount
-  doc.setFillColor(40, 116, 240);
+  // Grand Total – forest green bar with rust/orange amount
+  doc.setFillColor(46, 125, 50);
   doc.rect(rx, ty, rightW, 13, "F");
-  doc.setFillColor(255, 215, 0); // gold top accent line
+  doc.setFillColor(255, 111, 0); // rust/orange top accent line
   doc.rect(rx, ty, rightW, 1.5, "F");
   doc.setFont("helvetica", "bold");
   doc.setFontSize(9);
   doc.setTextColor(255, 255, 255);
   doc.text("GRAND TOTAL", rx + 3, ty + 9);
-  doc.setTextColor(255, 215, 0);
+  doc.setTextColor(255, 111, 0);
   doc.text(`Rs.${grand.toLocaleString("en-IN")}`, rx + rightW - 3, ty + 9, {
     align: "right",
   });
@@ -376,19 +381,19 @@ export const generateCustomerInvoice = (order) => {
   // ── Footer ──────────────────────────────────────────────────────────
   const footY = H - 22;
 
-  doc.setFillColor(13, 71, 161); // dark navy footer
+  doc.setFillColor(27, 94, 32); // dark green footer
   doc.rect(9, footY, W - 18, 18, "F");
-  doc.setFillColor(40, 116, 240); // blue top strip
+  doc.setFillColor(46, 125, 50); // green top strip
   doc.rect(9, footY, W - 18, 3, "F");
 
   doc.setFont("helvetica", "bold");
   doc.setFontSize(8);
-  doc.setTextColor(255, 215, 0);
+  doc.setTextColor(255, 111, 0); // rust orange company name
   doc.text("ScrapSavvy Pvt. Ltd.", 14, footY + 8);
 
   doc.setFont("helvetica", "normal");
   doc.setFontSize(6.5);
-  doc.setTextColor(200, 220, 255);
+  doc.setTextColor(200, 230, 201);
   doc.text(
     "Plot No. 47, Industrial Area, Bhosari, Pune, Maharashtra – 411026  |  +91 20-2765-4321  |  support@scrapsavvy.in",
     14,
@@ -397,11 +402,11 @@ export const generateCustomerInvoice = (order) => {
 
   doc.setFont("helvetica", "bold");
   doc.setFontSize(7);
-  doc.setTextColor(255, 215, 0);
+  doc.setTextColor(255, 111, 0); // rust orange GSTIN
   doc.text("GSTIN: 27AABCS1234F1Z5", W - 14, footY + 8, { align: "right" });
   doc.setFont("helvetica", "normal");
   doc.setFontSize(7);
-  doc.setTextColor(200, 220, 255);
+  doc.setTextColor(200, 230, 201);
   doc.text("Thank you for choosing ScrapSavvy!", W - 14, footY + 13, {
     align: "right",
   });
