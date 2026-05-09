@@ -217,12 +217,18 @@ const ScrapyardDashboard = () => {
 
   // ── Scrap Type Distribution (Doughnut) ──
   // Group quantity by scrapType from all orders
-  const scrapTypeMap = {};
-
-  inventory.forEach((item) => {
+  const scrapTypeMap = inventory.reduce((acc, item) => {
     const type = item.materialType || "Others";
-    scrapTypeMap[type] = (scrapTypeMap[type] || 0) + (item.quantity || 0);
-  });
+
+    if (!acc[type]) {
+      acc[type] = 0;
+    }
+
+    acc[type] += Number(item.quantity || 0);
+
+    return acc;
+  }, {});
+
   const scrapTypeLabels = Object.keys(scrapTypeMap);
   const scrapTypeValues = Object.values(scrapTypeMap);
   const doughnutColors = [
@@ -310,14 +316,26 @@ const ScrapyardDashboard = () => {
       },
     ],
   };
+  const groupedInventory = inventory.reduce((acc, item) => {
+    const type = item.materialType || "Others";
 
+    if (!acc[type]) {
+      acc[type] = 0;
+    }
+
+    acc[type] += Number(item.quantity || 0);
+
+    return acc;
+  }, {});
   // ── Inventory Summary (from scrapTypeMap, only PENDING/ACCEPTED = in stock) ──
-  const inventoryItems = inventory.map((item, i) => ({
-    label: item.materialType,
-    quantity: item.quantity, // ✅ IMPORTANT
-    qty: `${item.quantity.toLocaleString()} kg`,
-    color: doughnutColors[i % doughnutColors.length],
-  }));
+  const inventoryItems = Object.entries(groupedInventory).map(
+    ([label, quantity], i) => ({
+      label,
+      quantity,
+      qty: `${quantity.toLocaleString()} kg`,
+      color: doughnutColors[i % doughnutColors.length],
+    }),
+  );
 
   const totalStock = inventory.reduce(
     (sum, item) => sum + (item.quantity || 0),

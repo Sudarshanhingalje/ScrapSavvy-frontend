@@ -40,8 +40,6 @@ const ScrapOrders = () => {
     fetch("http://localhost:8080/api/scrap-orders/company/all")
       .then((res) => res.json())
       .then((data) => {
-        console.log("API RESPONSE:", data); // 🔥 DEBUG
-
         let list = [];
 
         if (Array.isArray(data)) {
