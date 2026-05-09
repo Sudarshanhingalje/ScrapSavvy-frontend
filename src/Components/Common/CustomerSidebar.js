@@ -36,7 +36,20 @@ const CustomerSidebar = () => {
             <FontAwesomeIcon icon={faTachometerAlt} className="icon" />
             Dashboard
           </Link>
-
+          <Link
+            to="/customer-dashboard/scrap-sell"
+            className="list-group-item list-group-item-action text-light"
+          >
+            <FontAwesomeIcon icon={faShop} className="icon" />
+            book sell scrap
+          </Link>
+          <Link
+            to="/customer-dashboard/customer-orders-history"
+            className="list-group-item list-group-item-action text-light"
+          >
+            <FontAwesomeIcon icon={faTachometerAlt} className="icon" />
+            orders history
+          </Link>
           <Link
             to="/cus-list-of-scraps"
             className="list-group-item list-group-item-action text-light"

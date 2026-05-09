@@ -37,10 +37,29 @@ const ScrapOrders = () => {
     driverContactNo: "",
   });
   const fetchOrders = () => {
-    fetch("http://localhost:8080/api/scrap-orders/all")
+    fetch("http://localhost:8080/api/scrap-orders/company/all")
       .then((res) => res.json())
-      .then((data) => setOrders(data))
-      .catch((err) => console.error(err));
+      .then((data) => {
+        console.log("API RESPONSE:", data); // 🔥 DEBUG
+
+        let list = [];
+
+        if (Array.isArray(data)) {
+          list = data;
+        } else if (Array.isArray(data?.data)) {
+          list = data.data;
+        } else if (Array.isArray(data?.orders)) {
+          list = data.orders;
+        } else if (Array.isArray(data?.content)) {
+          list = data.content; // pagination support
+        }
+
+        setOrders(list);
+      })
+      .catch((err) => {
+        console.error("Fetch error:", err);
+        setOrders([]); // IMPORTANT SAFE FALLBACK
+      });
   };
 
   useEffect(() => {
@@ -59,24 +78,34 @@ const ScrapOrders = () => {
       .catch((err) => console.error(err));
   };
 
-  const updateStatus = (id, status) => {
+  const updateStatus = async (id, status) => {
     const token = localStorage.getItem("token");
 
-    fetch(
-      `http://localhost:8080/api/scrap-orders/${id}/status?status=${status}`,
-      {
-        method: "PUT",
-        headers: {
-          Authorization: `Bearer ${token}`,
+    try {
+      const res = await fetch(
+        `http://localhost:8080/api/scrap-orders/${id}/status?status=${status}`,
+        {
+          method: "PUT",
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
         },
-      },
-    )
-      .then((res) => {
-        if (!res.ok) throw new Error("Failed to update status");
-        return res.json();
-      })
-      .then(() => fetchOrders())
-      .catch((err) => console.error(err));
+      );
+
+      const text = await res.text(); // backend sends text sometimes
+
+      if (!res.ok) {
+        throw new Error(text); // IMPORTANT: show backend message
+      }
+
+      try {
+        return JSON.parse(text); // if JSON
+      } catch {
+        return text; // if plain text
+      }
+    } catch (err) {
+      console.error("Status update error:", err.message);
+    }
   };
 
   const filteredOrders =
@@ -246,8 +275,8 @@ const ScrapOrders = () => {
                 </p>
                 <p style={{ margin: "5px 0", fontSize: "13px", color: "#333" }}>
                   <b>Order Date:</b>{" "}
-                  {order.orderDate
-                    ? new Date(order.orderDate).toLocaleDateString("en-IN", {
+                  {order.createdAt
+                    ? new Date(order.createdAt).toLocaleDateString("en-IN", {
                         day: "2-digit",
                         month: "short",
                         year: "numeric",
@@ -281,8 +310,15 @@ const ScrapOrders = () => {
                     <>
                       <button
                         className="btn btn-success btn-sm"
-                        onClick={() => {
-                          updateStatus(order.id, "ACCEPTED");
+                        onClick={async () => {
+                          const res = await updateStatus(order.id, "ACCEPTED");
+
+                          // ❗ If backend says error → STOP HERE
+                          if (!res || res === "Low stock") {
+                            alert("⚠️ Low Stock - Cannot accept order");
+                            return;
+                          }
+
                           setSelectedOrder(order);
                           setShowSchedule(true);
                         }}

@@ -196,7 +196,8 @@ const OrdersHistory = () => {
                         <>
                           <hr />
                           <p>
-                            <b>Pickup Date:</b> {formatDate(order.pickupDate)}
+                            <b>Pickup Date:</b>{" "}
+                            {formatDate(order.pickupDate || null)}
                           </p>
                           <p>
                             <b>Pickup Time:</b> {order.pickupTime || "—"}

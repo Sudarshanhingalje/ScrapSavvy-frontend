@@ -8,7 +8,7 @@ import {
   OutlinedInput,
   TextField,
 } from "@mui/material";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useDispatch } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
 import AuthService from "../../Services/AuthService";
@@ -31,56 +31,96 @@ const Signin = () => {
   const [errors, setErrors] = useState({});
   const [showPassword, setShowPassword] = useState(false);
 
-  useEffect(() => {}, []);
+  // ================= VALIDATION =================
 
-  // ---------------- VALIDATION ----------------
   const validate = () => {
     const tempErrors = {};
     let isValid = true;
 
     isValid = ValidateEmail(email, tempErrors) && isValid;
+
     isValid = ValidatePassword(password, tempErrors, "password") && isValid;
 
     setErrors(tempErrors);
+
     return isValid;
   };
 
-  // ---------------- REDIRECT ----------------
+  // ================= REDIRECT =================
+
   const redirectBasedOnRole = (role) => {
     setTimeout(() => {
-      if (role === "company") navigate("/company-dashboard");
-      else if (role === "scrapyard") navigate("/scrapyard-dashboard");
-      else if (role === "customer") navigate("/customer-dashboard");
-    }, 800);
+      if (role === "company") {
+        navigate("/company-dashboard");
+      } else if (role === "scrapyard") {
+        navigate("/scrapyard-dashboard");
+      } else if (role === "customer") {
+        navigate("/customer-dashboard");
+      }
+    }, 1000);
   };
 
-  // ---------------- SIGNIN ----------------
+  // ================= SNACKBAR =================
+
+  const handleSnackbar = (message, severity, show) => {
+    setSnackbarMessage(message);
+    setSnackbarSeverity(severity);
+    setSnackbarOpen(show);
+  };
+
+  const handleSnackbarClose = () => {
+    setSnackbarOpen(false);
+  };
+
+  // ================= PASSWORD =================
+
+  const handleClickShowPassword = () => {
+    setShowPassword(!showPassword);
+  };
+
+  const handleMouseDownPassword = (event) => {
+    event.preventDefault();
+  };
+
+  // ================= SIGN IN =================
+
   const handleSignin = async (e) => {
     e.preventDefault();
 
     if (!validate()) {
-      handleSnackbar("Invalid credentials!", "error", true);
+      handleSnackbar("Please enter valid credentials", "error", true);
+
       return;
     }
 
-    const formData = {
-      email,
-      password,
-    };
-
     try {
+      const formData = {
+        email,
+        password,
+      };
+
       const response = await AuthService.SignIn(formData);
 
       if (response.status === 200) {
         const profile = response.data.userProfile;
 
-        // ---------------- STORE USER DATA ----------------
+        // ================= CLEAR OLD DATA =================
+
+        localStorage.clear();
+
+        // ================= SAVE USER DATA =================
+
         localStorage.setItem("name", profile.name);
+
         localStorage.setItem("email", profile.emailId);
+
         localStorage.setItem("mobile", profile.mobile);
 
-        // ✅ IMPORTANT FIX (NO ownerId anymore)
-        localStorage.setItem("userId", profile.userProfileId);
+        // ✅ IMPORTANT
+        const payload = JSON.parse(atob(response.data.token.split(".")[1]));
+
+        localStorage.setItem("userId", payload.userId);
+
         localStorage.setItem("role", profile.userRole);
 
         // token
@@ -89,47 +129,48 @@ const Signin = () => {
         // redux
         dispatch(ActionCreator.SetUserToken(response.data.token));
 
-        handleSnackbar("Sign-in successful!", "success", true);
+        handleSnackbar("✅ Sign-in successful!", "success", true);
 
+        // redirect
         redirectBasedOnRole(profile.userRole);
       } else {
         handleSnackbar("Server error!", "error", true);
       }
     } catch (error) {
+      console.error(error);
+
       handleSnackbar(error?.response?.data || "Login failed!", "error", true);
     }
   };
 
-  // ---------------- UI HELPERS ----------------
-  const handleSnackbar = (message, severity, show) => {
-    setSnackbarMessage(message);
-    setSnackbarSeverity(severity);
-    setSnackbarOpen(show);
-  };
+  // ================= UI =================
 
-  const handleSnackbarClose = () => setSnackbarOpen(false);
-
-  const handleClickShowPassword = () => setShowPassword((s) => !s);
-
-  const handleMouseDownPassword = (event) => event.preventDefault();
-
-  // ---------------- UI ----------------
   return (
     <>
       <Navbar />
 
       <div className="centered">
         <div className="sm-container mb-3">
-          <div className="header-div">
-            <h1>Sign in</h1>
+          <div className="header-div text-center mb-4">
+            <h1>Welcome Back 👋</h1>
+
+            <p className="text-muted">Sign in to continue to ScrapSavvy</p>
           </div>
 
-          <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
+          <Box
+            sx={{
+              display: "flex",
+              flexDirection: "column",
+              gap: 2,
+            }}
+          >
             {/* EMAIL */}
+
             <TextField
-              label="Email"
+              label="Email Address"
               variant="outlined"
               fullWidth
+              placeholder="Enter your email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               error={!!errors.email}
@@ -137,18 +178,22 @@ const Signin = () => {
             />
 
             {/* PASSWORD */}
+
             <FormControl variant="outlined" fullWidth>
               <InputLabel>Password</InputLabel>
+
               <OutlinedInput
                 type={showPassword ? "text" : "password"}
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 error={!!errors.password}
+                placeholder="Enter password"
                 endAdornment={
                   <InputAdornment position="end">
                     <IconButton
                       onClick={handleClickShowPassword}
                       onMouseDown={handleMouseDownPassword}
+                      edge="end"
                     >
                       {showPassword ? <VisibilityOff /> : <Visibility />}
                     </IconButton>
@@ -159,21 +204,28 @@ const Signin = () => {
             </FormControl>
 
             {/* BUTTON */}
+
             <button
               type="button"
               className="btn btn-primary w-100 mt-3"
               onClick={handleSignin}
             >
-              Sign in
+              Sign In
             </button>
 
-            <Link to="/forgotPassword">Forgot password?</Link>
+            {/* LINKS */}
+
+            <div className="text-center">
+              <Link to="/forgotPassword">Forgot Password?</Link>
+            </div>
 
             <Link to="/signup" className="btn btn-light w-100">
-              Don't have an account?
+              Create New Account
             </Link>
           </Box>
         </div>
+
+        {/* TOAST */}
 
         <Toast
           open={snackbarOpen}

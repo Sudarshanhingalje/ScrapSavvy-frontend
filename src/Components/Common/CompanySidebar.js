@@ -37,11 +37,11 @@ const CompanySidebar = () => {
             Dashboard
           </Link>
           <Link
-            to="/company-dashboard/scrap-sale"
+            to="/company-dashboard/scrap-order"
             className="list-group-item list-group-item-action text-light"
           >
             <FontAwesomeIcon icon={faShop} className="icon" />
-            Scrap sale
+            book Scrap
           </Link>
           <Link
             to="/company-dashboard/orders-history"

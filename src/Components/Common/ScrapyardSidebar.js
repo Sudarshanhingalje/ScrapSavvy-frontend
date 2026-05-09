@@ -41,7 +41,14 @@ const ScrapyardSidebar = () => {
             className="list-group-item list-group-item-action text-light"
           >
             <FontAwesomeIcon icon={faShop} className="icon" />
-            Scrap Orders
+            company Scrap Orders
+          </Link>
+          <Link
+            to="/customer-orders"
+            className="list-group-item list-group-item-action text-light"
+          >
+            <FontAwesomeIcon icon={faShop} className="icon" />
+            Customer Scrap Orders
           </Link>
           <Link
             to="/sr-list-of-scraps"
