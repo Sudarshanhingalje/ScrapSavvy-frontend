@@ -1,149 +1,121 @@
-// Sidebar.js
 import {
   faBoxOpen,
-  faCreditCard,
+  faClipboardList,
   faHome,
-  faShop,
   faTachometerAlt,
   faUser,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useState } from "react";
-import { Link } from "react-router-dom";
-import "../.././Static/Sidebar.css";
+import { Link, useLocation } from "react-router-dom";
 import { BRANDNAME } from "../../Services/Utils";
+import "../../Static/Sidebar.css";
 
 const CustomerSidebar = () => {
   const [isOffcanvasOpen, setOffcanvasOpen] = useState(false);
+  const location = useLocation();
 
-  const toggleOffcanvas = () => {
-    setOffcanvasOpen(!isOffcanvasOpen);
-  };
+  const toggleOffcanvas = () => setOffcanvasOpen((prev) => !prev);
+  const closeOffcanvas = () => setOffcanvasOpen(false);
+
+  const isActive = (path) => location.pathname === path;
+  const linkClass = (path) =>
+    `list-group-item list-group-item-action${isActive(path) ? " active" : ""}`;
+
+  const navItems = [
+    { to: "/customer-dashboard", icon: faTachometerAlt, label: "Dashboard" },
+    {
+      to: "/customer-dashboard/scrap-sell",
+      icon: faClipboardList,
+      label: "Sell Scrap",
+    },
+    {
+      to: "/customer-dashboard/customer-orders-history",
+      icon: faClipboardList,
+      label: "Order History",
+    },
+    { to: "/cus-list-of-scraps", icon: faBoxOpen, label: "Products" },
+    // { to: "/customer-transactions", icon: faCreditCard, label: "Transactions" },
+    { to: "/customer-profile", icon: faUser, label: "Profile" },
+  ];
 
   return (
-    <div>
-      {/* Sidebar for larger screens */}
-      <div
-        className="bg-dark border-right d-none d-lg-block"
-        id="sidebar-wrapper"
-      >
+    <>
+      {/* ── Desktop Sidebar ── */}
+      <div id="sidebar-wrapper">
         <div className="sidebar-heading">{BRANDNAME}</div>
+
+        <div className="sidebar-section-label">Main Menu</div>
+
         <div className="list-group list-group-flush">
-          <Link
-            to="/customer-dashboard"
-            className="list-group-item list-group-item-action text-light"
-          >
-            <FontAwesomeIcon icon={faTachometerAlt} className="icon" />
-            Dashboard
-          </Link>
-          <Link
-            to="/customer-dashboard/scrap-sell"
-            className="list-group-item list-group-item-action text-light"
-          >
-            <FontAwesomeIcon icon={faShop} className="icon" />
-            book sell scrap
-          </Link>
-          <Link
-            to="/customer-dashboard/customer-orders-history"
-            className="list-group-item list-group-item-action text-light"
-          >
-            <FontAwesomeIcon icon={faTachometerAlt} className="icon" />
-            orders history
-          </Link>
-          <Link
-            to="/cus-list-of-scraps"
-            className="list-group-item list-group-item-action text-light"
-          >
-            <FontAwesomeIcon icon={faBoxOpen} className="icon" />
-            View products
-          </Link>
-          <Link
-            to="/customer-transactions"
-            className="list-group-item list-group-item-action text-light"
-          >
-            <FontAwesomeIcon icon={faCreditCard} className="icon" />
-            Transactions
-          </Link>
-          <Link
-            to="/customer-profile"
-            className="list-group-item list-group-item-action text-light"
-          >
-            <FontAwesomeIcon icon={faUser} className="icon" />
-            Profile
-          </Link>
+          {navItems.map(({ to, icon, label }) => (
+            <Link key={to} to={to} className={linkClass(to)}>
+              <FontAwesomeIcon icon={icon} className="icon" />
+              {label}
+            </Link>
+          ))}
         </div>
       </div>
 
-      {/* Offcanvas for smaller screens */}
-      <div style={{ height: "20px" }}>
-        <button
-          className="btn btn-primary"
-          type="button"
-          onClick={toggleOffcanvas}
-          data-bs-toggle="offcanvas"
-          aria-controls="offcanvasExample"
-        >
-          <FontAwesomeIcon icon={faHome} />
-        </button>
+      {/* ── Mobile Toggle Button ── */}
+      <button
+        className="sb-mobile-toggle"
+        onClick={toggleOffcanvas}
+        aria-label="Open menu"
+      >
+        <FontAwesomeIcon icon={faHome} />
+      </button>
+
+      {/* ── Mobile Offcanvas Backdrop ── */}
+      {isOffcanvasOpen && (
         <div
-          className={`offcanvas offcanvas-start ${
-            isOffcanvasOpen ? "show" : ""
-          }`}
-          tabIndex="-1"
-          id="offcanvasExample"
-          aria-labelledby="offcanvasExampleLabel"
-          aria-hidden={!isOffcanvasOpen}
-          style={{ visibility: isOffcanvasOpen ? "visible" : "hidden" }}
-        >
-          <div className="offcanvas-header">
-            <h5 className="offcanvas-title" id="offcanvasExampleLabel">
-              BRANDNAME
-            </h5>
-            <button
-              type="button"
-              className="btn-close text-reset"
-              aria-label="Close"
-              onClick={toggleOffcanvas}
-            ></button>
-          </div>
-          <div className="offcanvas-body">
-            <div className="list-group list-group-flush">
+          style={{
+            position: "fixed",
+            inset: 0,
+            background: "rgba(15,23,42,0.4)",
+            zIndex: 1040,
+          }}
+          onClick={closeOffcanvas}
+        />
+      )}
+
+      {/* ── Mobile Offcanvas Drawer ── */}
+      <div
+        className={`offcanvas offcanvas-start${isOffcanvasOpen ? " show" : ""}`}
+        style={{
+          visibility: isOffcanvasOpen ? "visible" : "hidden",
+          zIndex: 1050,
+          transition: "transform 0.25s ease",
+          transform: isOffcanvasOpen ? "translateX(0)" : "translateX(-100%)",
+        }}
+        aria-label="Navigation"
+      >
+        <div className="offcanvas-header">
+          <h5 className="offcanvas-title">{BRANDNAME}</h5>
+          <button
+            type="button"
+            className="btn-close"
+            aria-label="Close"
+            onClick={closeOffcanvas}
+          />
+        </div>
+        <div className="offcanvas-body">
+          <div className="list-group list-group-flush">
+            {navItems.map(({ to, icon, label }) => (
               <Link
-                to="/"
-                className="list-group-item list-group-item-action text-light"
+                key={to}
+                to={to}
+                className={linkClass(to)}
+                onClick={closeOffcanvas}
               >
-                <FontAwesomeIcon icon={faHome} className="icon" />
-                Dashboard
+                <FontAwesomeIcon icon={icon} className="icon" />
+                {label}
               </Link>
-              <Link
-                to="/features"
-                className="list-group-item list-group-item-action text-light"
-              >
-                <FontAwesomeIcon icon={faBoxOpen} className="icon" />
-                Products
-              </Link>
-              <Link
-                to="/pricing"
-                className="list-group-item list-group-item-action text-light"
-              >
-                <FontAwesomeIcon icon={faCreditCard} className="icon" />
-                Payments
-              </Link>
-              <Link
-                to="/about"
-                className="list-group-item list-group-item-action text-light"
-              >
-                <FontAwesomeIcon icon={faUser} className="icon" />
-                Profile
-              </Link>
-            </div>
+            ))}
           </div>
         </div>
       </div>
-
-      {/* Page content wrapper */}
-      <div id="page-content-wrapper">{/* Content goes here */}</div>
-    </div>
+    </>
   );
 };
 

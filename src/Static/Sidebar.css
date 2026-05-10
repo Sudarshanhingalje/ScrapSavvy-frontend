@@ -1,95 +1,244 @@
+/* ═══════════════════════════════════════════════════════════════
+   Sidebar.css  —  ScrapSavvy · Clean Light Theme
+   Shared across: ScrapyardSidebar, CustomerSidebar, CompanySidebar
+═══════════════════════════════════════════════════════════════ */
 
+/* ── Font ── */
+@import url("https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&display=swap");
+
+/* ── CSS Variables ── */
 :root {
-    --background-color: #f0f0f0;
-    --container-background-color: #ffffff;
-    --primary-color: #f05454;
-    --secondary-color: #ccc;
-    --bs-dark: #222;
-    --text-color: #333;
-    --secondary-text-color: #666;
-    --input-border-color: #ccc;
-    --text-white-color: #ffffff;
-    --border-radius: 10px;
-    --box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-    --font-size-extra-large: 32px;
-    --font-size-large: 24px;
-    --font-size-medium: 18px;
-    --font-size-small: 14px;
-    --padding: 20px;
-  }
+  --sb-width: 240px;
+  --sb-bg: #ffffff;
+  --sb-border: #e2e8f0;
+  --sb-brand-bg: #f8fafc;
+  --sb-brand-color: #15803d;
+  --sb-brand-size: 15px;
+  --sb-item-color: #475569;
+  --sb-item-hover-bg: #f0fdf4;
+  --sb-item-hover-color: #15803d;
+  --sb-item-active-bg: #dcfce7;
+  --sb-item-active-color: #15803d;
+  --sb-item-active-border: #16a34a;
+  --sb-icon-color: #94a3b8;
+  --sb-icon-active-color: #16a34a;
+  --sb-font: "DM Sans", "Segoe UI", sans-serif;
+  --sb-divider: #f1f5f9;
+  --sb-shadow: 2px 0 12px rgba(0, 0, 0, 0.06);
 
+  /* Mobile toggle */
+  --sb-toggle-bg: #16a34a;
+  --sb-toggle-hover: #15803d;
+}
+
+/* ══════════════════════════════════════════
+   DESKTOP SIDEBAR
+══════════════════════════════════════════ */
 #sidebar-wrapper {
-    width: 250px;
-    height: 100%;
-    position: fixed;
-    top: 0;
-    left: 0;
-    overflow-y: auto;
-    transition: all 0.3s ease;
+  width: var(--sb-width);
+  min-height: 100vh;
+  background: var(--sb-bg);
+  border-right: 1px solid var(--sb-border);
+  box-shadow: var(--sb-shadow);
+  display: flex;
+  flex-direction: column;
+  flex-shrink: 0;
+  font-family: var(--sb-font);
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  overflow-y: auto;
+}
+
+/* ── Brand / Logo area ── */
+.sidebar-heading {
+  padding: 20px 20px 16px;
+  font-size: var(--sb-brand-size);
+  font-weight: 700;
+  color: var(--sb-brand-color);
+  letter-spacing: -0.3px;
+  background: var(--sb-brand-bg);
+  border-bottom: 1px solid var(--sb-border);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  user-select: none;
+}
+
+.sidebar-heading::before {
+  content: "♻️";
+  font-size: 18px;
+}
+
+/* ── Section label (optional group headers) ── */
+.sidebar-section-label {
+  padding: 16px 20px 6px;
+  font-size: 9px;
+  font-weight: 700;
+  color: #94a3b8;
+  letter-spacing: 1.4px;
+  text-transform: uppercase;
+}
+
+/* ── Nav items ── */
+.list-group-flush {
+  padding: 10px 0;
+  flex: 1;
+}
+
+.list-group-item {
+  display: flex !important;
+  align-items: center;
+  gap: 12px;
+  padding: 11px 20px !important;
+  font-size: 13.5px !important;
+  font-weight: 500 !important;
+  color: var(--sb-item-color) !important;
+  background: transparent !important;
+  border: none !important;
+  border-left: 3px solid transparent !important;
+  border-radius: 0 !important;
+  text-decoration: none !important;
+  transition:
+    background 0.15s,
+    color 0.15s,
+    border-color 0.15s;
+  cursor: pointer;
+  line-height: 1.4;
+  white-space: nowrap;
+}
+
+.list-group-item:hover {
+  background: var(--sb-item-hover-bg) !important;
+  color: var(--sb-item-hover-color) !important;
+  border-left-color: #bbf7d0 !important;
+}
+
+.list-group-item:hover .icon,
+.list-group-item:hover svg {
+  color: var(--sb-icon-active-color) !important;
+}
+
+/* Active state — apply via router or manually */
+.list-group-item.active,
+.list-group-item[aria-current="page"] {
+  background: var(--sb-item-active-bg) !important;
+  color: var(--sb-item-active-color) !important;
+  border-left-color: var(--sb-item-active-border) !important;
+  font-weight: 600 !important;
+}
+
+.list-group-item.active .icon,
+.list-group-item.active svg,
+.list-group-item[aria-current="page"] .icon,
+.list-group-item[aria-current="page"] svg {
+  color: var(--sb-icon-active-color) !important;
+}
+
+/* ── Icons ── */
+.icon,
+.list-group-item svg {
+  font-size: 15px;
+  width: 18px;
+  flex-shrink: 0;
+  color: var(--sb-icon-color);
+  transition: color 0.15s;
+}
+
+/* ── Divider between sections ── */
+.sidebar-divider {
+  height: 1px;
+  background: var(--sb-divider);
+  margin: 8px 16px;
+}
+
+/* ── Bottom user area (optional) ── */
+.sidebar-footer {
+  padding: 14px 20px;
+  border-top: 1px solid var(--sb-border);
+  font-size: 12px;
+  color: #94a3b8;
+  background: var(--sb-brand-bg);
+}
+
+/* ══════════════════════════════════════════
+   MOBILE TOGGLE BUTTON
+══════════════════════════════════════════ */
+.sb-mobile-toggle {
+  position: fixed;
+  top: 14px;
+  left: 14px;
+  z-index: 1100;
+  width: 38px;
+  height: 38px;
+  border-radius: 10px;
+  background: var(--sb-toggle-bg);
+  border: none;
+  color: #fff;
+  font-size: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  box-shadow: 0 3px 10px rgba(22, 163, 74, 0.35);
+  transition: background 0.15s;
+}
+
+.sb-mobile-toggle:hover {
+  background: var(--sb-toggle-hover);
+}
+
+/* ══════════════════════════════════════════
+   OFFCANVAS (mobile drawer)
+══════════════════════════════════════════ */
+.offcanvas {
+  background: var(--sb-bg) !important;
+  border-right: 1px solid var(--sb-border) !important;
+  width: var(--sb-width) !important;
+  font-family: var(--sb-font);
+}
+
+.offcanvas-header {
+  background: var(--sb-brand-bg);
+  border-bottom: 1px solid var(--sb-border);
+  padding: 18px 20px !important;
+}
+
+.offcanvas-title {
+  font-size: 15px !important;
+  font-weight: 700 !important;
+  color: var(--sb-brand-color) !important;
+}
+
+.offcanvas-body {
+  padding: 10px 0 !important;
+}
+
+.offcanvas-body .list-group-item {
+  color: var(--sb-item-color) !important;
+}
+
+/* Backdrop overlay */
+.offcanvas-backdrop {
+  background: rgba(15, 23, 42, 0.4) !important;
+}
+
+/* ══════════════════════════════════════════
+   RESPONSIVE — hide desktop sidebar on mobile
+══════════════════════════════════════════ */
+@media (max-width: 991px) {
+  #sidebar-wrapper {
+    display: none;
   }
-  
-  @media (min-width: 992px) {
-    #page-content-wrapper {
-      margin-left: 250px; 
-    }
+}
+
+@media (min-width: 992px) {
+  .sb-mobile-toggle {
+    display: none;
   }
-  
-  .sidebar-heading {
-    padding: 15px 20px;
-    font-size: 1.5rem;
-    background: var(--primary-color);
-    color: var(--text-white-color);
-    text-align: center;
-  }
-  
-  .offcanvas-body{
-    width: 100%;
-    text-align: left;
-  }
-  .list-group-item {
-    margin-top: 8px;
-    border: none;
-    background: var(--bs-dark);
-    transition: background-color 0.3s ease;
-  }
-  
-  .list-group-item:hover {
-    background: var(--primary-color);
-    color: white;
-  }
-  
-  .list-group-item .icon {
-    width: 50px;
-    display: inline-block;
-    text-align: center;
-  }
-  
-  .list-group-item span {
-    flex: 1;
-  }
-  
-  .offcanvas {
-    margin-top: 8px;
-    border: none;
-    background: var(--bs-dark);
-    width: 250px;
-    color: white;
-  }
-  
-  .offcanvas .offcanvas-header {
-    border-bottom: 1px solid #495057;
-  }
-  
-  .offcanvas .offcanvas-body {
-    flex: 1;
-  }
-  
-  .offcanvas .list-group-item {
-    color: white;
-  }
-  
-  .offcanvas .list-group-item:hover {
-    background: var(--primary-color);
-    color: white;
-  }
-  
+}
+
+/* ── Remove Bootstrap bg-dark override ── */
+#sidebar-wrapper.bg-dark {
+  background: var(--sb-bg) !important;
+}
