@@ -1,4 +1,4 @@
-import PaymentInvoice from "../../../payment/PaymentInvoice";
+import PaymentInvoice from "../../../features/payment/PaymentInvoice";
 
 const CompPaymentsReceivedTableRow = ({ record }) => {
   return (

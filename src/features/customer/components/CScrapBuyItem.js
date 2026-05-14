@@ -9,7 +9,7 @@ import {
   Typography,
 } from "@mui/material";
 import { useState } from "react";
-import ScrapyardService from "../../../Services/ScrapyardService";
+import ScrapyardService from "../../../services/ScrapyardService";
 import Razorpay from "../../../shared/components/Razorpay";
 import Toast from "../../../shared/components/Snackbar";
 

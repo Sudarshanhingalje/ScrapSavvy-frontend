@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import PaymentService from "./../Services/PaymentService";
+import PaymentService from "../../services/PaymentService";
 import PaymentsTableRow from "./PaymentsReceivedTableRow";
 
 const PaymentsReceivedTable = () => {

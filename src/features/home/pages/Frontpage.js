@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import "./Static/Front.css";
+import "../../../features/home/styles/Front.css";
 
 /* ─── DATA ─── */
 const TICKER_ITEMS = [

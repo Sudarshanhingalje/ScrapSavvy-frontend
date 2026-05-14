@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import ScrapyardService from "../../../Services/ScrapyardService";
+import ScrapyardService from "../../../services/ScrapyardService";
 import LogoutMenu from "../../../shared/components/LogoutMenu";
 import ScrapyardSidebar from "../../../shared/layout/ScrapyardSidebar";
 import SAddProduct from "./SAddProduct";

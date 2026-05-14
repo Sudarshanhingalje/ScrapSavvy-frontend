@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
-import CompanyService from "../../../Services/CompanyService";
 import { ActionCreator } from "../../../redux/actions/ActionCreator";
+import CompanyService from "../../../services/CompanyService";
 import Toast from "../../../shared/components/Snackbar";
 import CompUpdateProduct from "./CompUpdateProduct";
 

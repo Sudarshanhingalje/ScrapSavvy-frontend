@@ -10,7 +10,7 @@ import {
 } from "@mui/material";
 import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
-import CompanyService from "../../../Services/CompanyService";
+import CompanyService from "../../../services/CompanyService";
 import Toast from "../../../shared/components/Snackbar";
 
 const SAddProduct = ({ open, onClose }) => {

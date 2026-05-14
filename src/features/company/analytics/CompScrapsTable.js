@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
-import CompanyService from "../../../Services/CompanyService";
+import CompanyService from "../../../services/CompanyService";
 import LogoutMenu from "../../../shared/components/LogoutMenu";
 import CompanySidebar from "../../../shared/layout/CompanySidebar";
 import CAddProduct from "./CAddProduct";

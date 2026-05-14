@@ -11,8 +11,8 @@ import {
 import { useState } from "react";
 import { useDispatch } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
-import AuthService from "../../../Services/AuthService";
 import { ActionCreator } from "../../../redux/actions/ActionCreator";
+import AuthService from "../../../services/AuthService";
 import Navbar from "../../../shared/components/Navbar";
 import Toast from "../../../shared/components/Snackbar";
 import { ValidateEmail, ValidatePassword } from "./Validation";

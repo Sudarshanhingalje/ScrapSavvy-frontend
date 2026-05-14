@@ -16,7 +16,7 @@ import { Bar, Doughnut, Line } from "react-chartjs-2";
 import {
   connectSocket,
   disconnectSocket,
-} from "../../../Services/SocketService";
+} from "../../../services/SocketService";
 import LogoutMenu from "../../../shared/components/LogoutMenu";
 import ScrapyardSidebar from "../../../shared/layout/ScrapyardSidebar";
 

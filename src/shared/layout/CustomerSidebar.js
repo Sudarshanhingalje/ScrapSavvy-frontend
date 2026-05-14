@@ -8,7 +8,7 @@ import {
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useState } from "react";
 import { Link, useLocation } from "react-router-dom";
-import "../../Static/Sidebar.css";
+import "../../static/Sidebar.css";
 import { BRANDNAME } from "../utils/Utils";
 
 const CustomerSidebar = () => {

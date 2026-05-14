@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import "../../../Static/ScrapSale.css";
 import CompanySidebar from "../../../shared/layout/CompanySidebar";
+import "../../../static/ScrapSale.css";
 
 const MOCK_RATES = {
   Metal: 1,

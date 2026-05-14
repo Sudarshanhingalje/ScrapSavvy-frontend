@@ -10,11 +10,11 @@ import {
 } from "@mui/material";
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import AuthService from "../../../Services/AuthService";
 import {
   ValidateEmail,
   ValidatePassword,
 } from "../../../features/auth/pages/Validation";
+import AuthService from "../../../services/AuthService";
 import Navbar from "../../../shared/components/Navbar";
 import Toast from "../../../shared/components/Snackbar";
 

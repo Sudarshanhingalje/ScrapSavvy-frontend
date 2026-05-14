@@ -1,4 +1,4 @@
-import PaymentsMadeTable from "../../../payment/PaymentsMadeTable";
+import PaymentsMadeTable from "../../../features/payment/PaymentsMadeTable";
 import LogoutMenu from "../../../shared/components/LogoutMenu";
 import CustomerSidebar from "../../../shared/layout/CustomerSidebar";
 
