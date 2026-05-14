@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
-import { ActionCreator } from "../../State/actions/ActionCreator";
+import { ActionCreator } from "../../redux/actions/ActionCreator";
 import SScrapBuyItem from "./SScrapBuyItem";
 
 const SScrapTableRow = ({ record }) => {

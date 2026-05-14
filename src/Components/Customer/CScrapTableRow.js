@@ -1,7 +1,5 @@
-import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import { useState } from "react";
 import { useDispatch } from "react-redux";
-import { ActionCreator } from "../../State/actions/ActionCreator";
 import CScrapBuyItem from "./CScrapBuyItem";
 
 const CScrapTableRow = ({ product }) => {

@@ -1,13 +1,11 @@
-import React, { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
-import SScrapBuyItem from "./SScrapBuyItem";
+import { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
-import { ActionCreator } from "../../State/actions/ActionCreator";
-import SUpdateProduct from "./SUpdateProduct";
+import { ActionCreator } from "../../redux/actions/ActionCreator";
 import ScrapyardService from "../../Services/ScrapyardService";
 import Toast from "../Common/Snackbar";
+import SUpdateProduct from "./SUpdateProduct";
 
-const MySScrapTableRow = ({ record }) => {
+function MySScrapTableRow({ record }) {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [product, setProduct] = useState({});
   const [snackbarOpen, setSnackbarOpen] = useState(false);
@@ -90,6 +88,6 @@ const MySScrapTableRow = ({ record }) => {
       />
     </>
   );
-};
+}
 
 export default MySScrapTableRow;

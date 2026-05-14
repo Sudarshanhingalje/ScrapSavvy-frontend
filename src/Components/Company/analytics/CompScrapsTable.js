@@ -1,27 +1,33 @@
 import { useEffect, useState } from "react";
-import ScrapyardService from "../../Services/ScrapyardService";
-import LogoutMenu from "../Common/LogoutMenu";
-import ScrapyardSidebar from "../Layout/ScrapyardSidebar";
-import MySScrapTableRow from "./MySScrapTableRow";
-import SAddProduct from "./SAddProduct";
+import { useSelector } from "react-redux";
+import CompanyService from "../../../Services/CompanyService";
+import LogoutMenu from "../../Common/LogoutMenu";
+import CompanySidebar from "../../Layout/CompanySidebar";
+import CompScrapTableRow from "../analytics/CompScrapTableRow";
+import CAddProduct from "./CAddProduct";
 
-function MySScrapsTable() {
+const CompScrapsTable = () => {
+  const userState = useSelector((state) => state.User);
   const [isModalOpen, setIsModalOpen] = useState(false);
+
+  const handleOpenModal = () => setIsModalOpen(true);
+  const handleCloseModal = () => setIsModalOpen(false);
+
   const [snackbarOpen, setSnackbarOpen] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState("");
   const [snackbarSeverity, setSnackbarSeverity] = useState("success");
   const [allProductsList, setAllProductsList] = useState([]);
 
-  const handleOpenModal = () => setIsModalOpen(true);
-  const handleCloseModal = () => setIsModalOpen(false);
-
   useEffect(() => {
     getProducts();
   }, []);
 
+  const handleSnackbarClose = () => {
+    setSnackbarOpen(false);
+  };
   const getProducts = () => {
     const userProfileId = localStorage.getItem("userId");
-    ScrapyardService.GetMyAllProducts(userProfileId)
+    CompanyService.GetAllProducts(userProfileId)
       .then((response) => {
         if (response.status === 200) {
           setAllProductsList(response.data);
@@ -43,7 +49,7 @@ function MySScrapsTable() {
   };
   return (
     <div className="d-flex">
-      <ScrapyardSidebar />
+      <CompanySidebar />
       <div className="container">
         <div className="dashboard-content">
           <div className="float-end">
@@ -73,25 +79,25 @@ function MySScrapsTable() {
                   <th scope="col">Category</th>
                   <th scope="col">Product name</th>
                   <th scope="col">Quantity</th>
+                  <th scope="col">Listed by</th>
                   <th scope="col">Listed on</th>
                   <th scope="col">Price/kg</th>
                   <th scope="col">Total amount</th>
-                  <th scope="col">Product status</th>
                   <th scope="col">Action</th>
                 </tr>
               </thead>
               <tbody>
-                {allProductsList.map((record, index) => {
-                  return <MySScrapTableRow record={record} key={index} />;
+                {allProductsList.map((record) => {
+                  return <CompScrapTableRow record={record} />;
                 })}
               </tbody>
             </table>
           </div>
-          <SAddProduct open={isModalOpen} onClose={handleCloseModal} />
+          <CAddProduct open={isModalOpen} onClose={handleCloseModal} />
         </div>
       </div>
     </div>
   );
-}
+};
 
-export default MySScrapsTable;
+export default CompScrapsTable;
