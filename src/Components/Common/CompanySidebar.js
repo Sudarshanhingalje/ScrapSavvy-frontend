@@ -1,5 +1,4 @@
 import {
-  faBoxOpen,
   faClipboardList,
   faCreditCard,
   faHome,
@@ -35,7 +34,7 @@ const CompanySidebar = () => {
       icon: faClipboardList,
       label: "Order History",
     },
-    { to: "/com-list-of-scraps", icon: faBoxOpen, label: "Products" },
+    // { to: "/com-list-of-scraps", icon: faBoxOpen, label: "Products" },
     { to: "/company-payments", icon: faCreditCard, label: "Payments" },
     { to: "/company-profile", icon: faUser, label: "Profile" },
   ];
