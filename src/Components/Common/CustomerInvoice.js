@@ -310,7 +310,7 @@ export const generateCustomerInvoice = (order) => {
 
   // ── Stamp Image ─────────────────────────────────────────────────────
   try {
-    const stampSrc = order.stampBase64 || "/stamp.png";
+    const stampSrc = order.stampBase64 || "../../assets/images/stamp.png";
     const stampSize = Math.min(stampAreaW - 3, boxH - 6);
     const stampX = stampAreaX + (stampAreaW - stampSize) / 2;
     const stampY = y + (boxH - stampSize) / 2;
