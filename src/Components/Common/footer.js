@@ -1,7 +1,6 @@
 // src/components/Footer.js
 
-import React from 'react';
-import './Footer.css'; // Import the CSS file for styling if you have one
+import "./Footer.css"; // Import the CSS file for styling if you have one
 
 function Footer() {
   return (
@@ -14,13 +13,13 @@ function Footer() {
         </div>
         <div className="social-links">
           <a href=" https://www.instagram.com/scacpsavvy_m24/">
-          <i className="fab fa-instagram"></i>
+            <i className="fab fa-instagram"></i>
           </a>
           <a href=" scrapsavvy.m24@gmail.com">
-          <i className="fas fa-envelope"></i>
+            <i className="fas fa-envelope"></i>
           </a>
           <a href="8329826990">
-          <i className="fas fa-phone"></i>
+            <i className="fas fa-phone"></i>
           </a>
         </div>
       </div>

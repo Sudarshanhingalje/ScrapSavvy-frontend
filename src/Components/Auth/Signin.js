@@ -12,7 +12,7 @@ import { useState } from "react";
 import { useDispatch } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
 import AuthService from "../../Services/AuthService";
-import { ActionCreator } from "../../State/Actions/ActionCreator";
+import { ActionCreator } from "../../State/actions/ActionCreator";
 import Navbar from "../Common/Navbar";
 import Toast from "../Common/Snackbar";
 import { ValidateEmail, ValidatePassword } from "./Validation";
