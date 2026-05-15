@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { API_BASE_URL } from "../../../config/env";
 import "../../../features/customer/styles/Customerdashboard.css";
 import LogoutMenu from "../../../shared/components/LogoutMenu";
 import CustomerSidebar from "../../../shared/layout/CustomerSidebar";
@@ -19,7 +20,7 @@ const CustomerDashboard = () => {
   };
 
   const placeOrder = () => {
-    fetch("http://localhost:8080/api/scrap-orders/create", {
+    fetch(`${API_BASE_URL}/api/scrap-orders/create`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
@@ -309,67 +310,6 @@ const CustomerDashboard = () => {
                 ))}
               </div>
             )}
-          </div>
-
-          {/* ── PLACE ORDER FORM ── */}
-          <div className="cd-section">
-            <h2 className="cd-section__title">Place a Scrap Order</h2>
-            <div className="cd-order-form">
-              <div className="cd-form-group">
-                <label className="cd-form-label">Customer Name</label>
-                <input
-                  className="cd-form-input"
-                  name="customerName"
-                  placeholder="Enter your name"
-                  value={form.customerName}
-                  onChange={handleChange}
-                />
-              </div>
-              <div className="cd-form-group">
-                <label className="cd-form-label">Scrap Type</label>
-                <select
-                  className="cd-form-select"
-                  name="scrapType"
-                  value={form.scrapType}
-                  onChange={handleChange}
-                >
-                  <option value="">Select type</option>
-                  <option value="iron">Iron</option>
-                  <option value="copper">Copper</option>
-                  <option value="steel">Steel</option>
-                  <option value="aluminum">Aluminum</option>
-                  <option value="brass">Brass</option>
-                </select>
-              </div>
-              <div className="cd-form-group">
-                <label className="cd-form-label">Quantity (kg)</label>
-                <input
-                  className="cd-form-input"
-                  name="quantity"
-                  type="number"
-                  placeholder="e.g. 50"
-                  value={form.quantity}
-                  onChange={handleChange}
-                />
-              </div>
-              <div className="cd-form-group">
-                <label className="cd-form-label">Pickup Address</label>
-                <input
-                  className="cd-form-input"
-                  name="pickupAddress"
-                  placeholder="Enter pickup address"
-                  value={form.pickupAddress}
-                  onChange={handleChange}
-                />
-              </div>
-            </div>
-            <button
-              className="cd-btn cd-btn--primary cd-btn--full"
-              style={{ marginTop: "16px" }}
-              onClick={placeOrder}
-            >
-              🚚 Place Order
-            </button>
           </div>
         </div>
       </div>
