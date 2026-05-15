@@ -1,11 +1,8 @@
 import { generateInvoice } from "../../../shared/components/Invoice";
-
 import Razorpay from "../../../shared/components/Razorpay";
 
 import PaymentSection from "./PaymentSection";
-
 import StatusBadge from "./StatusBadge";
-
 import TrackingTimeline from "./TrackingTimeline";
 
 import { formatDate } from "../utils/formatDate";
@@ -48,9 +45,7 @@ const OrderCard = ({ order }) => {
 
   const handleCash = async () => {
     await updatePayment(order.id, "COD", "PENDING", order.totalPrice);
-
     await updateStatus(order.id, "COMPLETED");
-
     window.location.reload();
   };
 
@@ -84,37 +79,37 @@ const OrderCard = ({ order }) => {
         <h5 className="mb-2">{order.scrapType}</h5>
 
         <p>
-          <b>Quantity:</b> {order.quantity} kg
+          <b>Quantity:</b> {order.quantity ?? 0} kg
         </p>
 
         <p>
-          <b>Total:</b> ₹{order.totalPrice}
+          <b>Total:</b> ₹{order.totalPrice ?? 0}
         </p>
 
         <p>
-          <b>Contact:</b> {order.contactNo}
+          <b>Contact:</b> {order.contactNo ?? "—"}
         </p>
 
         <p>
           <b>Order Date:</b> {formatDate(order.createdAt)}
         </p>
 
+        {/* SCHEDULED */}
         {order.status === "SCHEDULED" && (
           <>
             <hr />
 
             <p>
-              <b>Pickup Date:</b>
-              {formatDate(order.pickupDate)}
+              <b>Pickup Date:</b> {formatDate(order.pickupDate)}
             </p>
 
             <p>
-              <b>Pickup Time:</b>
-              {order.pickupTime || "—"}
+              <b>Pickup Time:</b> {order.pickupTime || "—"}
             </p>
           </>
         )}
 
+        {/* OUT FOR PICKUP */}
         {order.status === "OUT_FOR_PICKUP" && (
           <>
             <hr />
@@ -124,19 +119,19 @@ const OrderCard = ({ order }) => {
             </p>
 
             <p>
-              <b>Driver Name:</b>
-              {order.assignedDriver || "Not Assigned"}
+              <b>Driver Name:</b> {order.assignedDriver || "Not Assigned"}
             </p>
 
             <p>
-              <b>Driver Contact:</b>
-              {order.driverContactNo || "Not Available"}
+              <b>Driver Contact:</b> {order.driverContactNo || "Not Available"}
             </p>
           </>
         )}
 
+        {/* TIMELINE */}
         <TrackingTimeline status={order.status} />
 
+        {/* PAYMENT */}
         <PaymentSection
           order={order}
           handleCash={handleCash}
@@ -145,6 +140,7 @@ const OrderCard = ({ order }) => {
           updatePayment={updatePayment}
         />
 
+        {/* STATUS + INVOICE */}
         <div className="d-flex justify-content-between align-items-center mt-3">
           <StatusBadge status={order.status} />
 

@@ -126,3 +126,56 @@ textarea {
   font-size: 50px;
   font-weight: 900;
 }
+
+.ce-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.6);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
+}
+
+.ce-modal {
+  background: white;
+  padding: 30px 40px;
+  border-radius: 16px;
+  text-align: center;
+  animation: pop 0.3s ease-out;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+}
+
+.ce-emoji {
+  font-size: 40px;
+  animation: shake 0.5s infinite alternate;
+}
+
+.ce-title {
+  font-size: 28px;
+  margin: 10px 0;
+}
+
+.ce-msg {
+  color: #555;
+}
+
+@keyframes pop {
+  from {
+    transform: scale(0.6);
+    opacity: 0;
+  }
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+@keyframes shake {
+  from {
+    transform: rotate(-10deg);
+  }
+  to {
+    transform: rotate(10deg);
+  }
+}

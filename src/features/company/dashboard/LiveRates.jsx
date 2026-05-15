@@ -1,16 +1,22 @@
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 
+import { getScrapRates } from "../../scrapRates/redux/scrapRatesThunk";
 import { PRICE_KEYS } from "../constants/priceKeys";
-import { getLivePrices } from "../redux/companyDashboardThunk";
 
 const LiveRates = () => {
   const dispatch = useDispatch();
 
-  const { prices } = useSelector((state) => state.companyDashboard);
+  const { data: prices, loading } = useSelector((state) => state.scrapRates);
 
   useEffect(() => {
-    dispatch(getLivePrices());
+    dispatch(getScrapRates());
+
+    const interval = setInterval(() => {
+      dispatch(getScrapRates());
+    }, 10000);
+
+    return () => clearInterval(interval);
   }, [dispatch]);
 
   return (
@@ -31,7 +37,9 @@ const LiveRates = () => {
                 {icon} {label}
               </div>
 
-              <div className="cd-rate-chip__val">₹{prices[key] || "--"}</div>
+              <div className="cd-rate-chip__val">
+                ₹{prices?.[key]?.companyPrice || "--"}
+              </div>
 
               <div className="cd-rate-chip__unit">per kg · company rate</div>
             </div>
