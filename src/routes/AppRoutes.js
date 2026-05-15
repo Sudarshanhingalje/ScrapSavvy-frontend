@@ -6,10 +6,9 @@ import Signup from "../features/auth/pages/Signup";
 
 import CompPaymentsReceivedTable from "../features/company/analytics/CompPaymentsReceivedTable";
 import CompScrapsTable from "../features/company/analytics/CompScrapsTable";
-import Ordershistory from "../features/company/dashboard/Ordershistory";
-import ScrapOrder from "../features/company/dashboard/ScrapOrder";
 import CompanyDashboard from "../features/company/pages/CompanyDashboard";
 import CompanyProfile from "../features/company/pages/CompanyProfile";
+import ScrapOrder from "../features/company/pages/ScrapOrder";
 
 import CScrapsTable from "../features/customer/components/CScrapsTable";
 import CustomerTransactions from "../features/customer/dashboard/CustomerTransactions";
@@ -26,10 +25,10 @@ import ScrapOrders from "../features/scrapyard/orders/ScrapOrders";
 import ScrapyardDashboard from "../features/scrapyard/pages/ScrapyardDashboard";
 import ScrapyardProfile from "../features/scrapyard/pages/ScrapyardProfile";
 
+import OrdersHistory from "../features/company/pages/OrdersHistory";
+import Frontpage from "../features/home/pages/Frontpage";
 import PaymentsMadeTable from "../features/payment/PaymentsMadeTable";
 import PaymentsReceivedTable from "../features/payment/PaymentsReceivedTable";
-
-import Frontpage from "../features/home/pages/Frontpage";
 
 function AppRoutes() {
   return (
@@ -44,7 +43,7 @@ function AppRoutes() {
       <Route path="/company-dashboard/scrap-order" element={<ScrapOrder />} />
       <Route
         path="/company-dashboard/orders-history"
-        element={<Ordershistory />}
+        element={<OrdersHistory />}
       />
       <Route path="/com-list-of-scraps" element={<CompScrapsTable />} />
       <Route path="/company-payments" element={<CompPaymentsReceivedTable />} />
