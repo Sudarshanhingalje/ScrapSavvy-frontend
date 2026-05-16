@@ -39,10 +39,10 @@ const LiveRates = () => {
               </div>
 
               <div className="cd-rate-chip__val">
-                ₹{prices?.[key]?.companyPrice || "--"}
+                ₹{prices?.[key]?.customerPrice || "--"}
               </div>
 
-              <div className="cd-rate-chip__unit">per kg · company rate</div>
+              <div className="cd-rate-chip__unit">per kg · customer rate</div>
             </div>
           ))}
         </div>

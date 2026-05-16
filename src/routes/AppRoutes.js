@@ -12,10 +12,10 @@ import ScrapOrder from "../features/company/pages/ScrapOrder";
 
 import CScrapsTable from "../features/customer/components/CScrapsTable";
 import CustomerTransactions from "../features/customer/dashboard/CustomerTransactions";
-import CustomerOrdersHistory from "../features/customer/orders/CustomerOrdersHistory";
-import CustomerSells from "../features/customer/orders/CustomerSells";
 import CustomerDashboard from "../features/customer/pages/CustomerDashboard";
+import CustomerOrdersHistory from "../features/customer/pages/CustomerOrdersHistory";
 import CustomerProfile from "../features/customer/pages/CustomerProfile";
+import CustomerSells from "../features/customer/pages/CustomerSells";
 
 import MySScrapsTable from "../features/scrapyard/components/MySScrapsTable";
 import SScrapsTable from "../features/scrapyard/components/SScrapsTable";
