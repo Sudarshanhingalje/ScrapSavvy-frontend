@@ -1,5 +1,5 @@
 import axios from "axios";
-import { BASEURL } from "../shared/utils/Utils";
+import { BASEURL } from "../../shared/utils/Utils";
 
 class CompanyService {
   AddProduct(formData) {

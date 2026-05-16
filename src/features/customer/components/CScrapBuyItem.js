@@ -9,9 +9,9 @@ import {
   Typography,
 } from "@mui/material";
 import { useState } from "react";
-import ScrapyardService from "../../../services/ScrapyardService";
 import Razorpay from "../../../shared/components/Razorpay";
 import Toast from "../../../shared/components/Snackbar";
+import ScrapyardService from "../../../shared/services/ScrapyardService";
 
 const CScrapBuyItem = ({ open, onClose, product }) => {
   const [snackbarOpen, setSnackbarOpen] = useState(false);

@@ -23,53 +23,25 @@ ChartJS.register(
 
 const RevenueChart = ({ data }) => {
   const chartData = {
-    labels: data?.labels && data.labels.length > 0 ? data.labels : ["No Data"],
-
+    labels: data?.labels || [],
     datasets: [
       {
         label: "Revenue",
-
-        data: data?.values && data.values.length > 0 ? data.values : [0],
-
+        data: data?.values || [],
         fill: true,
-
         borderColor: "#16a34a",
-
-        backgroundColor: "rgba(22,163,74,0.12)",
-
+        backgroundColor: "rgba(22,163,74,0.1)",
         tension: 0.4,
-
-        borderWidth: 3,
-
-        pointRadius: 4,
       },
     ],
-  };
-
-  const options = {
-    responsive: true,
-
-    maintainAspectRatio: false,
-
-    plugins: {
-      legend: {
-        position: "top",
-      },
-    },
-
-    scales: {
-      y: {
-        beginAtZero: true,
-      },
-    },
   };
 
   return (
     <div className="sd-card">
       <h2 className="sd-card-title">📉 Revenue Analysis</h2>
 
-      <div className="sd-chart-wrapper">
-        <Line data={chartData} options={options} />
+      <div className="sd-chart-container">
+        <Line data={chartData} />
       </div>
     </div>
   );

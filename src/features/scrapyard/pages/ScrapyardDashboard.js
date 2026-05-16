@@ -927,8 +927,6 @@
 
 // export default ScrapyardDashboard;
 
-import { useEffect, useState } from "react";
-
 import LogoutMenu from "../../../shared/components/LogoutMenu";
 import ScrapyardSidebar from "../../../shared/layout/ScrapyardSidebar";
 
@@ -940,240 +938,59 @@ import RevenueChart from "../dashboard/RevenueChart";
 import ScrapDistribution from "../dashboard/ScrapDistribution";
 import UpdatePriceForm from "../dashboard/UpdatePriceForm";
 
+import useScrapyardDashboard from "../hooks/useScrapyardDashboard";
+
+import {
+  calculateStats,
+  getCollectionChartData,
+  getRevenueChartData,
+  getScrapDistributionData,
+} from "../utils/dashboardUtils";
+
 import "../styles/ScrapyardDashboard.css";
 
-const MONTH_NAMES = [
-  "Jan",
-  "Feb",
-  "Mar",
-  "Apr",
-  "May",
-  "Jun",
-  "Jul",
-  "Aug",
-  "Sep",
-  "Oct",
-  "Nov",
-  "Dec",
-];
-
 const ScrapyardDashboard = () => {
-  /* ───────────────── STATE ───────────────── */
-  const [orders, setOrders] = useState([]);
-  const [prices, setPrices] = useState({});
-  const [inventory, setInventory] = useState([]);
-  const [transactions, setTransactions] = useState([]);
+  const { orders, prices, inventory, transactions } = useScrapyardDashboard();
 
-  /* ───────────────── FETCH ORDERS ───────────────── */
-  useEffect(() => {
-    const token = localStorage.getItem("token");
+  const stats = calculateStats(orders);
 
-    fetch("http://localhost:8080/api/scrap-orders/owner", {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    })
-      .then(async (res) => {
-        if (!res.ok) return [];
-        const text = await res.text();
-        return text ? JSON.parse(text) : [];
-      })
-      .then((data) => {
-        setOrders(Array.isArray(data) ? data : []);
-      })
-      .catch((err) => {
-        console.error("Orders Error:", err);
-        setOrders([]);
-      });
-  }, []);
+  const collectionChartData = getCollectionChartData(transactions);
 
-  /* ───────────────── FETCH PRICES ───────────────── */
-  useEffect(() => {
-    const token = localStorage.getItem("token");
+  const revenueChartData = getRevenueChartData(transactions);
 
-    const ownerId = 2;
-
-    fetch(`http://localhost:8080/api/prices/all?ownerId=${ownerId}`, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    })
-      .then(async (res) => {
-        if (!res.ok) return [];
-        const text = await res.text();
-        return text ? JSON.parse(text) : [];
-      })
-      .then((data) => {
-        const priceMap = {};
-        data.forEach((item) => {
-          priceMap[item.materialType] = {
-            customer: item.customerPrice,
-            company: item.companyPrice,
-          };
-        });
-        setPrices(priceMap);
-      })
-      .catch((err) => {
-        console.error("Prices Error:", err);
-        setPrices({});
-      });
-  }, []);
-
-  /* ───────────────── FETCH INVENTORY ───────────────── */
-  useEffect(() => {
-    const token = localStorage.getItem("token");
-
-    fetch("http://localhost:8080/api/inventory", {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    })
-      .then(async (res) => {
-        if (!res.ok) return [];
-        const text = await res.text();
-        return text ? JSON.parse(text) : [];
-      })
-      .then((data) => {
-        setInventory(Array.isArray(data) ? data : []);
-      })
-      .catch((err) => {
-        console.error("Inventory Error:", err);
-        setInventory([]);
-      });
-  }, []);
-
-  /* ───────────────── FETCH TRANSACTIONS ───────────────── */
-  useEffect(() => {
-    const token = localStorage.getItem("token");
-
-    fetch("http://localhost:8080/api/transactions", {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    })
-      .then(async (res) => {
-        if (!res.ok) return [];
-        const text = await res.text();
-        return text ? JSON.parse(text) : [];
-      })
-      .then((data) => {
-        setTransactions(Array.isArray(data) ? data : []);
-      })
-      .catch((err) => {
-        console.error("Transactions Error:", err);
-        setTransactions([]);
-      });
-  }, []);
-
-  /* ───────────────── STATS ───────────────── */
-  const completedOrders = orders.filter(
-    (order) => order.status === "COMPLETED",
-  );
-
-  const stats = {
-    totalOrders: orders.length,
-
-    totalScrapReceived: orders.reduce(
-      (sum, order) => sum + (order.quantity || 0),
-      0,
-    ),
-
-    totalScrapSold: completedOrders.reduce(
-      (sum, order) => sum + (order.quantity || 0),
-      0,
-    ),
-
-    totalRevenue: completedOrders.reduce(
-      (sum, order) => sum + (order.totalPrice || 0),
-      0,
-    ),
-  };
-
-  /* ───────────────── MONTHLY COLLECTION DATA ───────────────── */
-  const monthlyMap = {};
-
-  transactions
-    .filter((tx) => tx.type === "ADD")
-    .forEach((tx) => {
-      if (!tx.createdAt) return;
-      const month = MONTH_NAMES[new Date(tx.createdAt).getMonth()];
-      monthlyMap[month] = (monthlyMap[month] || 0) + (tx.quantity || 0);
-    });
-
-  const collectionChartData = {
-    labels: MONTH_NAMES.filter((m) => monthlyMap[m] !== undefined),
-    values: MONTH_NAMES.filter((m) => monthlyMap[m] !== undefined).map(
-      (m) => monthlyMap[m],
-    ),
-  };
-
-  /* ───────────────── SCRAP DISTRIBUTION ───────────────── */
-  const scrapMap = {};
-
-  inventory.forEach((item) => {
-    const type = item.materialType || "Others";
-    scrapMap[type] = (scrapMap[type] || 0) + (item.quantity || 0);
-  });
-
-  const scrapDistributionData = {
-    labels: Object.keys(scrapMap),
-    values: Object.values(scrapMap),
-  };
-
-  /* ───────────────── REVENUE DATA ───────────────── */
-  const revenueMap = {};
-
-  transactions
-    .filter((tx) => tx.type === "REMOVE")
-    .forEach((tx) => {
-      if (!tx.createdAt) return;
-      const month = MONTH_NAMES[new Date(tx.createdAt).getMonth()];
-      revenueMap[month] =
-        (revenueMap[month] || 0) + (tx.quantity || 0) * (tx.pricePerKg || 0);
-    });
-
-  const revenueChartData = {
-    labels: MONTH_NAMES.filter((m) => revenueMap[m] !== undefined),
-    values: MONTH_NAMES.filter((m) => revenueMap[m] !== undefined).map(
-      (m) => revenueMap[m],
-    ),
-  };
+  const scrapDistributionData = getScrapDistributionData(inventory);
 
   return (
     <div className="sd-layout">
       <ScrapyardSidebar />
 
       <div className="sd-main">
-        {/* HEADER */}
         <div className="sd-topbar">
           <div>
             <p className="sd-subtitle">ScrapSavvy · Owner Panel</p>
+
             <h1 className="sd-title">Scrapyard Dashboard</h1>
           </div>
 
           <LogoutMenu />
         </div>
 
-        {/* BODY */}
         <div className="sd-content">
-          {/* STATS */}
           <DashboardStats stats={stats} />
 
-          {/* PRICE CARDS */}
           <PriceCards prices={prices} />
 
-          {/* CHARTS */}
           <div className="sd-grid-2">
             <CollectionChart data={collectionChartData} />
+
             <ScrapDistribution data={scrapDistributionData} />
           </div>
 
-          {/* UPDATE FORM */}
           <UpdatePriceForm />
 
-          {/* BOTTOM */}
           <div className="sd-grid-bottom">
             <RevenueChart data={revenueChartData} />
+
             <InventorySummary inventory={inventory} />
           </div>
         </div>

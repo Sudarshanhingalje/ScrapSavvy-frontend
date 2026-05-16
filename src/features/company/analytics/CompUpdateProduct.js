@@ -2,8 +2,8 @@ import { Box, FormControl, Modal, TextField, Typography } from "@mui/material";
 import { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import ScrapyardService from "../../../services/ScrapyardService";
 import Toast from "../../../shared/components/Snackbar";
+import ScrapyardService from "../../../shared/services/ScrapyardService";
 
 const CompUpdateProduct = ({ open, onClose, product }) => {
   const navigate = useNavigate();

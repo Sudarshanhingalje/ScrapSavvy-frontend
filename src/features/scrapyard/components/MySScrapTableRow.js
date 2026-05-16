@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 import { ActionCreator } from "../../../redux/actions/ActionCreator";
-import ScrapyardService from "../../../services/ScrapyardService";
 import Toast from "../../../shared/components/Snackbar";
+import ScrapyardService from "../../../shared/services/ScrapyardService";
 import SUpdateProduct from "./SUpdateProduct";
 
 function MySScrapTableRow({ record }) {

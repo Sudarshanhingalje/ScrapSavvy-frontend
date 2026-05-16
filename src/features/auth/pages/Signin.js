@@ -12,9 +12,9 @@ import { useState } from "react";
 import { useDispatch } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
 import { ActionCreator } from "../../../redux/actions/ActionCreator";
-import AuthService from "../../../services/AuthService";
 import Navbar from "../../../shared/components/Navbar";
 import Toast from "../../../shared/components/Snackbar";
+import AuthService from "../../../shared/services/AuthService";
 import { ValidateEmail, ValidatePassword } from "./Validation";
 
 const Signin = () => {

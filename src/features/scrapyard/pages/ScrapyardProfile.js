@@ -9,10 +9,10 @@ import {
 import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import AuthService from "../../../services/AuthService";
 import LogoutMenu from "../../../shared/components/LogoutMenu";
 import Toast from "../../../shared/components/Snackbar";
 import ScrapyardSidebar from "../../../shared/layout/ScrapyardSidebar";
+import AuthService from "../../../shared/services/AuthService";
 
 const ScrapyardProfile = () => {
   const navigate = useNavigate();

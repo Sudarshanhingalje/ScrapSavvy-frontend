@@ -1,7 +1,7 @@
 import { Box, FormControl, Modal, TextField, Typography } from "@mui/material";
 import { useEffect, useState } from "react";
-import ScrapyardService from "../../../services/ScrapyardService";
 import Toast from "../../../shared/components/Snackbar";
+import ScrapyardService from "../../../shared/services/ScrapyardService";
 
 const SUpdateProduct = ({ open, onClose, product }) => {
   const [productId, setProductId] = useState(0);

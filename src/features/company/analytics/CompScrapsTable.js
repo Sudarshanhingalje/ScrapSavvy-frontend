@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
-import CompanyService from "../../../services/CompanyService";
 import LogoutMenu from "../../../shared/components/LogoutMenu";
 import CompanySidebar from "../../../shared/layout/CompanySidebar";
+import CompanyService from "../../../shared/services/CompanyService";
 import CAddProduct from "./CAddProduct";
 import CompScrapTableRow from "./CompScrapTableRow";
 

@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 import { ActionCreator } from "../../../redux/actions/ActionCreator";
-import CompanyService from "../../../services/CompanyService";
 import Toast from "../../../shared/components/Snackbar";
+import CompanyService from "../../../shared/services/CompanyService";
 import CompUpdateProduct from "./CompUpdateProduct";
 
 const CompScrapTableRow = ({ record }) => {

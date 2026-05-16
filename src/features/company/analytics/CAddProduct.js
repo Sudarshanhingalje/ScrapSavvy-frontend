@@ -10,8 +10,8 @@ import {
 } from "@mui/material";
 import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
-import CompanyService from "../../../services/CompanyService";
 import Toast from "../../../shared/components/Snackbar";
+import CompanyService from "../../../shared/services/CompanyService";
 
 const CAddProduct = ({ open, onClose }) => {
   let userState = useSelector((state) => state.User);
