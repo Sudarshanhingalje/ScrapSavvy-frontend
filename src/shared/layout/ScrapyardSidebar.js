@@ -1,4 +1,5 @@
 import {
+  faBox,
   faCreditCard,
   faHome,
   faShoppingCart,
@@ -26,6 +27,11 @@ const ScrapyardSidebar = () => {
     { to: "/scrapyard-dashboard", icon: faTachometerAlt, label: "Dashboard" },
     { to: "/scrap-orders", icon: faShoppingCart, label: "Company Orders" },
     { to: "/customer-orders", icon: faShoppingCart, label: "Customer Orders" },
+    {
+      to: "/scrapyard-products",
+      icon: faBox,
+      label: "Products",
+    },
     {
       to: "/scrapyard-transactions",
       icon: faCreditCard,

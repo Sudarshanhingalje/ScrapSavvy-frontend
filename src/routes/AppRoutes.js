@@ -29,6 +29,7 @@ import OrdersHistory from "../features/company/pages/OrdersHistory";
 import Frontpage from "../features/home/pages/Frontpage";
 import PaymentsMadeTable from "../features/payment/PaymentsMadeTable";
 import PaymentsReceivedTable from "../features/payment/PaymentsReceivedTable";
+import ProductsPage from "../features/scrapyard/pages/ProductsPage";
 
 function AppRoutes() {
   return (
@@ -56,6 +57,8 @@ function AppRoutes() {
       <Route path="/sr-list-of-scraps" element={<SScrapsTable />} />
       <Route path="/mysr-list-of-scraps" element={<MySScrapsTable />} />
       <Route path="/scrapyard-transactions" element={<RecentTransactions />} />
+
+      <Route path="/scrapyard-products" element={<ProductsPage />} />
       <Route path="/scrapyard-profile" element={<ScrapyardProfile />} />
 
       {/* Customer */}

@@ -11,32 +11,41 @@ export const connectSocket = (onMessageReceived) => {
 
     reconnectDelay: 5000,
 
-    debug: (str) => {
-      console.log(str);
-    },
+    debug: () => {},
 
     onConnect: () => {
       console.log("✅ WebSocket Connected");
+
       const ownerId = localStorage.getItem("userId");
-      // LIVE PRICES
-      stompClient.subscribe(`/topic/inventory/${ownerId}`, (message) => {
-        const data = JSON.parse(message.body);
-        onMessageReceived("inventory", data);
-      });
 
-      stompClient.subscribe(`/topic/transactions/${ownerId}`, (message) => {
-        const data = JSON.parse(message.body);
-        onMessageReceived("transactions", data);
-      });
+      const subscriptions = [
+        {
+          topic: `/topic/inventory/${ownerId}`,
+          type: "inventory",
+        },
 
-      stompClient.subscribe(`/topic/orders/${ownerId}`, (message) => {
-        const data = JSON.parse(message.body);
-        onMessageReceived("orders", data);
-      });
+        {
+          topic: `/topic/transactions/${ownerId}`,
+          type: "transactions",
+        },
 
-      stompClient.subscribe(`/topic/prices/${ownerId}`, (message) => {
-        const data = JSON.parse(message.body);
-        onMessageReceived("prices", data);
+        {
+          topic: `/topic/orders/${ownerId}`,
+          type: "orders",
+        },
+
+        {
+          topic: `/topic/prices/${ownerId}`,
+          type: "prices",
+        },
+      ];
+
+      subscriptions.forEach(({ topic, type }) => {
+        stompClient.subscribe(topic, (message) => {
+          const data = JSON.parse(message.body);
+
+          onMessageReceived(type, data);
+        });
       });
     },
 
@@ -52,8 +61,12 @@ export const connectSocket = (onMessageReceived) => {
   stompClient.activate();
 };
 
-export const disconnectSocket = () => {
+export const disconnectSocket = async () => {
   if (stompClient) {
-    stompClient.deactivate();
+    await stompClient.deactivate();
+
+    stompClient = null;
+
+    console.log("❌ WebSocket Disconnected");
   }
 };
