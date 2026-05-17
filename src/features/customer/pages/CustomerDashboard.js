@@ -9,7 +9,6 @@ import CustomerLiveRates from "../../customer/dashboard/CustomerLiveRates";
 import { fetchProducts } from "../redux/customerProductSlice";
 
 import { RUNNING_ADS } from "../constants/customerConstants";
-import AvailableItemsSection from "../dashboard/AvailableItemsSection";
 import CustomerAdsBar from "../dashboard/CustomerAdsBar";
 import CustomerTopbar from "../dashboard/CustomerTopbar";
 import WishlistSection from "../dashboard/WishlistSection";
@@ -51,7 +50,7 @@ const CustomerDashboard = () => {
           {loading && <p>Loading products...</p>}
           {error && <p style={{ color: "red" }}>{error}</p>}
 
-          <AvailableItemsSection products={products} />
+          {/* <AvailableItemsSection products={products} /> */}
 
           <WishlistSection
             wishlist={wishlist}

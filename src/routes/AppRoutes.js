@@ -10,7 +10,6 @@ import CompanyDashboard from "../features/company/pages/CompanyDashboard";
 import CompanyProfile from "../features/company/pages/CompanyProfile";
 import ScrapOrder from "../features/company/pages/ScrapOrder";
 
-import CScrapsTable from "../features/customer/components/CScrapsTable";
 import CustomerTransactions from "../features/customer/dashboard/CustomerTransactions";
 import CustomerDashboard from "../features/customer/pages/CustomerDashboard";
 import CustomerOrdersHistory from "../features/customer/pages/CustomerOrdersHistory";
@@ -26,6 +25,7 @@ import ScrapyardDashboard from "../features/scrapyard/pages/ScrapyardDashboard";
 import ScrapyardProfile from "../features/scrapyard/pages/ScrapyardProfile";
 
 import OrdersHistory from "../features/company/pages/OrdersHistory";
+import CustomerProductPage from "../features/customer/pages/CustomerProductPage";
 import Frontpage from "../features/home/pages/Frontpage";
 import PaymentsMadeTable from "../features/payment/PaymentsMadeTable";
 import PaymentsReceivedTable from "../features/payment/PaymentsReceivedTable";
@@ -71,7 +71,7 @@ function AppRoutes() {
         path="/customer-dashboard/customer-orders-history"
         element={<CustomerOrdersHistory />}
       />
-      <Route path="/cus-list-of-scraps" element={<CScrapsTable />} />
+      <Route path="/cus-list-of-scraps" element={<CustomerProductPage />} />
       <Route path="/customer-transactions" element={<CustomerTransactions />} />
       <Route path="/customer-profile" element={<CustomerProfile />} />
 

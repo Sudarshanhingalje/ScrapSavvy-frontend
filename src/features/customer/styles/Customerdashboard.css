@@ -79,9 +79,9 @@ body {
   display: flex;
   flex-direction: column;
   min-width: 0;
+  overflow: hidden;
 }
 
-/* ── Scrollable content area ── */
 .cd-content {
   flex: 1;
   overflow-y: auto;
@@ -92,7 +92,7 @@ body {
 }
 
 /* ============================================================
-   SIDEBAR  (CustomerSidebar component)
+   SIDEBAR
    ============================================================ */
 
 .cd-sidebar {
@@ -221,42 +221,57 @@ body {
 }
 
 /* ============================================================
-   TOPBAR  (LogoutMenu component + title)
+   TOPBAR
    ============================================================ */
 
 .cd-topbar {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 18px 28px 16px;
-  background: var(--color-bg-surface);
-  border-bottom: 1px solid var(--color-border);
+  padding: 16px 28px;
+  background: #2874f0;
+  border-bottom: none;
   position: sticky;
   top: 0;
   z-index: 10;
+  gap: 16px;
+  flex-shrink: 0;
 }
 
 .cd-topbar__title {
-  font-size: 22px;
-  font-weight: 600;
-  color: var(--color-text-primary);
+  font-size: 20px;
+  font-weight: 700;
+  color: #ffffff;
   margin: 0;
 }
 
 .cd-topbar__subtitle {
-  font-size: 13px;
-  color: var(--color-text-secondary);
-  margin: 2px 0 0;
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.72);
+  margin: 3px 0 0;
 }
 
 .cd-topbar__actions {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 12px;
+}
+
+/* ── Live pill ── */
+.cd-live-pill {
+  background: rgba(255, 255, 255, 0.15);
+  color: #fff;
+  font-size: 11px;
+  font-weight: 600;
+  padding: 5px 14px;
+  border-radius: 20px;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  white-space: nowrap;
+  letter-spacing: 0.3px;
 }
 
 /* ============================================================
-   LOGOUT MENU  (LogoutMenu component)
+   LOGOUT MENU
    ============================================================ */
 
 .cd-logout-menu {
@@ -268,21 +283,21 @@ body {
   align-items: center;
   gap: 6px;
   padding: 7px 14px;
-  border: 1px solid var(--color-border);
+  border: 1px solid rgba(255, 255, 255, 0.4);
   border-radius: var(--radius-md);
-  background: var(--color-bg-surface);
-  color: var(--color-text-secondary);
+  background: rgba(255, 255, 255, 0.15);
+  color: #ffffff;
   font-size: 13px;
   cursor: pointer;
   transition: background var(--transition);
 }
 
 .cd-logout-menu__btn:hover {
-  background: var(--color-bg-muted);
+  background: rgba(255, 255, 255, 0.25);
 }
 
 /* ============================================================
-   ADS MARQUEE  (ticker bar)
+   ADS MARQUEE
    ============================================================ */
 
 .cd-ads-bar {
@@ -340,14 +355,12 @@ body {
   font-size: 20px;
   line-height: 1;
 }
-
 .cd-stat-card__label {
   font-size: 12px;
   color: var(--color-text-secondary);
   text-transform: uppercase;
   letter-spacing: 0.5px;
 }
-
 .cd-stat-card__value {
   font-size: 22px;
   font-weight: 700;
@@ -355,7 +368,7 @@ body {
 }
 
 /* ============================================================
-   SECTION WRAPPER  (reusable card section)
+   SECTION WRAPPER
    ============================================================ */
 
 .cd-section {
@@ -385,7 +398,7 @@ body {
   margin: 0 0 16px;
 }
 
-/* ── Live badge ── */
+/* ── Badges ── */
 .cd-badge--live {
   font-size: 11px;
   font-weight: 600;
@@ -395,7 +408,6 @@ body {
   border-radius: var(--radius-full);
 }
 
-/* ── AI badge ── */
 .cd-badge--ai {
   font-size: 11px;
   font-weight: 600;
@@ -432,7 +444,6 @@ body {
 .cd-rate-card:hover {
   box-shadow: var(--shadow-sm);
 }
-
 .cd-rate-card__material {
   font-size: 12px;
   font-weight: 600;
@@ -440,14 +451,12 @@ body {
   text-transform: capitalize;
   margin: 0 0 6px;
 }
-
 .cd-rate-card__price {
   font-size: 20px;
   font-weight: 700;
   color: var(--color-primary-hover);
   margin: 0 0 4px;
 }
-
 .cd-rate-card__unit {
   font-size: 11px;
   color: var(--color-text-secondary);
@@ -458,12 +467,13 @@ body {
    ============================================================ */
 
 .cd-items-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  display: flex;
+  flex-wrap: wrap;
   gap: 16px;
   margin-top: 16px;
 }
 
+/* legacy cd-item-card (kept for other pages) */
 .cd-item-card {
   border: 1px solid var(--color-border);
   border-radius: var(--radius-lg);
@@ -472,17 +482,14 @@ body {
   flex-direction: column;
   transition: box-shadow var(--transition);
 }
-
 .cd-item-card:hover {
   box-shadow: var(--shadow-md);
 }
-
 .cd-item-card__image {
   width: 100%;
   height: 160px;
   object-fit: cover;
 }
-
 .cd-item-card__body {
   padding: 14px 16px;
   display: flex;
@@ -490,20 +497,17 @@ body {
   gap: 8px;
   flex: 1;
 }
-
 .cd-item-card__name {
   font-size: 14px;
   font-weight: 600;
   color: var(--color-text-primary);
   margin: 0;
 }
-
 .cd-item-card__meta {
   display: flex;
   align-items: center;
   gap: 8px;
 }
-
 .cd-item-card__condition {
   font-size: 11px;
   font-weight: 500;
@@ -513,18 +517,15 @@ body {
   border-radius: var(--radius-sm);
   padding: 2px 8px;
 }
-
 .cd-item-card__seller {
   font-size: 12px;
   color: var(--color-text-secondary);
 }
-
 .cd-item-card__stock {
   font-size: 12px;
   color: var(--color-text-hint);
   margin: 0;
 }
-
 .cd-item-card__footer {
   display: flex;
   align-items: center;
@@ -533,12 +534,13 @@ body {
   padding-top: 8px;
   border-top: 1px solid #f3f4f6;
 }
-
 .cd-item-card__price {
   font-size: 18px;
   font-weight: 700;
   color: var(--color-text-primary);
 }
+
+/* swiper arrow helpers */
 .cd-arrow {
   position: absolute;
   top: 50%;
@@ -552,15 +554,12 @@ body {
   border-radius: 50%;
   cursor: pointer;
 }
-
 .cd-arrow-left {
   left: 8px;
 }
-
 .cd-arrow-right {
   right: 8px;
 }
-
 .cd-dots {
   position: absolute;
   bottom: 8px;
@@ -569,12 +568,12 @@ body {
   display: flex;
   gap: 5px;
 }
-
 .cd-dot {
   width: 6px;
   height: 6px;
   border-radius: 50%;
 }
+
 /* ============================================================
    BUTTONS
    ============================================================ */
@@ -597,7 +596,6 @@ body {
   padding: 8px 16px;
   font-size: 13px;
 }
-
 .cd-btn--primary:hover {
   background: var(--color-primary-hover);
 }
@@ -609,7 +607,6 @@ body {
   padding: 6px 14px;
   font-size: 13px;
 }
-
 .cd-btn--danger-outline:hover {
   background: var(--color-danger-light);
 }
@@ -631,7 +628,6 @@ body {
   gap: 10px;
   margin-top: 16px;
 }
-
 .cd-wishlist-item {
   display: flex;
   align-items: center;
@@ -642,18 +638,15 @@ body {
   border-radius: var(--radius-md);
   transition: border-color var(--transition);
 }
-
 .cd-wishlist-item:hover {
   border-color: #d1d5db;
 }
-
 .cd-wishlist-item__name {
   font-size: 14px;
   font-weight: 500;
   color: var(--color-text-primary);
   margin: 0 0 4px;
 }
-
 .cd-wishlist-item__budget {
   font-size: 12px;
   color: var(--color-text-secondary);
@@ -670,19 +663,16 @@ body {
   gap: 16px;
   margin-top: 16px;
 }
-
 .cd-form-group {
   display: flex;
   flex-direction: column;
   gap: 6px;
 }
-
 .cd-form-label {
   font-size: 13px;
   font-weight: 500;
   color: var(--color-text-secondary);
 }
-
 .cd-form-input,
 .cd-form-select {
   padding: 9px 12px;
@@ -698,13 +688,11 @@ body {
     box-shadow var(--transition);
   width: 100%;
 }
-
 .cd-form-input:focus,
 .cd-form-select:focus {
   border-color: var(--color-primary);
   box-shadow: 0 0 0 3px rgba(22, 163, 74, 0.12);
 }
-
 .cd-form-input::placeholder {
   color: var(--color-text-hint);
 }
@@ -719,7 +707,6 @@ body {
   border-radius: var(--radius-lg);
   padding: 20px 24px;
 }
-
 .cd-ai-banner {
   display: flex;
   align-items: flex-start;
@@ -730,7 +717,6 @@ body {
   margin-bottom: 16px;
   border: 1px solid #e9d5ff;
 }
-
 .cd-ai-banner__icon {
   width: 32px;
   height: 32px;
@@ -743,14 +729,12 @@ body {
   font-size: 16px;
   flex-shrink: 0;
 }
-
 .cd-ai-banner__title {
   font-size: 13px;
   font-weight: 600;
   color: var(--color-ai-badge-text);
   margin: 0 0 3px;
 }
-
 .cd-ai-banner__text {
   font-size: 12px;
   color: #6d28d9;
@@ -763,7 +747,6 @@ body {
   gap: 8px;
   margin-bottom: 16px;
 }
-
 .cd-ai-chip {
   display: flex;
   align-items: flex-start;
@@ -776,12 +759,10 @@ body {
     background var(--transition),
     border-color var(--transition);
 }
-
 .cd-ai-chip:hover {
   background: var(--color-bg-muted);
   border-color: #d1d5db;
 }
-
 .cd-ai-chip__icon {
   width: 28px;
   height: 28px;
@@ -792,14 +773,12 @@ body {
   font-size: 14px;
   flex-shrink: 0;
 }
-
 .cd-ai-chip__title {
   font-size: 13px;
   font-weight: 500;
   color: var(--color-text-primary);
   margin: 0 0 2px;
 }
-
 .cd-ai-chip__sub {
   font-size: 12px;
   color: var(--color-text-secondary);
@@ -810,7 +789,6 @@ body {
   display: flex;
   gap: 8px;
 }
-
 .cd-ai-input {
   flex: 1;
   padding: 9px 14px;
@@ -825,12 +803,10 @@ body {
     border-color var(--transition),
     box-shadow var(--transition);
 }
-
 .cd-ai-input:focus {
   border-color: var(--color-ai-accent);
   box-shadow: 0 0 0 3px rgba(124, 58, 237, 0.1);
 }
-
 .cd-ai-input::placeholder {
   color: var(--color-text-hint);
 }
@@ -847,7 +823,6 @@ body {
   font-family: var(--font-sans);
   transition: background var(--transition);
 }
-
 .cd-ai-send-btn:hover {
   background: #6d28d9;
 }
