@@ -1,8 +1,10 @@
 import {
   faBox,
+  faCog,
   faCreditCard,
   faHome,
   faShoppingCart,
+  faSignOutAlt,
   faTachometerAlt,
   faUser,
 } from "@fortawesome/free-solid-svg-icons";
@@ -27,17 +29,18 @@ const ScrapyardSidebar = () => {
     { to: "/scrapyard-dashboard", icon: faTachometerAlt, label: "Dashboard" },
     { to: "/scrap-orders", icon: faShoppingCart, label: "Company Orders" },
     { to: "/customer-orders", icon: faShoppingCart, label: "Customer Orders" },
-    {
-      to: "/scrapyard-products",
-      icon: faBox,
-      label: "Products",
-    },
+    { to: "/scrapyard-products", icon: faBox, label: "Products" },
     {
       to: "/scrapyard-transactions",
       icon: faCreditCard,
       label: "Transactions",
     },
     { to: "/scrapyard-profile", icon: faUser, label: "Profile" },
+  ];
+
+  const bottomItems = [
+    { to: "/scrapyard-settings", icon: faCog, label: "Settings" },
+    { to: "/logout", icon: faSignOutAlt, label: "Logout" },
   ];
 
   return (
@@ -55,6 +58,19 @@ const ScrapyardSidebar = () => {
               {label}
             </Link>
           ))}
+        </div>
+
+        {/* ── Bottom pinned items ── */}
+        <div className="sidebar-bottom">
+          <div className="sidebar-divider" />
+          <div className="list-group list-group-flush">
+            {bottomItems.map(({ to, icon, label }) => (
+              <Link key={to} to={to} className={linkClass(to)}>
+                <FontAwesomeIcon icon={icon} className="icon" />
+                {label}
+              </Link>
+            ))}
+          </div>
         </div>
       </div>
 
@@ -112,6 +128,27 @@ const ScrapyardSidebar = () => {
                 {label}
               </Link>
             ))}
+          </div>
+
+          {/* ── Mobile bottom items ── */}
+          <div
+            className="sidebar-bottom"
+            style={{ position: "absolute", bottom: 0, left: 0, right: 0 }}
+          >
+            <div className="sidebar-divider" />
+            <div className="list-group list-group-flush">
+              {bottomItems.map(({ to, icon, label }) => (
+                <Link
+                  key={to}
+                  to={to}
+                  className={linkClass(to)}
+                  onClick={closeOffcanvas}
+                >
+                  <FontAwesomeIcon icon={icon} className="icon" />
+                  {label}
+                </Link>
+              ))}
+            </div>
           </div>
         </div>
       </div>

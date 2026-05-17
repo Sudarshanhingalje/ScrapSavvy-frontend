@@ -1,55 +1,59 @@
-import { useEffect, useState } from "react";
+// import { useEffect } from "react";
 
-import dashboardService from "../services/dashboardService";
+// import { useDispatch } from "react-redux";
 
-const useDashboardData = () => {
-  const [orders, setOrders] = useState([]);
-  const [inventory, setInventory] = useState([]);
-  const [transactions, setTransactions] = useState([]);
-  const [prices, setPrices] = useState({});
+// import dashboardService from "../services/dashboardService";
 
-  const ownerId = localStorage.getItem("userId");
+// import {
+//   setInventory,
+//   setOrders,
+//   setPrices,
+//   setTransactions,
+// } from "../redux/scrapyardSlice";
 
-  const fetchData = async () => {
-    try {
-      const [ordersData, inventoryData, transactionsData, pricesData] =
-        await Promise.all([
-          dashboardService.getOrders(ownerId),
-          dashboardService.getInventory(ownerId),
-          dashboardService.getTransactions(ownerId),
-          dashboardService.getPrices(ownerId),
-        ]);
+// const useDashboardData = () => {
+//   const dispatch = useDispatch();
 
-      setOrders(ordersData || []);
-      setInventory(inventoryData || []);
-      setTransactions(transactionsData || []);
+//   const ownerId = localStorage.getItem("userId");
 
-      const mappedPrices = {};
+//   const fetchData = async () => {
+//     try {
+//       const [ordersData, inventoryData, transactionsData, pricesData] =
+//         await Promise.all([
+//           dashboardService.getOrders(ownerId),
+//           dashboardService.getInventory(ownerId),
+//           dashboardService.getTransactions(ownerId),
+//           dashboardService.getPrices(ownerId),
+//         ]);
 
-      pricesData.forEach((item) => {
-        mappedPrices[item.materialType] = {
-          customer: item.customerPrice,
-          company: item.companyPrice,
-        };
-      });
+//       dispatch(setOrders(ordersData || []));
 
-      setPrices(mappedPrices);
-    } catch (error) {
-      console.error(error);
-    }
-  };
+//       dispatch(setInventory(inventoryData || []));
 
-  useEffect(() => {
-    fetchData();
-  }, []);
+//       dispatch(setTransactions(transactionsData || []));
 
-  return {
-    orders,
-    inventory,
-    transactions,
-    prices,
-    refresh: fetchData,
-  };
-};
+//       const mappedPrices = {};
 
-export default useDashboardData;
+//       pricesData.forEach((item) => {
+//         mappedPrices[item.materialType] = {
+//           customer: item.customerPrice,
+//           company: item.companyPrice,
+//         };
+//       });
+
+//       dispatch(setPrices(mappedPrices));
+//     } catch (error) {
+//       console.error(error);
+//     }
+//   };
+
+//   useEffect(() => {
+//     fetchData();
+//   }, []);
+
+//   return {
+//     refresh: fetchData,
+//   };
+// };
+
+// export default useDashboardData;

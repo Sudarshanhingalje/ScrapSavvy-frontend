@@ -1,0 +1,27 @@
+.pf-grid-2 {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+}
+
+.pf-grid-3 {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 14px;
+}
+
+@media (max-width: 640px) {
+  .pf-grid-2,
+  .pf-grid-3 {
+    grid-template-columns: 1fr;
+  }
+
+  .pf-img-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+
+  .pf-step {
+    font-size: 9px;
+    padding: 8px 4px;
+  }
+}

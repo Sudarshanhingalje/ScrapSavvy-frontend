@@ -1,54 +1,65 @@
-import { createSlice } from "@reduxjs/toolkit";
+import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
+import { getInventory } from "../services/inventoryService";
+import { getOwnerOrders } from "../services/orderService";
+import { getTransactions } from "../services/transactionService";
 
-const initialState = {
-  orders: [],
-  inventory: [],
-  transactions: [],
-  prices: {},
+export const fetchOrders = createAsyncThunk("scrapyard/orders", async () => {
+  return await getOwnerOrders();
+});
 
-  loading: false,
-  error: null,
-};
+export const fetchInventory = createAsyncThunk(
+  "scrapyard/inventory",
+  async () => {
+    return await getInventory();
+  },
+);
+
+export const fetchTransactions = createAsyncThunk(
+  "scrapyard/transactions",
+  async () => {
+    return await getTransactions();
+  },
+);
 
 const scrapyardSlice = createSlice({
   name: "scrapyard",
-
-  initialState,
+  initialState: {
+    orders: [],
+    inventory: [],
+    transactions: [],
+  },
 
   reducers: {
-    setOrders: (state, action) => {
+    socketUpdateOrders: (state, action) => {
       state.orders = action.payload;
     },
-
-    setInventory: (state, action) => {
+    socketUpdateInventory: (state, action) => {
       state.inventory = action.payload;
     },
-
-    setTransactions: (state, action) => {
+    socketUpdateTransactions: (state, action) => {
       state.transactions = action.payload;
     },
+  },
 
-    setPrices: (state, action) => {
-      state.prices = action.payload;
-    },
+  extraReducers: (builder) => {
+    builder.addCase(fetchOrders.fulfilled, (state, action) => {
+      state.orders = action.payload;
+    });
 
-    setLoading: (state, action) => {
-      state.loading = action.payload;
-    },
+    builder.addCase(fetchInventory.fulfilled, (state, action) => {
+      state.inventory = action.payload;
+    });
 
-    setError: (state, action) => {
-      state.error = action.payload;
-    },
+    builder.addCase(fetchTransactions.fulfilled, (state, action) => {
+      state.transactions = action.payload;
+    });
   },
 });
 
 export const {
-  setOrders,
-  setInventory,
-  setTransactions,
-  setPrices,
-  setLoading,
-  setError,
+  socketUpdateOrders,
+  socketUpdateInventory,
+  socketUpdateTransactions,
 } = scrapyardSlice.actions;
 
 export default scrapyardSlice.reducer;

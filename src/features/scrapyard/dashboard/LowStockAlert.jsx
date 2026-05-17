@@ -6,17 +6,15 @@ const LowStockAlert = ({ inventory }) => {
   }
 
   return (
-    <div className="bg-red-50 border border-red-200 rounded-2xl p-5">
-      <h2 className="text-red-700 font-bold text-lg mb-4">
-        ⚠️ Low Stock Alert
-      </h2>
+    <div className="sd-alert">
+      <h2 className="sd-alert-title">⚠️ Low Stock Alert</h2>
 
-      <div className="space-y-2">
+      <div className="sd-alert-list">
         {lowStock.map((item) => (
-          <div key={item.materialType} className="flex justify-between">
-            <span>{item.materialType}</span>
+          <div key={item.materialType} className="sd-alert-row">
+            <span className="sd-alert-mat">{item.materialType}</span>
 
-            <span className="font-bold text-red-600">{item.quantity} kg</span>
+            <span className="sd-alert-qty">{item.quantity} kg</span>
           </div>
         ))}
       </div>

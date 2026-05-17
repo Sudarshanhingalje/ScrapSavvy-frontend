@@ -12,7 +12,23 @@ const productSlice = createSlice({
 
   reducers: {
     setProducts: (state, action) => {
-      state.products = action.payload;
+      state.products = action.payload || [];
+    },
+
+    addProduct: (state, action) => {
+      state.products.unshift(action.payload);
+    },
+
+    updateProduct: (state, action) => {
+      state.products = state.products.map((product) =>
+        product.id === action.payload.id ? action.payload : product,
+      );
+    },
+
+    deleteProduct: (state, action) => {
+      state.products = state.products.filter(
+        (product) => product.id !== action.payload,
+      );
     },
 
     setLoading: (state, action) => {
@@ -21,6 +37,12 @@ const productSlice = createSlice({
   },
 });
 
-export const { setProducts, setLoading } = productSlice.actions;
+export const {
+  setProducts,
+  addProduct,
+  updateProduct,
+  deleteProduct,
+  setLoading,
+} = productSlice.actions;
 
 export default productSlice.reducer;

@@ -15,3 +15,15 @@ export const getOwnerOrders = async () => {
 
   return text ? JSON.parse(text) : [];
 };
+
+const getOrders = async () => {
+  const token = localStorage.getItem("token");
+
+  const res = await fetch("http://localhost:8080/api/scrap-orders/owner", {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+
+  return await res.json();
+};

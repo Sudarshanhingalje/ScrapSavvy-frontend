@@ -12,7 +12,7 @@ export const store = configureStore({
 
     scrapyard: scrapyardReducer,
 
-    products: productReducer,
+    product: productReducer,
   },
 
   middleware: (getDefaultMiddleware) =>

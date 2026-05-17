@@ -36,12 +36,30 @@ const RevenueChart = ({ data }) => {
     ],
   };
 
+  const options = {
+    responsive: true,
+
+    maintainAspectRatio: false,
+
+    plugins: {
+      legend: {
+        position: "top",
+      },
+    },
+
+    scales: {
+      y: {
+        beginAtZero: true,
+      },
+    },
+  };
+
   return (
     <div className="sd-card">
       <h2 className="sd-card-title">📉 Revenue Analysis</h2>
 
-      <div className="sd-chart-container">
-        <Line data={chartData} />
+      <div className="sd-chart-wrapper">
+        <Line data={chartData} options={options} />
       </div>
     </div>
   );

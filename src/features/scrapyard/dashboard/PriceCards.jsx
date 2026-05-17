@@ -1,12 +1,16 @@
-const PriceCards = ({ prices = {} }) => {
+import { useSelector } from "react-redux";
+
+const PriceCards = () => {
+  const prices = useSelector((state) => state.scrapRates.data);
+
   const items = [
-    { key: "Metal", icon: "🔩" },
-    { key: "Plastic", icon: "🧴" },
-    { key: "Paper", icon: "📄" },
-    { key: "Glass", icon: "🪟" },
-    { key: "Electronics", icon: "💻" },
-    { key: "Textiles", icon: "👕" },
-    { key: "Others", icon: "♻️" },
+    { name: "Metal", icon: "🔩" },
+    { name: "Plastic", icon: "🧴" },
+    { name: "Paper", icon: "📄" },
+    { name: "Glass", icon: "🍾" },
+    { name: "Electronics", icon: "💻" },
+    { name: "Textiles", icon: "🧵" },
+    { name: "Others", icon: "📦" },
   ];
 
   return (
@@ -14,28 +18,35 @@ const PriceCards = ({ prices = {} }) => {
       <h2 className="sd-card-title">📊 Current Scrap Prices</h2>
 
       <div className="sd-prices-grid">
-        {items.map((item) => (
-          <div key={item.key} className="sd-price-item">
-            <div className="sd-price-item-header">
-              <span className="sd-price-icon">{item.icon}</span>
-              <h3 className="sd-price-mat-name">{item.key}</h3>
-            </div>
+        {items.map((item) => {
+          const data = prices[item.name] || {};
 
-            <div className="sd-price-row">
-              <span className="sd-price-label">Customer</span>
-              <span className="sd-price-value sd-price-value--green">
-                ₹{prices[item.key]?.customer ?? "--"}/kg
-              </span>
-            </div>
+          return (
+            <div key={item.name} className="sd-price-item">
+              {/* Header */}
+              <div className="sd-price-item-header">
+                <span className="sd-price-icon">{item.icon}</span>
+                <h3 className="sd-price-mat-name">{item.name}</h3>
+              </div>
 
-            <div className="sd-price-row">
-              <span className="sd-price-label">Company</span>
-              <span className="sd-price-value sd-price-value--blue">
-                ₹{prices[item.key]?.company ?? "--"}/kg
-              </span>
+              {/* Customer Price */}
+              <div className="sd-price-row">
+                <span className="sd-price-label">Customer</span>
+                <span className="sd-price-value sd-price-value--green">
+                  ₹{data.customerPrice ?? "--"} /kg
+                </span>
+              </div>
+
+              {/* Company Price */}
+              <div className="sd-price-row">
+                <span className="sd-price-label">Company</span>
+                <span className="sd-price-value sd-price-value--blue">
+                  ₹{data.companyPrice ?? "--"} /kg
+                </span>
+              </div>
             </div>
-          </div>
-        ))}
+          );
+        })}
       </div>
     </div>
   );

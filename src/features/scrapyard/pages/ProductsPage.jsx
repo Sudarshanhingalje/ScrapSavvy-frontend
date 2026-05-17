@@ -5,26 +5,27 @@ import { useEffect, useState } from "react";
 import LogoutMenu from "../../../shared/components/LogoutMenu";
 import ScrapyardSidebar from "../../../shared/layout/ScrapyardSidebar";
 
-import scrapyardService from "../../../shared/services/ScrapyardService";
+import productService from "../services/productService";
 
+import ProductForm from "../../scrapyard/products/product-form/ProductForm";
 import ProductCard from "../products/ProductCard";
-import ProductForm from "../products/ProductForm";
 
 import "../styles/ScrapyardDashboard.css";
 
 const ProductsPage = () => {
   const [products, setProducts] = useState([]);
   const [editingProduct, setEditingProduct] = useState(null);
+  const [loading, setLoading] = useState(false);
 
   const userId = localStorage.getItem("userId");
 
   const fetchProducts = async () => {
     try {
-      const response = await scrapyardService.GetMyAllProducts(userId);
+      const data = await productService.getProducts(userId);
 
-      setProducts(response.data || []);
+      setProducts(Array.isArray(data) ? data : []);
     } catch (error) {
-      console.error(error);
+      console.error("Fetch products failed", error);
     }
   };
 
@@ -34,10 +35,20 @@ const ProductsPage = () => {
 
   const handleAddOrUpdate = async (formData) => {
     try {
+      setLoading(true);
+
       if (editingProduct) {
-        await scrapyardService.UpdateProduct(userId, formData);
+        await productService.updateProduct(
+          userId,
+          editingProduct.productId,
+          formData,
+        );
+
+        alert("Product updated successfully");
       } else {
-        await scrapyardService.AddProduct(userId, formData);
+        await productService.addProduct(userId, formData);
+
+        alert("Product added successfully");
       }
 
       setEditingProduct(null);
@@ -45,54 +56,59 @@ const ProductsPage = () => {
       fetchProducts();
     } catch (error) {
       console.error(error);
+
+      alert(error?.response?.data?.message || "Product add/update failed");
+    } finally {
+      setLoading(false);
     }
   };
 
   const handleDelete = async (productId) => {
     try {
-      await scrapyardService.DeleteProduct(userId, productId);
+      await productService.deleteProduct(userId, productId);
+
+      alert("Product deleted");
 
       fetchProducts();
     } catch (error) {
       console.error(error);
+
+      alert("Delete failed");
     }
   };
 
   return (
-    <div className="scrapyard-page">
+    <div className="sd-layout">
       <ScrapyardSidebar />
 
-      <div className="scrapyard-main">
-        {/* HEADER */}
-        <div className="scrapyard-header">
-          <div className="scrapyard-header-left">
-            <h1>🛍️ Products Management</h1>
+      <div className="sd-main">
+        <div className="sd-topbar">
+          <div>
+            <p className="sd-subtitle">ScrapSavvy · Owner Panel</p>
 
-            <p>Manage scrapyard products and inventory listings</p>
+            <h1 className="sd-title">🛍️ Products Management</h1>
           </div>
 
           <LogoutMenu />
         </div>
 
-        {/* BODY */}
-        <div className="scrapyard-content">
-          {/* FORM */}
-          <div className="dashboard-card">
-            <div className="dashboard-card-title">
+        <div className="sd-content">
+          <div className="sd-card">
+            <div className="sd-card-title">
               {editingProduct ? "✏️ Edit Product" : "➕ Add Product"}
             </div>
 
             <ProductForm
               onSubmit={handleAddOrUpdate}
               editingProduct={editingProduct}
+              loading={loading}
             />
           </div>
 
-          {/* PRODUCTS */}
-          <div className="products-grid">
+          <div className="sd-prices-grid">
             {products.map((product) => (
               <ProductCard
-                key={product.id}
+                key={product.productId}
                 product={product}
                 onEdit={setEditingProduct}
                 onDelete={handleDelete}

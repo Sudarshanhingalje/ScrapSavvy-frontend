@@ -1,4 +1,4 @@
-/* Common Dashboard Base Styles */
+/* Common Dashboard Base Styles
 .dashboard-content {
   padding: 20px;
   width: 100%;
@@ -49,7 +49,7 @@
   padding: 20px;
 }
 
-/* Customer Dashboard Specific Styles */
+
 .dashboard-layout {
   display: flex;
   min-height: 100vh;
@@ -68,7 +68,6 @@
   z-index: 1000;
 }
 
-/* Ads Section */
 .ads-container {
   background: linear-gradient(45deg, #28a745, #20c997);
   border-radius: 12px;
@@ -100,7 +99,6 @@
   }
 }
 
-/* Statistics Grid */
 .stats-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
@@ -154,7 +152,7 @@
   opacity: 0.8;
 }
 
-/* Rates Section */
+
 .rates-section {
   margin-bottom: 30px;
 }
@@ -231,7 +229,7 @@
   margin-right: 8px;
 }
 
-/* Main Content Grid */
+
 .main-content-grid {
   display: grid;
   grid-template-columns: 2fr 1fr;
@@ -239,7 +237,6 @@
   margin-bottom: 30px;
 }
 
-/* Items Section */
 .items-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
@@ -344,7 +341,7 @@
   border-top: 1px solid #dee2e6;
 }
 
-/* Sidebar */
+
 .sidebar-section {
   display: flex;
   flex-direction: column;
@@ -407,7 +404,7 @@
   transition: all 0.3s ease;
 }
 
-/* Bottom Content Grid */
+
 .bottom-content-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -467,7 +464,7 @@
   font-size: 1.1rem;
 }
 
-/* Button Styles */
+
 .btn {
   padding: 10px 20px;
   border-radius: 8px;
@@ -527,7 +524,7 @@
   background: #c82333;
 }
 
-/* Responsive Design */
+
 @media (max-width: 768px) {
   .dashboard-title h1 {
     font-size: 2.5rem;
@@ -574,4 +571,4 @@
   .dashboard-title h1 {
     font-size: 2rem;
   }
-}
+} */

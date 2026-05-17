@@ -1,126 +1,44 @@
-// import axios from "axios";
-// import { BASEURL } from "../shared/utils/Utils";
+import axios from "axios";
 
-// class ScrapyardService {
-//   AddProduct(userProfileId, formData) {
-//     const API = BASEURL + "/scrapyard/add_product/" + userProfileId;
-//     return axios.post(API, formData, {
-//       headers: {
-//         "Content-Type": "application/json",
-//         // 'Authorization': `Bearer ${token}`
-//       },
-//     });
-//   }
-//   UpdateProduct(userProfileId, formData) {
-//     const API = BASEURL + "/scrapyard/product/" + userProfileId;
-//     return axios.put(API, formData, {
-//       headers: {
-//         "Content-Type": "application/json",
-//         // 'Authorization': `Bearer ${token}`
-//       },
-//     });
-//   }
-//   DeleteProduct(userProfileId, productId) {
-//     const API =
-//       BASEURL + "/scrapyard/product/" + userProfileId + "/" + productId;
-//     return axios.delete(API, {
-//       headers: {
-//         "Content-Type": "application/json",
-//         // 'Authorization': `Bearer ${token}`
-//       },
-//     });
-//   }
-//   GetAllProducts(userProfileId) {
-//     const API = BASEURL + "/scrapyard/get_all_products/" + userProfileId;
-//     return axios.get(API, {
-//       headers: {
-//         "Content-Type": "application/json",
-//         // 'Authorization': `Bearer ${token}`
-//       },
-//     });
-//   }
-//   GetMyAllProducts(userProfileId) {
-//     const API = BASEURL + "/scrapyard/get_my_products/" + userProfileId;
-//     return axios.get(API, {
-//       headers: {
-//         "Content-Type": "application/json",
-//         // 'Authorization': `Bearer ${token}`
-//       },
-//     });
-//   }
-//   GetProduct(userProfileId, product_id) {
-//     const API =
-//       BASEURL + "/scrapyard/get_product/" + userProfileId + "/" + product_id;
-//     return axios.get(API, {
-//       headers: {
-//         "Content-Type": "application/json",
-//         // 'Authorization': `Bearer ${token}`
-//       },
-//     });
-//   }
-//   BuyProduct(formData) {
-//     const API = BASEURL + "/orders/";
-//     return axios.post(API, formData, {
-//       headers: {
-//         "Content-Type": "application/json",
-//         // 'Authorization': `Bearer ${token}`
-//       },
-//     });
-//   }
-// }
+const API = "http://localhost:8080/api/scrapyard";
 
-// export default new ScrapyardService();
-import api from "./api";
+const getAuthHeaders = () => {
+  const token = localStorage.getItem("token");
+  return {
+    Authorization: `Bearer ${token}`,
+  };
+};
 
 class ScrapyardService {
-  AddProduct(userProfileId, formData) {
-    return api.post(`/scrapyard/add_product/${userProfileId}`, formData);
+  GetMyAllProducts(userId) {
+    return axios.get(`${API}/get_my_products/${userId}`, {
+      headers: getAuthHeaders(),
+    });
   }
 
-  UpdateProduct(userProfileId, formData) {
-    return api.put(`/scrapyard/product/${userProfileId}`, formData);
+  GetAllActiveProducts() {
+    return axios.get(`${API}/get_all_products`, {
+      headers: getAuthHeaders(),
+    });
   }
 
-  DeleteProduct(userProfileId, productId) {
-    return api.delete(`/scrapyard/product/${userProfileId}/${productId}`);
+  AddProduct(userId, data) {
+    // data is FormData — axios auto-sets Content-Type with boundary
+    return axios.post(`${API}/add_product/${userId}`, data, {
+      headers: getAuthHeaders(),
+    });
   }
 
-  GetAllProducts(userProfileId) {
-    return api.get(`/scrapyard/get_all_products/${userProfileId}`);
+  UpdateProduct(userId, productId, data) {
+    return axios.put(`${API}/update_product/${userId}/${productId}`, data, {
+      headers: getAuthHeaders(),
+    });
   }
 
-  GetMyAllProducts(userProfileId) {
-    return api.get(`/scrapyard/get_my_products/${userProfileId}`);
-  }
-
-  GetProduct(userProfileId, productId) {
-    return api.get(`/scrapyard/get_product/${userProfileId}/${productId}`);
-  }
-
-  BuyProduct(formData) {
-    return api.post("/orders", formData);
-  }
-
-  /* DASHBOARD */
-
-  GetInventory() {
-    return api.get("/inventory");
-  }
-
-  GetTransactions() {
-    return api.get("/transactions");
-  }
-
-  GetOrders() {
-    return api.get("/scrap-orders/owner");
-  }
-
-  GetPrices(ownerId) {
-    return api.get(`/prices/all?ownerId=${ownerId}`);
-  }
-
-  UpdatePrices(data) {
-    return api.post("/prices/update", data);
+  DeleteProduct(userId, productId) {
+    return axios.delete(`${API}/delete_product/${userId}/${productId}`, {
+      headers: getAuthHeaders(),
+    });
   }
 }
 

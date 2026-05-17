@@ -10,24 +10,28 @@ const initialState = {
 const scrapRatesSlice = createSlice({
   name: "scrapRates",
   initialState,
-  reducers: {},
+  reducers: {
+    socketUpdatePrices: (state, action) => {
+      state.data = action.payload;
+    },
+  },
 
   extraReducers: (builder) => {
     builder
       .addCase(getScrapRates.pending, (state) => {
         state.loading = true;
       })
-
       .addCase(getScrapRates.fulfilled, (state, action) => {
         state.loading = false;
         state.data = action.payload;
       })
-
       .addCase(getScrapRates.rejected, (state, action) => {
         state.loading = false;
         state.error = action.error.message;
       });
   },
 });
+
+export const { socketUpdatePrices } = scrapRatesSlice.actions;
 
 export default scrapRatesSlice.reducer;
