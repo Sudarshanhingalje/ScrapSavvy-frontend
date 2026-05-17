@@ -539,7 +539,42 @@ body {
   font-weight: 700;
   color: var(--color-text-primary);
 }
+.cd-arrow {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  background: rgba(0, 0, 0, 0.5);
+  color: white;
+  border: none;
+  font-size: 20px;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  cursor: pointer;
+}
 
+.cd-arrow-left {
+  left: 8px;
+}
+
+.cd-arrow-right {
+  right: 8px;
+}
+
+.cd-dots {
+  position: absolute;
+  bottom: 8px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 5px;
+}
+
+.cd-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+}
 /* ============================================================
    BUTTONS
    ============================================================ */

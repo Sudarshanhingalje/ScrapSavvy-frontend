@@ -30,6 +30,7 @@
     "scrapspotclient": "file:",
     "sockjs-client": "^1.6.1",
     "sweetalert2": "^11.26.24",
+    "swiper": "^12.1.4",
     "web-vitals": "^2.1.4"
   },
   "scripts": {

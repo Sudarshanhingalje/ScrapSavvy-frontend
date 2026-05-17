@@ -1,22 +1,13 @@
 import { configureStore } from "@reduxjs/toolkit";
 
+import customerProductReducer from "../features/customer/redux/customerProductSlice";
 import scrapRatesReducer from "../features/scrapRates/redux/scrapRatesSlice";
-
 import scrapyardReducer from "../features/scrapyard/redux/scrapyardSlice";
-
-import productReducer from "../features/scrapyard/redux/productSlice";
 
 export const store = configureStore({
   reducer: {
     scrapRates: scrapRatesReducer,
-
     scrapyard: scrapyardReducer,
-
-    product: productReducer,
+    product: customerProductReducer,
   },
-
-  middleware: (getDefaultMiddleware) =>
-    getDefaultMiddleware({
-      serializableCheck: false,
-    }),
 });

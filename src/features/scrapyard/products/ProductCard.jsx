@@ -1,3 +1,4 @@
+import { API_BASE_URL } from "../../../config/env";
 import { calculateDiscount } from "../../scrapyard/products/product-form/utils/calculateDiscount";
 import {
   calcQuality,
@@ -6,7 +7,9 @@ import {
 
 const ProductCard = ({ product, onEdit, onDelete }) => {
   const image =
-    product.images?.[0]?.url || "https://placehold.co/600x400?text=No+Image";
+    product.images?.length > 0
+      ? `${API_BASE_URL}${product.images[0]}`
+      : "https://placehold.co/600x400?text=No+Image";
 
   const discount = calculateDiscount(product.mrp, product.price);
   const score = calcQuality(product);
