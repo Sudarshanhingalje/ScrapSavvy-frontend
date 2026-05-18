@@ -1,154 +1,34 @@
 import { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import "../../../features/home/styles/Front.css";
-
-/* ─── DATA ─── */
-const TICKER_ITEMS = [
-  "Book a free pickup",
-  "Sell your scrap today",
-  "Best rates guaranteed",
-  "Eco-friendly disposal",
-  "Same-day collection",
-  "Book a free pickup",
-  "Sell your scrap today",
-  "Best rates guaranteed",
-  "Eco-friendly disposal",
-  "Same-day collection",
-];
-
-const HOW_STEPS = [
-  {
-    n: "01",
-    icon: "📅",
-    title: "Schedule",
-    desc: "Pick a convenient date and time slot via our app or website. Takes under a minute.",
-  },
-  {
-    n: "02",
-    icon: "🚛",
-    title: "We Arrive",
-    desc: "Our trained team arrives at your doorstep on time — no waiting, no chasing.",
-  },
-  {
-    n: "03",
-    icon: "⚖️",
-    title: "We Weigh",
-    desc: "Every item is weighed on calibrated scales in front of you. Total transparency.",
-  },
-  {
-    n: "04",
-    icon: "💸",
-    title: "Get Paid",
-    desc: "Instant cash or UPI transfer at current market rates. No hidden deductions.",
-  },
-];
-
-const ABOUT_CARDS = [
-  {
-    icon: "🏭",
-    title: "Built on Innovation",
-    text: "We seamlessly blend traditional waste collection with cutting-edge automation — creating a streamlined, professional, and eco-conscious experience for every household and business in Pune.",
-  },
-  {
-    icon: "🌍",
-    title: "Committed to Sustainability",
-    text: "Our mission is to reduce the environmental impact of waste disposal through state-of-the-art logistics — making responsible waste management accessible, convenient, and genuinely green.",
-  },
-  {
-    icon: "♻️",
-    title: "Circular Economy Vision",
-    text: "We connect waste generators directly with certified recyclers and processors — because at ScrapSavvy, waste isn't a problem. It's a resource waiting to benefit your community and the planet.",
-  },
-];
-
-const SERVICES = [
-  {
-    icon: "🚪",
-    title: "Doorstep Pickup",
-    desc: "We come to you — homes, offices, factories, and housing societies. No minimum quantity required.",
-  },
-  {
-    icon: "♻️",
-    title: "Responsible Recycling",
-    desc: "Every item is sorted, segregated, and sent to certified recycling partners. Nothing goes to landfill.",
-  },
-  {
-    icon: "💰",
-    title: "Best Market Rates",
-    desc: "Live pricing updated daily. We match or beat any competitor — guaranteed.",
-  },
-];
-
-const MATERIALS = [
-  { emoji: "🔩", name: "Metal", price: "₹28–₹40/kg", note: "Iron / Steel mix" },
-  {
-    emoji: "🧴",
-    name: "Plastic",
-    price: "₹12–₹25/kg",
-    note: "PET / HDPE type dependent",
-  },
-  {
-    emoji: "📄",
-    name: "Paper",
-    price: "₹8–₹15/kg",
-    note: "Cardboard fetches more",
-  },
-  {
-    emoji: "🪟",
-    name: "Glass",
-    price: "₹5–₹10/kg",
-    note: "Bottles / panes accepted",
-  },
-  {
-    emoji: "🔌",
-    name: "Electronics",
-    price: "₹20–₹80/kg",
-    note: "Depends on components",
-  },
-  {
-    emoji: "👕",
-    name: "Textiles",
-    price: "₹10–₹20/kg",
-    note: "Old clothes / fabric scrap",
-  },
-  {
-    emoji: "📦",
-    name: "Others",
-    price: "₹5–₹15/kg",
-    note: "Mixed / miscellaneous scrap",
-  },
-];
+import { getScrapRates } from "../../../features/scrapRates/redux/scrapRatesThunk";
+import {
+  ABOUT_CARDS,
+  HOW_STEPS,
+  MATERIALS,
+  SERVICES,
+  TICKER_ITEMS,
+} from "../../home/constants/frontPageConstants";
 
 /* ─── COMPONENT ─── */
 function Frontpage() {
   const [scrolled, setScrolled] = useState(false);
 
-  const [prices, setPrices] = useState({});
+  const dispatch = useDispatch();
+
+  // 🔥 READ PRICES FROM REDUX
+  const prices = useSelector((state) => state.scrapRates.data);
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 50);
     window.addEventListener("scroll", onScroll, { passive: true });
 
-    // 🔥 FETCH FROM BACKEND
-    fetch("http://localhost:8080/api/prices/all")
-      .then((res) => res.json())
-      .then((data) => {
-        console.log("API DATA:", data);
-
-        const priceMap = {};
-
-        data.forEach((item) => {
-          priceMap[item.category] = item.price;
-        });
-
-        console.log("Mapped Prices:", priceMap);
-
-        setPrices(priceMap); // 🔥 IMPORTANT
-      })
-      .catch((err) => console.error(err));
+    // 🔥 DISPATCH THUNK TO LOAD PRICES (ownerId = 2 matches your DB)
+    dispatch(getScrapRates(2));
 
     return () => window.removeEventListener("scroll", onScroll);
-  }, []);
+  }, [dispatch]);
 
   return (
     <>
@@ -353,17 +233,29 @@ function Frontpage() {
         <div className="container">
           <span className="section-label">Today's Rates</span>
           <h2 className="section-title">What we buy</h2>
+
           <div className="rates-grid">
-            {MATERIALS.map((m) => (
-              <div className="rate-card" key={m.name}>
-                <div className="rate-card__emoji">{m.emoji}</div>
-                <div className="rate-card__name">{m.name}</div>
-                <div className="rate-card__price">
-                  {prices[m.name] ? `₹${prices[m.name]}/kg` : m.price}
+            {MATERIALS.map((m) => {
+              // prices shape: { Metal: { customerPrice: 35, companyPrice: 45 }, ... }
+              const rateObj = prices?.[m.name];
+              const customerPrice = rateObj?.customerPrice;
+
+              return (
+                <div className="rate-card" key={m.name}>
+                  <div className="rate-card__emoji">{m.emoji}</div>
+
+                  <div className="rate-card__name">{m.name}</div>
+
+                  <div className="rate-card__price">
+                    {customerPrice !== undefined
+                      ? `₹${customerPrice}/kg`
+                      : m.price}
+                  </div>
+
+                  <div className="rate-card__note">{m.note}</div>
                 </div>
-                <div className="rate-card__note">{m.note}</div>
-              </div>
-            ))}
+              );
+            })}
           </div>
         </div>
       </section>

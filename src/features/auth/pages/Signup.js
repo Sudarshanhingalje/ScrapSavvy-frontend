@@ -171,9 +171,13 @@ const Signup = () => {
           message={snackbarMessage}
           severity={snackbarSeverity}
         />
+
+        {/* ── Header ── */}
         <div className="header-div">
-          <h1>Sign up</h1>
+          <h1>Create Account ♻️</h1>
+          <p>Join ScrapSavvy and start earning from your scrap</p>
         </div>
+
         <Box component="form" noValidate autoComplete="off">
           <Grid container spacing={2}>
             <Grid item xs={12} sm={6}>

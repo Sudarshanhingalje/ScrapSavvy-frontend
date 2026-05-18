@@ -12,6 +12,7 @@ import { RUNNING_ADS } from "../constants/customerConstants";
 import CustomerAdsBar from "../dashboard/CustomerAdsBar";
 import CustomerTopbar from "../dashboard/CustomerTopbar";
 import WishlistSection from "../dashboard/WishlistSection";
+import ProductMarquee from "../products/ProductMarquee";
 
 const CustomerDashboard = () => {
   const dispatch = useDispatch();
@@ -51,7 +52,7 @@ const CustomerDashboard = () => {
           {error && <p style={{ color: "red" }}>{error}</p>}
 
           {/* <AvailableItemsSection products={products} /> */}
-
+          <ProductMarquee products={products} />
           <WishlistSection
             wishlist={wishlist}
             removeFromWishlist={removeFromWishlist}

@@ -1,10 +1,11 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 
 import "../../../features/customer/styles/Customerdashboard.css";
 import "../../../features/customer/styles/CustomerProductPage.css";
 
 import CustomerSidebar from "../../../shared/layout/CustomerSidebar";
+import { PRICE_KEYS } from "../constants/priceKeys";
 import AvailableItemsSection from "../products/AvailableItemsSection";
 import { fetchProducts } from "../redux/customerProductSlice";
 
@@ -16,19 +17,22 @@ const CustomerProductPage = () => {
   const loading = productState?.loading;
   const error = productState?.error;
 
+  const { data: prices = {} } = useSelector((state) => state.scrapRates);
+
+  const [search, setSearch] = useState("");
+  const [sort, setSort] = useState("newest");
+
   useEffect(() => {
     dispatch(fetchProducts());
   }, [dispatch]);
 
   return (
     <div className="cpp-layout">
-      {/* LEFT — original sidebar, zero changes */}
       <CustomerSidebar />
 
-      {/* RIGHT — scrollable main area */}
       <div className="cpp-main">
-        {/* Blue topbar */}
-        <div className="cpp-topbar">
+        {/* ✅ TOPBAR */}
+        <div className="cpp-topbar cpp-sticky-topbar">
           <div>
             <h1 className="cpp-topbar__title">Products</h1>
             <p className="cpp-topbar__sub">
@@ -38,15 +42,57 @@ const CustomerProductPage = () => {
           <span className="cd-live-pill">● Live</span>
         </div>
 
-        {/* Page body */}
-        <div className="cpp-content">
-          {loading && <p className="cd-loading-text">Loading products...</p>}
-          {error && (
-            <p style={{ color: "var(--color-danger)", fontSize: 14 }}>
-              {error}
-            </p>
+        {/* ✅ LIVE RATES */}
+        <div className="rates-bar cpp-sticky-marquee">
+          <span className="rates-label">📊 Live rates</span>
+
+          <div className="rates-scroll-wrap">
+            <div className="rates-inner">
+              {[...PRICE_KEYS, ...PRICE_KEYS].map(({ icon, label, key }, i) => {
+                const rate = prices?.[key]?.customerPrice;
+
+                return (
+                  <span key={i} className="rate-item">
+                    {icon} {label} | {rate ? `₹${rate}/kg` : "--"}
+                  </span>
+                );
+              })}
+            </div>
+          </div>
+        </div>
+
+        {/* ✅ SEARCH + SORT (STICKY) */}
+        <div className="ps-controls-row cpp-sticky-search">
+          <input
+            className="ps-search-input"
+            placeholder="Search products..."
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+          />
+
+          <select
+            className="ps-sort-select"
+            value={sort}
+            onChange={(e) => setSort(e.target.value)}
+          >
+            <option value="newest">Newest first</option>
+            <option value="price-asc">Price: low to high</option>
+            <option value="price-desc">Price: high to low</option>
+          </select>
+        </div>
+
+        {/* ✅ ONLY SCROLL AREA */}
+        <div className="cpp-scroll-area">
+          {loading && <p>Loading...</p>}
+          {error && <p style={{ color: "red" }}>{error}</p>}
+
+          {!loading && !error && (
+            <AvailableItemsSection
+              products={products}
+              search={search}
+              sort={sort}
+            />
           )}
-          {!loading && !error && <AvailableItemsSection products={products} />}
         </div>
       </div>
     </div>

@@ -151,10 +151,10 @@ const Signin = () => {
 
       <div className="centered">
         <div className="sm-container mb-3">
-          <div className="header-div text-center mb-4">
+          {/* ── Header ── */}
+          <div className="header-div">
             <h1>Welcome Back 👋</h1>
-
-            <p className="text-muted">Sign in to continue to ScrapSavvy</p>
+            <p>Sign in to continue to ScrapSavvy</p>
           </div>
 
           <Box

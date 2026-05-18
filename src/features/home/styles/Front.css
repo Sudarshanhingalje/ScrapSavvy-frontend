@@ -238,7 +238,8 @@ img {
 ════════════════════════════════════ */
 .sp-hero {
   min-height: 100vh;
-  background: #2e3a1a;
+  background: linear-gradient(135deg, #232526, #414345);
+
   display: grid;
   grid-template-columns: 1fr 1fr;
   align-items: center;
