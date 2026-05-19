@@ -25,6 +25,8 @@ import ScrapyardDashboard from "../features/scrapyard/pages/ScrapyardDashboard";
 import ScrapyardProfile from "../features/scrapyard/pages/ScrapyardProfile";
 
 import OrdersHistory from "../features/company/pages/OrdersHistory";
+import CartDrawer from "../features/customer/cart/pages/CartDrawer";
+import CheckoutPage from "../features/customer/cart/pages/CheckoutPage";
 import CustomerProductPage from "../features/customer/pages/CustomerProductPage";
 import Frontpage from "../features/home/pages/Frontpage";
 import PaymentsMadeTable from "../features/payment/PaymentsMadeTable";
@@ -33,54 +35,71 @@ import ProductsPage from "../features/scrapyard/pages/ProductsPage";
 
 function AppRoutes() {
   return (
-    <Routes>
-      <Route path="/" element={<Frontpage />} />
-      <Route path="/signin" element={<Signin />} />
-      <Route path="/signup" element={<Signup />} />
-      <Route path="/forgotPassword" element={<ForgotPassword />} />
+    <>
+      <Routes>
+        <Route path="/" element={<Frontpage />} />
+        <Route path="/signin" element={<Signin />} />
+        <Route path="/signup" element={<Signup />} />
+        <Route path="/forgotPassword" element={<ForgotPassword />} />
 
-      {/* Company */}
-      <Route path="/company-dashboard" element={<CompanyDashboard />} />
-      <Route path="/company-dashboard/scrap-order" element={<ScrapOrder />} />
-      <Route
-        path="/company-dashboard/orders-history"
-        element={<OrdersHistory />}
-      />
-      <Route path="/com-list-of-scraps" element={<CompScrapsTable />} />
-      <Route path="/company-payments" element={<CompPaymentsReceivedTable />} />
-      <Route path="/company-profile" element={<CompanyProfile />} />
+        {/* Company */}
+        <Route path="/company-dashboard" element={<CompanyDashboard />} />
+        <Route path="/company-dashboard/scrap-order" element={<ScrapOrder />} />
+        <Route
+          path="/company-dashboard/orders-history"
+          element={<OrdersHistory />}
+        />
+        <Route path="/com-list-of-scraps" element={<CompScrapsTable />} />
+        <Route
+          path="/company-payments"
+          element={<CompPaymentsReceivedTable />}
+        />
+        <Route path="/company-profile" element={<CompanyProfile />} />
 
-      {/* Scrapyard */}
-      <Route path="/scrapyard-dashboard" element={<ScrapyardDashboard />} />
-      <Route path="/scrap-orders" element={<ScrapOrders />} />
-      <Route path="/customer-orders" element={<Customerorders />} />
-      <Route path="/sr-list-of-scraps" element={<SScrapsTable />} />
-      <Route path="/mysr-list-of-scraps" element={<MySScrapsTable />} />
-      <Route path="/scrapyard-transactions" element={<RecentTransactions />} />
+        {/* Scrapyard */}
+        <Route path="/scrapyard-dashboard" element={<ScrapyardDashboard />} />
+        <Route path="/scrap-orders" element={<ScrapOrders />} />
+        <Route path="/customer-orders" element={<Customerorders />} />
+        <Route path="/sr-list-of-scraps" element={<SScrapsTable />} />
+        <Route path="/mysr-list-of-scraps" element={<MySScrapsTable />} />
+        <Route
+          path="/scrapyard-transactions"
+          element={<RecentTransactions />}
+        />
 
-      <Route path="/scrapyard-products" element={<ProductsPage />} />
-      <Route path="/scrapyard-profile" element={<ScrapyardProfile />} />
+        <Route path="/scrapyard-products" element={<ProductsPage />} />
+        <Route path="/scrapyard-profile" element={<ScrapyardProfile />} />
 
-      {/* Customer */}
-      <Route path="/customer-dashboard" element={<CustomerDashboard />} />
-      <Route
-        path="/customer-dashboard/scrap-sell"
-        element={<CustomerSells />}
-      />
-      <Route
-        path="/customer-dashboard/customer-orders-history"
-        element={<CustomerOrdersHistory />}
-      />
-      <Route path="/cus-list-of-scraps" element={<CustomerProductPage />} />
-      <Route path="/customer-transactions" element={<CustomerTransactions />} />
-      <Route path="/customer-profile" element={<CustomerProfile />} />
+        {/* Customer */}
+        <Route path="/customer-dashboard" element={<CustomerDashboard />} />
+        <Route
+          path="/customer-dashboard/scrap-sell"
+          element={<CustomerSells />}
+        />
+        <Route
+          path="/customer-dashboard/customer-orders-history"
+          element={<CustomerOrdersHistory />}
+        />
+        <Route path="/cus-list-of-scraps" element={<CustomerProductPage />} />
+        <Route
+          path="/customer-transactions"
+          element={<CustomerTransactions />}
+        />
+        <Route path="/customer-profile" element={<CustomerProfile />} />
 
-      {/* Payments */}
-      <Route path="/r-payments" element={<PaymentsReceivedTable />} />
-      <Route path="/m-payments" element={<PaymentsMadeTable />} />
+        {/* Payments */}
+        <Route path="/r-payments" element={<PaymentsReceivedTable />} />
+        <Route path="/m-payments" element={<PaymentsMadeTable />} />
 
-      <Route path="*" element={<Navigate to="/" />} />
-    </Routes>
+        {/* Checkout */}
+        <Route path="/checkout" element={<CheckoutPage />} />
+
+        <Route path="*" element={<Navigate to="/" />} />
+      </Routes>
+
+      {/* GLOBAL CART DRAWER */}
+      <CartDrawer />
+    </>
   );
 }
 

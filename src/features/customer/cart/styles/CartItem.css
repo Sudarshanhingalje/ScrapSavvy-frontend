@@ -1,0 +1,134 @@
+.cart-item {
+  display: flex;
+  gap: 14px;
+  padding: 14px;
+  background: #f9fafb;
+  border-radius: 12px;
+  border: 1px solid #f0f0f0;
+}
+
+/* Product image */
+.cart-item__image {
+  width: 80px;
+  height: 80px;
+  object-fit: contain;
+  border-radius: 8px;
+  background: #fff;
+  border: 1px solid #eee;
+  flex-shrink: 0;
+}
+
+/* Right side content */
+.cart-item__content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 0;
+}
+
+.cart-item__title {
+  font-size: 14px;
+  font-weight: 600;
+  color: #111827;
+  margin: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.cart-item__brand {
+  font-size: 12px;
+  color: #9ca3af;
+  margin: 0;
+}
+
+/* Price row */
+.cart-item__price-row {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  margin-top: 2px;
+}
+
+.cart-item__price {
+  font-size: 15px;
+  font-weight: 700;
+  color: #111827;
+}
+
+.cart-item__mrp {
+  font-size: 12px;
+  text-decoration: line-through;
+  color: #9ca3af;
+}
+
+/* Bottom row: qty stepper + remove */
+.cart-item__bottom {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 6px;
+}
+
+/* Quantity stepper */
+.cart-item__qty {
+  display: flex;
+  align-items: center;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  overflow: hidden;
+  background: #fff;
+}
+
+.cart-item__qty button {
+  width: 30px;
+  height: 30px;
+  border: none;
+  background: transparent;
+  font-size: 16px;
+  color: #374151;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.15s;
+  flex-shrink: 0;
+}
+
+.cart-item__qty button:hover:not(:disabled) {
+  background: #f3f4f6;
+}
+
+.cart-item__qty button:disabled {
+  color: #d1d5db;
+  cursor: not-allowed;
+}
+
+.cart-item__qty span {
+  min-width: 32px;
+  text-align: center;
+  font-size: 13px;
+  font-weight: 700;
+  color: #111827;
+  border-left: 1px solid #e5e7eb;
+  border-right: 1px solid #e5e7eb;
+  line-height: 30px;
+}
+
+/* Remove button */
+.cart-item__remove {
+  background: none;
+  border: none;
+  font-size: 12px;
+  font-weight: 600;
+  color: #ef4444;
+  cursor: pointer;
+  padding: 4px 8px;
+  border-radius: 6px;
+  transition: background 0.15s;
+}
+
+.cart-item__remove:hover {
+  background: #fee2e2;
+}

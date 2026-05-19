@@ -1,7 +1,7 @@
 import "../../../features/customer/styles/ProductMarquee.css";
 import ItemCard from "../products/ItemCard";
 
-const ProductMarquee = ({ products = [] }) => {
+const ProductMarquee = ({ products = [], onViewProduct }) => {
   const safeProducts = (products || []).filter(Boolean);
 
   return (
@@ -32,7 +32,7 @@ const ProductMarquee = ({ products = [] }) => {
                 className="pm-item"
                 key={(product?._id || product?.id) + "-" + index}
               >
-                <ItemCard product={product} />
+                <ItemCard product={product} onViewProduct={onViewProduct} />
               </div>
             ))}
           </div>

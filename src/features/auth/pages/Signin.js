@@ -11,7 +11,9 @@ import {
 import { useState } from "react";
 import { useDispatch } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
-import { ActionCreator } from "../../../redux/actions/ActionCreator";
+
+import { setToken, setUser } from "../../../redux/actions/authSlice";
+
 import Navbar from "../../../shared/components/Navbar";
 import Toast from "../../../shared/components/Snackbar";
 import AuthService from "../../../shared/services/AuthService";
@@ -32,22 +34,18 @@ const Signin = () => {
   const [showPassword, setShowPassword] = useState(false);
 
   // ================= VALIDATION =================
-
   const validate = () => {
     const tempErrors = {};
     let isValid = true;
 
     isValid = ValidateEmail(email, tempErrors) && isValid;
-
     isValid = ValidatePassword(password, tempErrors, "password") && isValid;
 
     setErrors(tempErrors);
-
     return isValid;
   };
 
   // ================= REDIRECT =================
-
   const redirectBasedOnRole = (role) => {
     setTimeout(() => {
       if (role === "company") {
@@ -61,7 +59,6 @@ const Signin = () => {
   };
 
   // ================= SNACKBAR =================
-
   const handleSnackbar = (message, severity, show) => {
     setSnackbarMessage(message);
     setSnackbarSeverity(severity);
@@ -73,7 +70,6 @@ const Signin = () => {
   };
 
   // ================= PASSWORD =================
-
   const handleClickShowPassword = () => {
     setShowPassword(!showPassword);
   };
@@ -83,94 +79,77 @@ const Signin = () => {
   };
 
   // ================= SIGN IN =================
-
   const handleSignin = async (e) => {
     e.preventDefault();
 
     if (!validate()) {
       handleSnackbar("Please enter valid credentials", "error", true);
-
       return;
     }
 
     try {
-      const formData = {
+      const response = await AuthService.SignIn({
         email,
         password,
-      };
-
-      const response = await AuthService.SignIn(formData);
+      });
 
       if (response.status === 200) {
         const profile = response.data.userProfile;
 
-        // ================= CLEAR OLD DATA =================
-
         localStorage.clear();
 
-        // ================= SAVE USER DATA =================
-
+        // basic storage
         localStorage.setItem("name", profile.name);
-
         localStorage.setItem("email", profile.emailId);
-
         localStorage.setItem("mobile", profile.mobile);
-
-        // ✅ IMPORTANT
-        const payload = JSON.parse(atob(response.data.token.split(".")[1]));
-
-        localStorage.setItem("userId", payload.userId);
-
+        localStorage.setItem("token", response.data.token);
         localStorage.setItem("role", profile.userRole);
 
-        // token
-        localStorage.setItem("token", response.data.token);
+        // decode JWT
+        const payload = JSON.parse(atob(response.data.token.split(".")[1]));
+
+        const userPayload = {
+          userId: payload.userId,
+          name: profile.name,
+          email: profile.emailId,
+          role: profile.userRole,
+        };
+
+        localStorage.setItem("user", JSON.stringify(userPayload));
 
         // redux
-        dispatch(ActionCreator.SetUserToken(response.data.token));
+        dispatch(setToken(response.data.token));
+        dispatch(setUser(userPayload));
 
         handleSnackbar("✅ Sign-in successful!", "success", true);
 
-        // redirect
         redirectBasedOnRole(profile.userRole);
       } else {
         handleSnackbar("Server error!", "error", true);
       }
     } catch (error) {
       console.error(error);
-
       handleSnackbar(error?.response?.data || "Login failed!", "error", true);
     }
   };
 
   // ================= UI =================
-
   return (
     <>
       <Navbar />
 
       <div className="centered">
         <div className="sm-container mb-3">
-          {/* ── Header ── */}
           <div className="header-div">
             <h1>Welcome Back 👋</h1>
             <p>Sign in to continue to ScrapSavvy</p>
           </div>
 
-          <Box
-            sx={{
-              display: "flex",
-              flexDirection: "column",
-              gap: 2,
-            }}
-          >
+          <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
             {/* EMAIL */}
-
             <TextField
               label="Email Address"
-              variant="outlined"
               fullWidth
-              placeholder="Enter your email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               error={!!errors.email}
@@ -178,8 +157,7 @@ const Signin = () => {
             />
 
             {/* PASSWORD */}
-
-            <FormControl variant="outlined" fullWidth>
+            <FormControl fullWidth>
               <InputLabel>Password</InputLabel>
 
               <OutlinedInput
@@ -187,7 +165,7 @@ const Signin = () => {
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 error={!!errors.password}
-                placeholder="Enter password"
+                label="Password"
                 endAdornment={
                   <InputAdornment position="end">
                     <IconButton
@@ -199,14 +177,11 @@ const Signin = () => {
                     </IconButton>
                   </InputAdornment>
                 }
-                label="Password"
               />
             </FormControl>
 
             {/* BUTTON */}
-
             <button
-              type="button"
               className="btn btn-primary w-100 mt-3"
               onClick={handleSignin}
             >
@@ -214,7 +189,6 @@ const Signin = () => {
             </button>
 
             {/* LINKS */}
-
             <div className="text-center">
               <Link to="/forgotPassword">Forgot Password?</Link>
             </div>
@@ -226,7 +200,6 @@ const Signin = () => {
         </div>
 
         {/* TOAST */}
-
         <Toast
           open={snackbarOpen}
           close={handleSnackbarClose}

@@ -1,0 +1,41 @@
+.checkout-page {
+  display: grid;
+  grid-template-columns: 1fr 380px;
+  gap: 24px;
+  padding: 24px;
+}
+
+.checkout-left {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.checkout-left h1 {
+  font-size: 24px;
+  font-weight: 700;
+  color: #111827;
+  margin: 0 0 8px;
+}
+
+.checkout-right {
+  position: sticky;
+  top: 20px;
+  height: fit-content;
+  border: 1px solid #eee;
+  border-radius: 16px;
+  background: #fff;
+  overflow: hidden;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .checkout-page {
+    grid-template-columns: 1fr;
+    padding: 16px;
+  }
+
+  .checkout-right {
+    position: static;
+  }
+}

@@ -13,16 +13,18 @@ import CustomerAdsBar from "../dashboard/CustomerAdsBar";
 import CustomerTopbar from "../dashboard/CustomerTopbar";
 import WishlistSection from "../dashboard/WishlistSection";
 import ProductMarquee from "../products/ProductMarquee";
+import ProductDetailsModal from "../products/modal/ProductDetailsModal";
 
 const CustomerDashboard = () => {
   const dispatch = useDispatch();
 
-  // ✅ SAFE SELECTOR (NO CRASH EVER)
   const productState = useSelector((state) => state.product);
 
   const products = productState?.products || [];
   const loading = productState?.loading;
   const error = productState?.error;
+
+  const [selectedProduct, setSelectedProduct] = useState(null);
 
   useEffect(() => {
     dispatch(fetchProducts());
@@ -51,14 +53,25 @@ const CustomerDashboard = () => {
           {loading && <p>Loading products...</p>}
           {error && <p style={{ color: "red" }}>{error}</p>}
 
-          {/* <AvailableItemsSection products={products} /> */}
-          <ProductMarquee products={products} />
+          <ProductMarquee
+            products={products}
+            onViewProduct={setSelectedProduct}
+          />
+
           <WishlistSection
             wishlist={wishlist}
             removeFromWishlist={removeFromWishlist}
           />
         </div>
       </div>
+
+      {/* MODAL — outside cd-main so it overlays everything */}
+      {selectedProduct && (
+        <ProductDetailsModal
+          product={selectedProduct}
+          onClose={() => setSelectedProduct(null)}
+        />
+      )}
     </div>
   );
 };
