@@ -8,7 +8,6 @@ export const createCustomerSellOrder = async (formData, token) => {
     },
     body: formData,
   });
-
   if (!res.ok) {
     throw new Error("Order failed");
   }
