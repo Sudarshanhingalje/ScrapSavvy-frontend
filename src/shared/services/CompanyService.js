@@ -3,7 +3,7 @@ import { BASEURL } from "../../shared/utils/Utils";
 
 class CompanyService {
   AddProduct(formData) {
-    const API = BASEURL + "/company/add_product/";
+    const API = BASEURL + "/company/addproduct/";
     return axios.post(API, formData, {
       headers: {
         "Content-Type": "application/json",
@@ -30,7 +30,7 @@ class CompanyService {
     });
   }
   GetAllProducts(userProfileId) {
-    const API = BASEURL + "/company/get_all_products/" + userProfileId;
+    const API = BASEURL + "/company/getallproducts/" + userProfileId;
     return axios.get(API, {
       headers: {
         "Content-Type": "application/json",
@@ -40,7 +40,7 @@ class CompanyService {
   }
   GetProduct(userProfileId, product_id) {
     const API =
-      BASEURL + "/company/get_product/" + userProfileId + "/" + product_id;
+      BASEURL + "/company/getproduct/" + userProfileId + "/" + product_id;
     return axios.get(API, {
       headers: {
         "Content-Type": "application/json",
@@ -50,7 +50,7 @@ class CompanyService {
   }
 
   GetProductCategories() {
-    const API = BASEURL + "/company/get_categories/";
+    const API = BASEURL + "/company/getcategories/";
     return axios.get(API, {
       headers: {
         "Content-Type": "application/json",

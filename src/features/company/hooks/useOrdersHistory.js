@@ -13,7 +13,7 @@ const useOrdersHistory = () => {
 
     try {
       const res = await fetch(
-        "http://localhost:8080/api/scrap-orders/my-orders",
+        "http://localhost:8080/api/scraporders/myorders",
         {
           headers: {
             Authorization: `Bearer ${token}`,

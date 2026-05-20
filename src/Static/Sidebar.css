@@ -36,20 +36,24 @@
 ══════════════════════════════════════════ */
 #sidebar-wrapper {
   width: var(--sb-width);
-  min-height: 100vh;
+  height: 100vh;
+
   background: var(--sb-bg);
   border-right: 1px solid var(--sb-border);
   box-shadow: var(--sb-shadow);
+
   display: flex;
   flex-direction: column;
   flex-shrink: 0;
+
   font-family: var(--sb-font);
+
   position: sticky;
   top: 0;
-  height: 100vh;
+  left: 0;
+
   overflow-y: auto;
 }
-
 /* ── Brand / Logo area ── */
 .sidebar-heading {
   padding: 20px 20px 16px;
@@ -76,14 +80,14 @@
   font-size: 9px;
   font-weight: 700;
   color: #94a3b8;
-  letter-spacing: 1.4px;
+  letter-spacing: 1px;
   text-transform: uppercase;
 }
 
 /* ── Nav items ── */
 .list-group-flush {
-  padding: 10px 0;
-  flex: 1;
+  padding: 0;
+  flex: unset;
 }
 
 .list-group-item {
@@ -241,4 +245,8 @@
 /* ── Remove Bootstrap bg-dark override ── */
 #sidebar-wrapper.bg-dark {
   background: var(--sb-bg) !important;
+}
+.orders-layout {
+  display: flex;
+  align-items: flex-start;
 }

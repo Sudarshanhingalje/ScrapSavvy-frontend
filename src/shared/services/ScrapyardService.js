@@ -11,32 +11,32 @@ const getAuthHeaders = () => {
 
 class ScrapyardService {
   GetMyAllProducts(userId) {
-    return axios.get(`${API}/get_my_products/${userId}`, {
+    return axios.get(`${API}/getmyproducts/${userId}`, {
       headers: getAuthHeaders(),
     });
   }
 
   GetAllActiveProducts() {
-    return axios.get(`${API}/get_all_products`, {
+    return axios.get(`${API}/getallproducts`, {
       headers: getAuthHeaders(),
     });
   }
 
   AddProduct(userId, data) {
     // data is FormData — axios auto-sets Content-Type with boundary
-    return axios.post(`${API}/add_product/${userId}`, data, {
+    return axios.post(`${API}/addproduct/${userId}`, data, {
       headers: getAuthHeaders(),
     });
   }
 
   UpdateProduct(userId, productId, data) {
-    return axios.put(`${API}/update_product/${userId}/${productId}`, data, {
+    return axios.put(`${API}/updateproduct/${userId}/${productId}`, data, {
       headers: getAuthHeaders(),
     });
   }
 
   DeleteProduct(userId, productId) {
-    return axios.delete(`${API}/delete_product/${userId}/${productId}`, {
+    return axios.delete(`${API}/deleteproduct/${userId}/${productId}`, {
       headers: getAuthHeaders(),
     });
   }

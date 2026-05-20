@@ -1,13 +1,16 @@
 import {
   faBox,
+  faClipboardList,
   faCog,
   faCreditCard,
   faHome,
+  faPlusCircle,
   faShoppingCart,
   faSignOutAlt,
   faTachometerAlt,
   faUser,
 } from "@fortawesome/free-solid-svg-icons";
+
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useState } from "react";
 import { Link, useLocation } from "react-router-dom";
@@ -18,49 +21,104 @@ const ScrapyardSidebar = () => {
   const [isOffcanvasOpen, setOffcanvasOpen] = useState(false);
   const location = useLocation();
 
-  const toggleOffcanvas = () => setOffcanvasOpen((prev) => !prev);
-  const closeOffcanvas = () => setOffcanvasOpen(false);
-
   const isActive = (path) => location.pathname === path;
+
   const linkClass = (path) =>
-    `list-group-item list-group-item-action${isActive(path) ? " active" : ""}`;
+    `list-group-item list-group-item-action ${isActive(path) ? "active" : ""}`;
 
-  const navItems = [
-    { to: "/scrapyard-dashboard", icon: faTachometerAlt, label: "Dashboard" },
-    { to: "/scrap-orders", icon: faShoppingCart, label: "Company Orders" },
-    { to: "/customer-orders", icon: faShoppingCart, label: "Customer Orders" },
-    { to: "/scrapyard-products", icon: faBox, label: "Products" },
+  const navSections = [
     {
-      to: "/scrapyard-transactions",
-      icon: faCreditCard,
-      label: "Transactions",
+      section: "DASHBOARD",
+      items: [
+        {
+          to: "/scrapyard-dashboard",
+          icon: faTachometerAlt,
+          label: "Overview",
+        },
+      ],
     },
-    { to: "/scrapyard-profile", icon: faUser, label: "Profile" },
+
+    {
+      section: "ORDERS (BUYERS)",
+      items: [
+        {
+          to: "/scrap-orders",
+          icon: faShoppingCart,
+          label: "Company Orders",
+        },
+        {
+          to: "/customer-orders",
+          icon: faShoppingCart,
+          label: "Customer Orders",
+        },
+      ],
+    },
+
+    {
+      section: "PRODUCT MANAGEMENT",
+      items: [
+        {
+          to: "/scrapyard-products/allproducts",
+          icon: faBox,
+          label: "All Products",
+        },
+        {
+          to: "/scrapyard-products/add",
+          icon: faPlusCircle,
+          label: "Add Product",
+        },
+        {
+          to: "/scrapyard-products/orders",
+          icon: faClipboardList,
+          label: "Product Orders",
+        },
+      ],
+    },
+
+    {
+      section: "FINANCE",
+      items: [
+        {
+          to: "/scrapyard-transactions",
+          icon: faCreditCard,
+          label: "Transactions",
+        },
+      ],
+    },
+
+    {
+      section: "ACCOUNT",
+      items: [
+        { to: "/scrapyard-profile", icon: faUser, label: "Profile" },
+        { to: "/scrapyard-settings", icon: faCog, label: "Settings" },
+      ],
+    },
   ];
 
-  const bottomItems = [
-    { to: "/scrapyard-settings", icon: faCog, label: "Settings" },
-    { to: "/logout", icon: faSignOutAlt, label: "Logout" },
-  ];
+  const bottomItems = [{ to: "/logout", icon: faSignOutAlt, label: "Logout" }];
 
   return (
     <>
-      {/* ── Desktop Sidebar ── */}
+      {/* DESKTOP SIDEBAR */}
       <div id="sidebar-wrapper">
         <div className="sidebar-heading">{BRANDNAME}</div>
 
-        <div className="sidebar-section-label">Main Menu</div>
+        {navSections.map((group) => (
+          <div key={group.section}>
+            <div className="sidebar-section-label">{group.section}</div>
 
-        <div className="list-group list-group-flush">
-          {navItems.map(({ to, icon, label }) => (
-            <Link key={to} to={to} className={linkClass(to)}>
-              <FontAwesomeIcon icon={icon} className="icon" />
-              {label}
-            </Link>
-          ))}
-        </div>
+            <div className="list-group list-group-flush">
+              {group.items.map(({ to, icon, label }) => (
+                <Link key={to} to={to} className={linkClass(to)}>
+                  <FontAwesomeIcon icon={icon} className="icon" />
+                  {label}
+                </Link>
+              ))}
+            </div>
+          </div>
+        ))}
 
-        {/* ── Bottom pinned items ── */}
+        {/* Bottom */}
         <div className="sidebar-bottom">
           <div className="sidebar-divider" />
           <div className="list-group list-group-flush">
@@ -74,67 +132,67 @@ const ScrapyardSidebar = () => {
         </div>
       </div>
 
-      {/* ── Mobile Toggle Button ── */}
+      {/* MOBILE BUTTON */}
       <button
         className="sb-mobile-toggle"
-        onClick={toggleOffcanvas}
-        aria-label="Open menu"
+        onClick={() => setOffcanvasOpen(!isOffcanvasOpen)}
       >
         <FontAwesomeIcon icon={faHome} />
       </button>
 
-      {/* ── Mobile Offcanvas Drawer ── */}
+      {/* BACKDROP */}
       {isOffcanvasOpen && (
         <div
           style={{
             position: "fixed",
             inset: 0,
-            background: "rgba(15,23,42,0.4)",
+            background: "rgba(0,0,0,0.4)",
             zIndex: 1040,
           }}
-          onClick={closeOffcanvas}
+          onClick={() => setOffcanvasOpen(false)}
         />
       )}
 
+      {/* MOBILE SIDEBAR */}
       <div
-        className={`offcanvas offcanvas-start${isOffcanvasOpen ? " show" : ""}`}
+        className={`offcanvas offcanvas-start ${isOffcanvasOpen ? "show" : ""}`}
         style={{
           visibility: isOffcanvasOpen ? "visible" : "hidden",
-          zIndex: 1050,
-          transition: "transform 0.25s ease",
           transform: isOffcanvasOpen ? "translateX(0)" : "translateX(-100%)",
+          transition: "transform 0.25s ease",
+          zIndex: 1050,
         }}
-        aria-label="Navigation"
       >
         <div className="offcanvas-header">
-          <h5 className="offcanvas-title">{BRANDNAME}</h5>
+          <h5>{BRANDNAME}</h5>
           <button
-            type="button"
             className="btn-close"
-            aria-label="Close"
-            onClick={closeOffcanvas}
+            onClick={() => setOffcanvasOpen(false)}
           />
         </div>
-        <div className="offcanvas-body">
-          <div className="list-group list-group-flush">
-            {navItems.map(({ to, icon, label }) => (
-              <Link
-                key={to}
-                to={to}
-                className={linkClass(to)}
-                onClick={closeOffcanvas}
-              >
-                <FontAwesomeIcon icon={icon} className="icon" />
-                {label}
-              </Link>
-            ))}
-          </div>
 
-          {/* ── Mobile bottom items ── */}
-          <div
-            className="sidebar-bottom"
-            style={{ position: "absolute", bottom: 0, left: 0, right: 0 }}
-          >
+        <div className="offcanvas-body">
+          {navSections.map((group) => (
+            <div key={group.section}>
+              <div className="sidebar-section-label">{group.section}</div>
+
+              <div className="list-group list-group-flush">
+                {group.items.map(({ to, icon, label }) => (
+                  <Link
+                    key={to}
+                    to={to}
+                    className={linkClass(to)}
+                    onClick={() => setOffcanvasOpen(false)}
+                  >
+                    <FontAwesomeIcon icon={icon} className="icon" />
+                    {label}
+                  </Link>
+                ))}
+              </div>
+            </div>
+          ))}
+
+          <div className="sidebar-bottom">
             <div className="sidebar-divider" />
             <div className="list-group list-group-flush">
               {bottomItems.map(({ to, icon, label }) => (
@@ -142,7 +200,7 @@ const ScrapyardSidebar = () => {
                   key={to}
                   to={to}
                   className={linkClass(to)}
-                  onClick={closeOffcanvas}
+                  onClick={() => setOffcanvasOpen(false)}
                 >
                   <FontAwesomeIcon icon={icon} className="icon" />
                   {label}

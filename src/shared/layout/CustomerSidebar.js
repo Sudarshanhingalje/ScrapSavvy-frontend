@@ -1,63 +1,125 @@
 import {
   faBoxOpen,
   faClipboardList,
+  faCog,
   faHome,
+  faShoppingCart,
   faTachometerAlt,
   faUser,
 } from "@fortawesome/free-solid-svg-icons";
+
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useState } from "react";
 import { Link, useLocation } from "react-router-dom";
+
 import "../../static/Sidebar.css";
 import { BRANDNAME } from "../utils/Utils";
 
 const CustomerSidebar = () => {
   const [isOffcanvasOpen, setOffcanvasOpen] = useState(false);
+
   const location = useLocation();
 
-  const toggleOffcanvas = () => setOffcanvasOpen((prev) => !prev);
-  const closeOffcanvas = () => setOffcanvasOpen(false);
+  const toggleOffcanvas = () => {
+    setOffcanvasOpen((prev) => !prev);
+  };
+
+  const closeOffcanvas = () => {
+    setOffcanvasOpen(false);
+  };
 
   const isActive = (path) => location.pathname === path;
-  const linkClass = (path) =>
-    `list-group-item list-group-item-action${isActive(path) ? " active" : ""}`;
 
-  const navItems = [
-    { to: "/customer-dashboard", icon: faTachometerAlt, label: "Dashboard" },
-    {
-      to: "/customer-dashboard/scrap-sell",
-      icon: faClipboardList,
-      label: "Sell Scrap",
-    },
-    {
-      to: "/customer-dashboard/customer-orders-history",
-      icon: faClipboardList,
-      label: "Order History",
-    },
-    { to: "/cus-list-of-scraps", icon: faBoxOpen, label: "Products" },
-    // { to: "/customer-transactions", icon: faCreditCard, label: "Transactions" },
-    { to: "/customer-profile", icon: faUser, label: "Profile" },
-  ];
+  const linkClass = (path) =>
+    `list-group-item list-group-item-action ${isActive(path) ? "active" : ""}`;
 
   return (
     <>
-      {/* ── Desktop Sidebar ── */}
+      {/* ================= DESKTOP SIDEBAR ================= */}
+
       <div id="sidebar-wrapper">
         <div className="sidebar-heading">{BRANDNAME}</div>
 
-        <div className="sidebar-section-label">Main Menu</div>
+        {/* ================= MAIN MENU ================= */}
+
+        <div className="sidebar-section-label">MAIN MENU</div>
 
         <div className="list-group list-group-flush">
-          {navItems.map(({ to, icon, label }) => (
-            <Link key={to} to={to} className={linkClass(to)}>
-              <FontAwesomeIcon icon={icon} className="icon" />
-              {label}
-            </Link>
-          ))}
+          <Link
+            to="/customer-dashboard"
+            className={linkClass("/customer-dashboard")}
+          >
+            <FontAwesomeIcon icon={faTachometerAlt} className="icon" />
+            Dashboard
+          </Link>
+        </div>
+
+        {/* ================= SCRAP SELL MENU ================= */}
+
+        <div className="sidebar-section-label">SCRAP SELL MENU</div>
+
+        <div className="list-group list-group-flush">
+          <Link
+            to="/customer-dashboard/scrap-sell"
+            className={linkClass("/customer-dashboard/scrap-sell")}
+          >
+            <FontAwesomeIcon icon={faClipboardList} className="icon" />
+            Sell Scrap
+          </Link>
+
+          <Link
+            to="/customer-dashboard/cuordershistory"
+            className={linkClass("/customer-dashboard/cuordershistory")}
+          >
+            <FontAwesomeIcon icon={faShoppingCart} className="icon" />
+            Order History
+          </Link>
+        </div>
+
+        {/* ================= PRODUCT MENU ================= */}
+
+        <div className="sidebar-section-label">PRODUCT MENU</div>
+
+        <div className="list-group list-group-flush">
+          <Link to="/cuProductorders" className={linkClass("/cuProductorders")}>
+            <FontAwesomeIcon icon={faClipboardList} className="icon" />
+            My Orders
+          </Link>
+
+          <Link
+            to="/cus-list-of-scraps"
+            className={linkClass("/cus-list-of-scraps")}
+          >
+            <FontAwesomeIcon icon={faBoxOpen} className="icon" />
+            Products
+          </Link>
+        </div>
+
+        {/* ================= CUSTOMER MENU ================= */}
+
+        <div className="sidebar-section-label">CUSTOMER MENU</div>
+
+        <div className="list-group list-group-flush">
+          <Link
+            to="/customer-profile"
+            className={linkClass("/customer-profile")}
+          >
+            <FontAwesomeIcon icon={faUser} className="icon" />
+            Profile
+          </Link>
+
+          <Link
+            to="/customer-settings"
+            className={linkClass("/customer-settings")}
+          >
+            <FontAwesomeIcon icon={faCog} className="icon" />
+            Settings
+          </Link>
         </div>
       </div>
 
-      {/* ── Mobile Toggle Button ── */}
+      {/* ================= MOBILE BUTTON ================= */}
+
       <button
         className="sb-mobile-toggle"
         onClick={toggleOffcanvas}
@@ -66,7 +128,8 @@ const CustomerSidebar = () => {
         <FontAwesomeIcon icon={faHome} />
       </button>
 
-      {/* ── Mobile Offcanvas Backdrop ── */}
+      {/* ================= BACKDROP ================= */}
+
       {isOffcanvasOpen && (
         <div
           style={{
@@ -79,39 +142,115 @@ const CustomerSidebar = () => {
         />
       )}
 
-      {/* ── Mobile Offcanvas Drawer ── */}
+      {/* ================= MOBILE SIDEBAR ================= */}
+
       <div
-        className={`offcanvas offcanvas-start${isOffcanvasOpen ? " show" : ""}`}
+        className={`offcanvas offcanvas-start ${isOffcanvasOpen ? "show" : ""}`}
         style={{
           visibility: isOffcanvasOpen ? "visible" : "hidden",
           zIndex: 1050,
           transition: "transform 0.25s ease",
           transform: isOffcanvasOpen ? "translateX(0)" : "translateX(-100%)",
         }}
-        aria-label="Navigation"
       >
         <div className="offcanvas-header">
           <h5 className="offcanvas-title">{BRANDNAME}</h5>
+
           <button
             type="button"
             className="btn-close"
-            aria-label="Close"
             onClick={closeOffcanvas}
           />
         </div>
+
         <div className="offcanvas-body">
+          {/* MAIN MENU */}
+
+          <div className="sidebar-section-label">MAIN MENU</div>
+
           <div className="list-group list-group-flush">
-            {navItems.map(({ to, icon, label }) => (
-              <Link
-                key={to}
-                to={to}
-                className={linkClass(to)}
-                onClick={closeOffcanvas}
-              >
-                <FontAwesomeIcon icon={icon} className="icon" />
-                {label}
-              </Link>
-            ))}
+            <Link
+              to="/customer-dashboard"
+              className={linkClass("/customer-dashboard")}
+              onClick={closeOffcanvas}
+            >
+              <FontAwesomeIcon icon={faTachometerAlt} className="icon" />
+              Dashboard
+            </Link>
+          </div>
+
+          {/* SCRAP SELL MENU */}
+
+          <div className="sidebar-section-label">SCRAP SELL MENU</div>
+
+          <div className="list-group list-group-flush ">
+            <Link
+              to="/customer-dashboard/scrap-sell"
+              className={linkClass("/customer-dashboard/scrap-sell")}
+              onClick={closeOffcanvas}
+            >
+              <FontAwesomeIcon icon={faClipboardList} className="icon" />
+              Sell Scrap
+            </Link>
+
+            <Link
+              to="/customer-dashboard/customer-orders-history"
+              className={linkClass(
+                "/customer-dashboard/customer-orders-history",
+              )}
+              onClick={closeOffcanvas}
+            >
+              <FontAwesomeIcon icon={faShoppingCart} className="icon" />
+              Order History
+            </Link>
+          </div>
+
+          {/* PRODUCT MENU */}
+
+          <div className="sidebar-section-label">PRODUCT MENU</div>
+
+          <div className="list-group list-group-flush">
+            <Link
+              to="/cuProductorders"
+              className={linkClass("/cuProductorders")}
+              onClick={closeOffcanvas}
+            >
+              <FontAwesomeIcon icon={faClipboardList} className="icon" />
+              My Orders
+            </Link>
+
+            <Link
+              to="/cus-list-of-scraps"
+              className={linkClass("/cus-list-of-scraps")}
+              onClick={closeOffcanvas}
+            >
+              <FontAwesomeIcon icon={faBoxOpen} className="icon" />
+              Products
+            </Link>
+          </div>
+
+          {/* CUSTOMER MENU */}
+
+          <div className="sidebar-section-label">CUSTOMER MENU</div>
+
+          <div className="list-group list-group-flush">
+            <Link
+              to="/customer-profile"
+              className={linkClass("/customer-profile")}
+              onClick={closeOffcanvas}
+            >
+              <FontAwesomeIcon icon={faUser} className="icon" />
+              Profile
+            </Link>
+
+            <Link
+              to="/customer-settings"
+              className={linkClass("/customer-settings")}
+              onClick={closeOffcanvas}
+            >
+              <FontAwesomeIcon icon={faCog} className="icon" />
+              Settings
+            </Link>
           </div>
         </div>
       </div>

@@ -1,3 +1,5 @@
+// src/shared/layout/Navbar.jsx
+
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 
@@ -15,29 +17,49 @@ const Navbar = () => {
     const handleScroll = () => {
       setIsScrolled(window.scrollY > 50);
     };
+
     window.addEventListener("scroll", handleScroll);
-    return () => window.removeEventListener("scroll", handleScroll);
+
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+    };
   }, []);
 
-  const navItems = ["HOME", "SIGNUP", "SIGNIN"];
+  const navItems = [
+    {
+      label: "HOME",
+      path: "/",
+    },
+    {
+      label: "SIGNUP",
+      path: "/signup",
+    },
+    {
+      label: "SIGNIN",
+      path: "/signin",
+    },
+  ];
 
   return (
     <header className={isScrolled ? "scrolled" : ""}>
       <div className="header-content">
+        {/* LOGO */}
+
         <div className="logo">
           <Link to="/" className="sp-nav__logo">
             <span className="sp-nav__logo-mark">♻</span>
+
             <span className="sp-nav__logo-text">ScrapSavvy</span>
           </Link>
         </div>
+
+        {/* NAV LINKS */}
+
         <nav className="header-links">
           {navItems.map((item, index) => (
             <div key={index} className="nav-item">
-              <Link
-                to={item === "LOGIN" ? "/login" : `/${item.toLowerCase()}`}
-                onClick={() => toggleDropdown(index)}
-              >
-                {item}
+              <Link to={item.path} onClick={() => toggleDropdown(index)}>
+                {item.label}
               </Link>
             </div>
           ))}

@@ -1,51 +1,23 @@
-import { useDispatch, useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 
 import CartItem from "./CartItem";
 import CartSummary from "./CartSummary";
-
-import { placeOrder } from "../../cart/api/orderApi";
-import { clearCart } from "../../redux/cartSlice";
 
 import "../styles/CheckoutPage.css";
 
 const CheckoutPage = () => {
   const items = useSelector((state) => state.cart.items);
 
-  // ✅ FIX: get user from redux
-  const user = useSelector((state) => state.auth.user);
-
-  const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  const handlePlaceOrder = async () => {
-    if (!user) {
-      alert("User not logged in!");
+  const handleCheckout = () => {
+    if (items.length === 0) {
+      alert("Cart is empty");
       return;
     }
 
-    const payload = {
-      userProfileId: user.userId,
-      items: items.map((item) => ({
-        productId: item.productId,
-        qty: item.qty,
-      })),
-    };
-
-    try {
-      const res = await placeOrder(payload);
-
-      console.log("ORDER SUCCESS:", res.data);
-
-      dispatch(clearCart());
-
-      alert("Order placed successfully!");
-
-      navigate("/orders");
-    } catch (err) {
-      console.log("ORDER FAILED:", err);
-      alert("Order failed");
-    }
+    navigate("/payment");
   };
 
   return (
@@ -70,9 +42,9 @@ const CheckoutPage = () => {
             marginTop: "10px",
             cursor: "pointer",
           }}
-          onClick={handlePlaceOrder}
+          onClick={handleCheckout}
         >
-          Place Order
+          Proceed To Payment
         </button>
       </div>
     </div>

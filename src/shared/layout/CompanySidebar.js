@@ -1,7 +1,6 @@
 import {
   faClipboardList,
   faCreditCard,
-  faHome,
   faTachometerAlt,
   faUser,
 } from "@fortawesome/free-solid-svg-icons";
@@ -15,105 +14,79 @@ const CompanySidebar = () => {
   const [isOffcanvasOpen, setOffcanvasOpen] = useState(false);
   const location = useLocation();
 
-  const toggleOffcanvas = () => setOffcanvasOpen((prev) => !prev);
-  const closeOffcanvas = () => setOffcanvasOpen(false);
-
   const isActive = (path) => location.pathname === path;
+
   const linkClass = (path) =>
-    `list-group-item list-group-item-action${isActive(path) ? " active" : ""}`;
+    `list-group-item list-group-item-action ${isActive(path) ? "active" : ""}`;
 
   const navItems = [
-    { to: "/company-dashboard", icon: faTachometerAlt, label: "Dashboard" },
     {
-      to: "/company-dashboard/scrap-order",
-      icon: faClipboardList,
-      label: "Book Scrap",
+      section: "MAIN",
+      items: [
+        { to: "/company-dashboard", label: "Dashboard", icon: faTachometerAlt },
+      ],
     },
     {
-      to: "/company-dashboard/orders-history",
-      icon: faClipboardList,
-      label: "Order History",
+      section: "ORDERS",
+      items: [
+        {
+          to: "/company-dashboard/scrap-order",
+          label: "Scrap Orders",
+          icon: faClipboardList,
+        },
+        {
+          to: "/company-dashboard/orders-history",
+          label: "Order History",
+          icon: faClipboardList,
+        },
+      ],
     },
-    // { to: "/com-list-of-scraps", icon: faBoxOpen, label: "Products" },
-    { to: "/company-payments", icon: faCreditCard, label: "Payments" },
-    { to: "/company-profile", icon: faUser, label: "Profile" },
+    {
+      section: "PRODUCTS",
+      items: [
+        {
+          to: "/cus-list-of-scraps",
+          label: "Products",
+          icon: faClipboardList,
+        },
+        {
+          to: "/cuProductorders",
+          label: "My Orders",
+          icon: faClipboardList,
+        },
+      ],
+    },
+    {
+      section: "FINANCE",
+      items: [
+        { to: "/company-payments", label: "Payments", icon: faCreditCard },
+      ],
+    },
+    {
+      section: "ACCOUNT",
+      items: [{ to: "/company-profile", label: "Profile", icon: faUser }],
+    },
   ];
 
   return (
     <>
-      {/* ── Desktop Sidebar ── */}
       <div id="sidebar-wrapper">
         <div className="sidebar-heading">{BRANDNAME}</div>
 
-        <div className="sidebar-section-label">Main Menu</div>
+        {navItems.map((group) => (
+          <div key={group.section}>
+            <div className="sidebar-section-label">{group.section}</div>
 
-        <div className="list-group list-group-flush">
-          {navItems.map(({ to, icon, label }) => (
-            <Link key={to} to={to} className={linkClass(to)}>
-              <FontAwesomeIcon icon={icon} className="icon" />
-              {label}
-            </Link>
-          ))}
-        </div>
-      </div>
-
-      {/* ── Mobile Toggle Button ── */}
-      <button
-        className="sb-mobile-toggle"
-        onClick={toggleOffcanvas}
-        aria-label="Open menu"
-      >
-        <FontAwesomeIcon icon={faHome} />
-      </button>
-
-      {/* ── Mobile Offcanvas Backdrop ── */}
-      {isOffcanvasOpen && (
-        <div
-          style={{
-            position: "fixed",
-            inset: 0,
-            background: "rgba(15,23,42,0.4)",
-            zIndex: 1040,
-          }}
-          onClick={closeOffcanvas}
-        />
-      )}
-
-      {/* ── Mobile Offcanvas Drawer ── */}
-      <div
-        className={`offcanvas offcanvas-start${isOffcanvasOpen ? " show" : ""}`}
-        style={{
-          visibility: isOffcanvasOpen ? "visible" : "hidden",
-          zIndex: 1050,
-          transition: "transform 0.25s ease",
-          transform: isOffcanvasOpen ? "translateX(0)" : "translateX(-100%)",
-        }}
-        aria-label="Navigation"
-      >
-        <div className="offcanvas-header">
-          <h5 className="offcanvas-title">{BRANDNAME}</h5>
-          <button
-            type="button"
-            className="btn-close"
-            aria-label="Close"
-            onClick={closeOffcanvas}
-          />
-        </div>
-        <div className="offcanvas-body">
-          <div className="list-group list-group-flush">
-            {navItems.map(({ to, icon, label }) => (
-              <Link
-                key={to}
-                to={to}
-                className={linkClass(to)}
-                onClick={closeOffcanvas}
-              >
-                <FontAwesomeIcon icon={icon} className="icon" />
-                {label}
-              </Link>
-            ))}
+            <div className="list-group list-group-flush">
+              {group.items.map(({ to, icon, label }) => (
+                <Link key={to} to={to} className={linkClass(to)}>
+                  <FontAwesomeIcon icon={icon} className="icon" />
+                  {label}
+                </Link>
+              ))}
+            </div>
           </div>
-        </div>
+        ))}
       </div>
     </>
   );

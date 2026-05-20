@@ -3,7 +3,7 @@ const API = "http://localhost:8080/api";
 export const getOwnerOrders = async () => {
   const token = localStorage.getItem("token");
 
-  const res = await fetch(`${API}/scrap-orders/owner`, {
+  const res = await fetch(`${API}/scraporders/owner`, {
     headers: {
       Authorization: `Bearer ${token}`,
     },
@@ -19,7 +19,7 @@ export const getOwnerOrders = async () => {
 const getOrders = async () => {
   const token = localStorage.getItem("token");
 
-  const res = await fetch("http://localhost:8080/api/scrap-orders/owner", {
+  const res = await fetch("http://localhost:8080/api/scraporders/owner", {
     headers: {
       Authorization: `Bearer ${token}`,
     },

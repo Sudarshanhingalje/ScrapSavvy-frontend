@@ -2,7 +2,7 @@ import { API_BASE_URL } from "../../../config/env";
 
 export const fetchCustomerOrders = async (customerId, token) => {
   const res = await fetch(
-    `${API_BASE_URL}/api/customer-sell/customer/${customerId}`,
+    `${API_BASE_URL}/api/customersell/customer/${customerId}`,
     {
       headers: {
         Authorization: `Bearer ${token}`,

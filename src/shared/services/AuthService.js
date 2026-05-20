@@ -15,7 +15,7 @@ class AuthService {
     });
   }
   ForgotPassword(formData) {
-    const API = BASEURL + "/user/forgot_password";
+    const API = BASEURL + "/user/forgotpassword";
     return axios.put(API, formData, {
       headers: {
         "Content-Type": "application/json",
@@ -42,7 +42,7 @@ class AuthService {
   }
 
   UpdateUserProfile(userProfileId, formData) {
-    const API = BASEURL + "/user/update_profile/" + userProfileId;
+    const API = BASEURL + "/user/updateprofile/" + userProfileId;
     return axios.put(API, formData, {
       headers: {
         "Content-Type": "application/json",

@@ -115,6 +115,9 @@ const Signin = () => {
           role: profile.userRole,
         };
 
+        // ✅ FIX: THIS WAS MISSING (MAIN BUG FIX)
+        localStorage.setItem("userId", payload.userId);
+
         localStorage.setItem("user", JSON.stringify(userPayload));
 
         // redux
@@ -133,7 +136,6 @@ const Signin = () => {
     }
   };
 
-  // ================= UI =================
   return (
     <>
       <Navbar />
@@ -146,7 +148,6 @@ const Signin = () => {
           </div>
 
           <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
-            {/* EMAIL */}
             <TextField
               label="Email Address"
               fullWidth
@@ -156,7 +157,6 @@ const Signin = () => {
               helperText={errors.email}
             />
 
-            {/* PASSWORD */}
             <FormControl fullWidth>
               <InputLabel>Password</InputLabel>
 
@@ -180,7 +180,6 @@ const Signin = () => {
               />
             </FormControl>
 
-            {/* BUTTON */}
             <button
               className="btn btn-primary w-100 mt-3"
               onClick={handleSignin}
@@ -188,7 +187,6 @@ const Signin = () => {
               Sign In
             </button>
 
-            {/* LINKS */}
             <div className="text-center">
               <Link to="/forgotPassword">Forgot Password?</Link>
             </div>
@@ -199,7 +197,6 @@ const Signin = () => {
           </Box>
         </div>
 
-        {/* TOAST */}
         <Toast
           open={snackbarOpen}
           close={handleSnackbarClose}

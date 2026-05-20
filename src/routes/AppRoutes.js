@@ -1,4 +1,4 @@
-import { Navigate, Route, Routes } from "react-router-dom";
+import { Route, Routes } from "react-router-dom";
 
 import ForgotPassword from "../features/auth/pages/ForgotPassword";
 import Signin from "../features/auth/pages/Signin";
@@ -16,23 +16,23 @@ import CustomerOrdersHistory from "../features/customer/pages/CustomerOrdersHist
 import CustomerProfile from "../features/customer/pages/CustomerProfile";
 import CustomerSells from "../features/customer/pages/CustomerSells";
 
+import OrdersHistory from "../features/company/pages/OrdersHistory";
+import CartDrawer from "../features/customer/cart/pages/CartDrawer";
+import CheckoutPage from "../features/customer/cart/pages/CheckoutPage";
+import MyOrders from "../features/customer/cart/pages/MyOrders";
+import PaymentPage from "../features/customer/cart/pages/PaymentPage";
+import CustomerProductPage from "../features/customer/pages/CustomerProductPage";
+import Frontpage from "../features/home/pages/Frontpage";
 import MySScrapsTable from "../features/scrapyard/components/MySScrapsTable";
 import SScrapsTable from "../features/scrapyard/components/SScrapsTable";
 import RecentTransactions from "../features/scrapyard/dashboard/ScrapyardTransactions";
 import Customerorders from "../features/scrapyard/orders/CustomerOrders";
 import ScrapOrders from "../features/scrapyard/orders/ScrapOrders";
+import AllProducts from "../features/scrapyard/pages/AllProducts";
+import ProductsPage from "../features/scrapyard/pages/ProductsPage";
 import ScrapyardDashboard from "../features/scrapyard/pages/ScrapyardDashboard";
 import ScrapyardProfile from "../features/scrapyard/pages/ScrapyardProfile";
-
-import OrdersHistory from "../features/company/pages/OrdersHistory";
-import CartDrawer from "../features/customer/cart/pages/CartDrawer";
-import CheckoutPage from "../features/customer/cart/pages/CheckoutPage";
-import CustomerProductPage from "../features/customer/pages/CustomerProductPage";
-import Frontpage from "../features/home/pages/Frontpage";
-import PaymentsMadeTable from "../features/payment/PaymentsMadeTable";
-import PaymentsReceivedTable from "../features/payment/PaymentsReceivedTable";
-import ProductsPage from "../features/scrapyard/pages/ProductsPage";
-
+import ProtectedRoute from "../routes/ProtectedRoute";
 function AppRoutes() {
   return (
     <>
@@ -67,7 +67,16 @@ function AppRoutes() {
           element={<RecentTransactions />}
         />
 
-        <Route path="/scrapyard-products" element={<ProductsPage />} />
+        <Route path="/scrapyard-products/add" element={<ProductsPage />} />
+        <Route
+          path="/scrapyard-products/allproducts"
+          element={<AllProducts />}
+        />
+        {/* <Route
+          path="/scrapyard-dashboard/products-orders"
+          element={<ProductOrdersManage />}
+        /> */}
+
         <Route path="/scrapyard-profile" element={<ScrapyardProfile />} />
 
         {/* Customer */}
@@ -77,9 +86,11 @@ function AppRoutes() {
           element={<CustomerSells />}
         />
         <Route
-          path="/customer-dashboard/customer-orders-history"
+          path="/customer-dashboard/cuordershistory"
           element={<CustomerOrdersHistory />}
         />
+
+        <Route path="/cuProductorders" element={<MyOrders />} />
         <Route path="/cus-list-of-scraps" element={<CustomerProductPage />} />
         <Route
           path="/customer-transactions"
@@ -87,14 +98,35 @@ function AppRoutes() {
         />
         <Route path="/customer-profile" element={<CustomerProfile />} />
 
-        {/* Payments */}
-        <Route path="/r-payments" element={<PaymentsReceivedTable />} />
-        <Route path="/m-payments" element={<PaymentsMadeTable />} />
-
         {/* Checkout */}
-        <Route path="/checkout" element={<CheckoutPage />} />
+        <Route
+          path="/checkout"
+          element={
+            <ProtectedRoute>
+              <CheckoutPage />
+            </ProtectedRoute>
+          }
+        />
 
-        <Route path="*" element={<Navigate to="/" />} />
+        <Route
+          path="/payment"
+          element={
+            <ProtectedRoute>
+              <PaymentPage />
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/cuProductorders"
+          element={
+            <ProtectedRoute>
+              <MyOrders />
+            </ProtectedRoute>
+          }
+        />
+
+        {/* <Route path="*" element={<Navigate to="/" />} /> */}
       </Routes>
 
       {/* GLOBAL CART DRAWER */}

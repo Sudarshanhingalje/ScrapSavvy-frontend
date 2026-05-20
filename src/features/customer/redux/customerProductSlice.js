@@ -10,7 +10,7 @@ export const fetchProducts = createAsyncThunk(
       const token = localStorage.getItem("token");
 
       const res = await axios.get(
-        `${API_BASE_URL}/api/scrapyard/get_all_products`,
+        `${API_BASE_URL}/api/scrapyard/getallproducts`,
         {
           headers: {
             Authorization: `Bearer ${token}`,

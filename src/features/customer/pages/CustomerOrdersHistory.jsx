@@ -16,7 +16,9 @@ const CustomerOrdersHistory = () => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const customerId = localStorage.getItem("userId");
+    const user = JSON.parse(localStorage.getItem("user"));
+
+    const customerId = user?.userId;
 
     const token = localStorage.getItem("token");
 

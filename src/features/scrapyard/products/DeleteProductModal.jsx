@@ -1,6 +1,19 @@
 const DeleteProductModal = ({ open, onClose, onConfirm, product }) => {
   if (!open) return null;
 
+  const getImage = () => {
+    if (!product?.images?.length) return null;
+
+    const img = product.images[0];
+
+    if (typeof img === "string") return img;
+    if (typeof img === "object") return img.imageUrl || img.url;
+
+    return null;
+  };
+
+  const imageUrl = getImage();
+
   return (
     <div
       style={{
@@ -36,9 +49,9 @@ const DeleteProductModal = ({ open, onClose, onConfirm, product }) => {
                 marginBottom: 16,
               }}
             >
-              {product.images?.[0]?.url && (
+              {imageUrl && (
                 <img
-                  src={product.images[0].url}
+                  src={imageUrl}
                   alt={product.productName}
                   style={{
                     width: 52,
@@ -49,6 +62,7 @@ const DeleteProductModal = ({ open, onClose, onConfirm, product }) => {
                   }}
                 />
               )}
+
               <div>
                 <p
                   style={{
@@ -80,8 +94,8 @@ const DeleteProductModal = ({ open, onClose, onConfirm, product }) => {
           >
             <span>⚠️</span>
             <span>
-              This will permanently delete the product and all associated data.
-              This action cannot be undone.
+              This will permanently delete the product. This action cannot be
+              undone.
             </span>
           </div>
 
@@ -97,6 +111,7 @@ const DeleteProductModal = ({ open, onClose, onConfirm, product }) => {
             <button onClick={onClose} className="pf-btn-secondary">
               Cancel
             </button>
+
             <button
               onClick={onConfirm}
               className="pf-btn-primary"

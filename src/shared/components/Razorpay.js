@@ -1,5 +1,5 @@
 const Razorpay = (amount) => {
-  const RAZORPAY_KEY_ID = "rzp_test_q5pCm6YsxMpdnN";
+  const RAZORPAY_KEY_ID = "rzp_test_SrAHnWOtxpmt9R";
   const name = localStorage.getItem("name");
   const email = localStorage.getItem("email");
   const mobile = localStorage.getItem("mobile");

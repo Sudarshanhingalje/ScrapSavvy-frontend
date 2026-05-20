@@ -1,17 +1,7 @@
 import { API_BASE_URL } from "../../../config/env";
 
-// export const fetchScrapPrices = async (ownerId) => {
-//   const res = await fetch(`${API_BASE_URL}/api/prices/all?ownerId=${ownerId}`);
-
-//   if (!res.ok) {
-//     throw new Error("Failed to fetch prices");
-//   }
-
-//   return res.json();
-// };
-
 export const createScrapOrder = async (data, token) => {
-  const res = await fetch(`${API_BASE_URL}/api/scrap-orders/create`, {
+  const res = await fetch(`${API_BASE_URL}/api/scraporders/create`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
