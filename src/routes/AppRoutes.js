@@ -23,8 +23,6 @@ import MyOrders from "../features/customer/cart/pages/MyOrders";
 import PaymentPage from "../features/customer/cart/pages/PaymentPage";
 import CustomerProductPage from "../features/customer/pages/CustomerProductPage";
 import Frontpage from "../features/home/pages/Frontpage";
-import MySScrapsTable from "../features/scrapyard/components/MySScrapsTable";
-import SScrapsTable from "../features/scrapyard/components/SScrapsTable";
 import RecentTransactions from "../features/scrapyard/dashboard/ScrapyardTransactions";
 import Customerorders from "../features/scrapyard/orders/CustomerOrders";
 import ScrapOrders from "../features/scrapyard/orders/ScrapOrders";
@@ -32,6 +30,8 @@ import AllProducts from "../features/scrapyard/pages/AllProducts";
 import ProductsPage from "../features/scrapyard/pages/ProductsPage";
 import ScrapyardDashboard from "../features/scrapyard/pages/ScrapyardDashboard";
 import ScrapyardProfile from "../features/scrapyard/pages/ScrapyardProfile";
+import OrderDetailsPage from "../features/scrapyard/products/productOrderManage/orders/pages/OrderDetailsPage";
+import OrdersPage from "../features/scrapyard/products/productOrderManage/orders/pages/OrdersPage";
 import ProtectedRoute from "../routes/ProtectedRoute";
 function AppRoutes() {
   return (
@@ -58,10 +58,9 @@ function AppRoutes() {
 
         {/* Scrapyard */}
         <Route path="/scrapyard-dashboard" element={<ScrapyardDashboard />} />
-        <Route path="/scrap-orders" element={<ScrapOrders />} />
-        <Route path="/customer-orders" element={<Customerorders />} />
-        <Route path="/sr-list-of-scraps" element={<SScrapsTable />} />
-        <Route path="/mysr-list-of-scraps" element={<MySScrapsTable />} />
+        <Route path="/scraporders" element={<ScrapOrders />} />
+        <Route path="/customerorders" element={<Customerorders />} />
+
         <Route
           path="/scrapyard-transactions"
           element={<RecentTransactions />}
@@ -77,7 +76,7 @@ function AppRoutes() {
           element={<ProductOrdersManage />}
         /> */}
 
-        <Route path="/scrapyard-profile" element={<ScrapyardProfile />} />
+        <Route path="/scrapyardprofile" element={<ScrapyardProfile />} />
 
         {/* Customer */}
         <Route path="/customer-dashboard" element={<CustomerDashboard />} />
@@ -124,6 +123,13 @@ function AppRoutes() {
               <MyOrders />
             </ProtectedRoute>
           }
+        />
+
+        <Route path="/scrapyard/orders" element={<OrdersPage />} />
+
+        <Route
+          path="/scrapyard/orders/:orderId"
+          element={<OrderDetailsPage />}
         />
 
         {/* <Route path="*" element={<Navigate to="/" />} /> */}

@@ -1,0 +1,4 @@
+export const ORDER_TYPES = {
+  CUSTOMER: "CUSTOMER",
+  COMPANY: "COMPANY",
+};

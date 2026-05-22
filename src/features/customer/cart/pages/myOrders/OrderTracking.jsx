@@ -1,9 +1,12 @@
 const steps = [
   "PENDING",
   "ACCEPTED",
-  "SCHEDULED",
-  "OUT_FOR_PICKUP",
-  "COMPLETED",
+  "PACKED",
+  "SHIPPED",
+  "DELIVERED",
+  "RETURN_REQUESTED",
+  "RETURN_APPROVED",
+  "REFUNDED",
 ];
 
 const OrderTracking = ({ currentStatus }) => {

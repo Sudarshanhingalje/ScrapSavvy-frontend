@@ -8,7 +8,6 @@ import {
   Typography,
 } from "@mui/material";
 import { useState } from "react";
-import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import Toast from "../../../shared/components/Snackbar";
 import CustomerSidebar from "../../../shared/layout/CustomerSidebar";
@@ -29,8 +28,8 @@ const CustomerProfile = () => {
   const [ifscCode, setIfscCode] = useState("");
   const [branchName, setBranchName] = useState("");
 
-  let userState = useSelector((state) => state);
-
+  // let userState = useSelector((state) => state);
+  const token = localStorage.getItem("token");
   const handleSnackbarClose = () => {
     setSnackbarOpen(false);
   };
@@ -46,7 +45,7 @@ const CustomerProfile = () => {
     formData.append("phoneNumber", phoneNumber);
     formData.append("companyName", companyName);
     formData.append("companyAddress", companyAddress);
-    formData.append("token", userState.User.state.token);
+    // formData.append("token", userState.User.state.token);
     setTimeout(() => {
       //navigate("/dashboard");
     }, 6000);
@@ -62,7 +61,7 @@ const CustomerProfile = () => {
     formData.append("ifscCode", ifscCode);
     formData.append("accountNumber", accountNumber);
     formData.append("branchName", branchName);
-    formData.append("token", userState.User.state.token);
+    // formData.append("token", userState.User.state.token);
 
     setTimeout(() => {
       //navigate("/dashboard");

@@ -1,5 +1,3 @@
-// src/features/customer/cart/hooks/useMyOrders.js
-
 import { useEffect, useState } from "react";
 import { fetchMyOrders } from "../api/myOrdersApi";
 
@@ -10,15 +8,21 @@ const useMyOrders = () => {
 
   useEffect(() => {
     const user = JSON.parse(localStorage.getItem("user"));
+
     if (!user?.userId) {
       setLoading(false);
+      setError("User not logged in");
       return;
     }
 
     const loadOrders = async () => {
       try {
+        setLoading(true);
+
         const data = await fetchMyOrders(user.userId);
-        setOrders(data);
+
+        // IMPORTANT: backend response fix safety
+        setOrders(Array.isArray(data) ? data : data?.content || []);
       } catch (err) {
         console.error("ORDER FETCH ERROR", err);
         setError("Failed to load orders. Please try again.");

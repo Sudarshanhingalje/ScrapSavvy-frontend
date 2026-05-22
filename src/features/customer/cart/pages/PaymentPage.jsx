@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 
 import { clearCart } from "../../redux/cartSlice";
 import { placeOrder } from "../api/orderApi";
-import { createRazorpayOrder } from "../api/paymentApi";
+import { createRazorpayOrder } from "../hooks/paymentApi";
 
 import { RAZORPAY_KEY_ID } from "../../../../config/env";
 

@@ -8,7 +8,6 @@ import {
   Typography,
 } from "@mui/material";
 import { useState } from "react";
-import { useSelector } from "react-redux";
 import Toast from "../../../shared/components/Snackbar";
 import CompanySidebar from "../../../shared/layout/CompanySidebar";
 
@@ -27,8 +26,8 @@ const CompanyProfile = () => {
   const [ifscCode, setIfscCode] = useState("");
   const [branchName, setBranchName] = useState("");
 
-  let userState = useSelector((state) => state);
-
+  // let userState = useSelector((state) => state);
+  const token = localStorage.getItem("token");
   const handleSnackbarClose = () => {
     setSnackbarOpen(false);
   };
@@ -44,7 +43,7 @@ const CompanyProfile = () => {
     formData.append("phoneNumber", phoneNumber);
     formData.append("companyName", companyName);
     formData.append("companyAddress", companyAddress);
-    formData.append("token", userState.User.state.token);
+    // formData.append("token", userState.User.state.token);
     setTimeout(() => {
       //navigate("/dashboard");
     }, 6000);
@@ -60,7 +59,7 @@ const CompanyProfile = () => {
     formData.append("ifscCode", ifscCode);
     formData.append("accountNumber", accountNumber);
     formData.append("branchName", branchName);
-    formData.append("token", userState.User.state.token);
+    // formData.append("token", userState.User.state.token);
 
     setTimeout(() => {
       //navigate("/dashboard");

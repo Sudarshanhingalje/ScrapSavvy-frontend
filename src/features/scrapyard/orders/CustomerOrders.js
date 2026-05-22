@@ -413,7 +413,7 @@ const CustomerOrders = () => {
 
   // ================= FETCH ORDERS =================
   const fetchOrders = () => {
-    fetch("http://localhost:8080/api/scrap-orders/customer/all")
+    fetch("http://localhost:8080/api/scraporders/customer/all")
       .then((res) => res.json())
       .then((data) => setOrders(Array.isArray(data) ? data : []))
       .catch(() => toast.error("Failed to load orders"));

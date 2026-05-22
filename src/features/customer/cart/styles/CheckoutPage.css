@@ -3,6 +3,8 @@
   grid-template-columns: 1fr 380px;
   gap: 24px;
   padding: 24px;
+  background: #f5f7fa;
+  min-height: 100vh;
 }
 
 .checkout-left {
@@ -12,23 +14,91 @@
 }
 
 .checkout-left h1 {
-  font-size: 24px;
+  font-size: 28px;
   font-weight: 700;
   color: #111827;
-  margin: 0 0 8px;
+  margin-bottom: 12px;
 }
 
 .checkout-right {
   position: sticky;
   top: 20px;
   height: fit-content;
-  border: 1px solid #eee;
-  border-radius: 16px;
-  background: #fff;
-  overflow: hidden;
+  border-radius: 18px;
+  background: white;
+  padding: 22px;
+  border: 1px solid #e5e7eb;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.05);
 }
 
-/* Responsive */
+/* BUTTON */
+.checkout-btn,
+.pay-btn {
+  width: 100%;
+  padding: 14px;
+  border: none;
+  border-radius: 12px;
+  background: #16a34a;
+  color: white;
+  font-size: 15px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: 0.2s ease;
+  margin-top: 14px;
+}
+
+.checkout-btn:hover,
+.pay-btn:hover {
+  background: #15803d;
+  transform: translateY(-1px);
+}
+
+/* PAYMENT SECTION */
+.payment-section {
+  margin-top: 18px;
+  padding-top: 18px;
+  border-top: 1px solid #e5e7eb;
+  animation: fadeSlide 0.3s ease;
+}
+
+.payment-section h3 {
+  font-size: 18px;
+  margin-bottom: 16px;
+  color: #111827;
+}
+
+.payment-row {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 12px;
+  font-size: 15px;
+  color: #374151;
+}
+
+.payment-secure {
+  background: #ecfdf5;
+  color: #166534;
+  padding: 12px;
+  border-radius: 10px;
+  font-size: 13px;
+  font-weight: 600;
+  margin-bottom: 14px;
+}
+
+/* ANIMATION */
+@keyframes fadeSlide {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* MOBILE */
 @media (max-width: 768px) {
   .checkout-page {
     grid-template-columns: 1fr;

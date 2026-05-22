@@ -3,16 +3,23 @@
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { addToCart } from "../../../redux/cartSlice";
-import { cancelOrder } from "../../api/orderApi";
+import { cancelOrder, getOrderInvoice } from "../../api/orderApi";
 import { BUTTON_CONFIG } from "../../utils/myOrderConstants";
-
+import { generateProductInvoice } from "../ProductInvoice";
 const OrderFooter = ({ order, setShowTrack, showTrack, onHide }) => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
   const statusKey = order.orderStatus?.toUpperCase();
   const buttons = BUTTON_CONFIG[statusKey] || BUTTON_CONFIG["PROCESSING"];
-
+  const handleDownloadInvoice = async (orderId) => {
+    try {
+      const order = await getOrderInvoice(orderId);
+      generateProductInvoice(order);
+    } catch (err) {
+      alert("Invoice generation failed");
+    }
+  };
   // BUY AGAIN
   const handleBuyAgain = () => {
     order.items.forEach((item) => {
@@ -70,6 +77,14 @@ const OrderFooter = ({ order, setShowTrack, showTrack, onHide }) => {
       {/* RATE */}
       {buttons.includes("rateReview") && (
         <button className="btn btn-rate">Rate & Review</button>
+      )}
+      {order.orderStatus === "DELIVERED" && (
+        <button
+          className="btn btn-primary"
+          onClick={() => handleDownloadInvoice(order.orderId)}
+        >
+          Download Invoice
+        </button>
       )}
 
       {/* BUY AGAIN */}

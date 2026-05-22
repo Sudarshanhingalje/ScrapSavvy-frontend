@@ -42,12 +42,12 @@ const ScrapyardSidebar = () => {
       section: "ORDERS (BUYERS)",
       items: [
         {
-          to: "/scrap-orders",
+          to: "/scraporders",
           icon: faShoppingCart,
           label: "Company Orders",
         },
         {
-          to: "/customer-orders",
+          to: "/customerorders",
           icon: faShoppingCart,
           label: "Customer Orders",
         },
@@ -68,7 +68,7 @@ const ScrapyardSidebar = () => {
           label: "Add Product",
         },
         {
-          to: "/scrapyard-products/orders",
+          to: "/scrapyard/orders",
           icon: faClipboardList,
           label: "Product Orders",
         },
@@ -89,7 +89,7 @@ const ScrapyardSidebar = () => {
     {
       section: "ACCOUNT",
       items: [
-        { to: "/scrapyard-profile", icon: faUser, label: "Profile" },
+        { to: "/scrapyardprofile", icon: faUser, label: "Profile" },
         { to: "/scrapyard-settings", icon: faCog, label: "Settings" },
       ],
     },

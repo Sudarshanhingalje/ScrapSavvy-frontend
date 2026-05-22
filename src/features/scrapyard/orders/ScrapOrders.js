@@ -37,7 +37,7 @@ const ScrapOrders = () => {
     driverContactNo: "",
   });
   const fetchOrders = () => {
-    fetch("http://localhost:8080/api/scrap-orders/company/all")
+    fetch("http://localhost:8080/api/scraporders/company/all")
       .then((res) => res.json())
       .then((data) => {
         let list = [];
@@ -121,7 +121,7 @@ const ScrapOrders = () => {
     const token = localStorage.getItem("token");
 
     fetch(
-      `http://localhost:8080/api/scrap-orders/${selectedOrder.id}/schedule`,
+      `http://localhost:8080/api/scraporders/${selectedOrder.id}/schedule`,
       {
         method: "PUT",
         headers: {

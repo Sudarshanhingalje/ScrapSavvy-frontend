@@ -5,6 +5,8 @@ import customerProductReducer from "../features/customer/redux/customerProductSl
 import scrapRatesReducer from "../features/scrapRates/redux/scrapRatesSlice";
 import scrapyardReducer from "../features/scrapyard/redux/scrapyardSlice";
 import authReducer from "../redux/actions/authSlice";
+import scrapyardOrdersReducer from "../features/scrapyard/products/productOrderManage/orders/redux/scrapyardOrdersSlice";
+
 export const store = configureStore({
   reducer: {
     scrapRates: scrapRatesReducer,
@@ -14,5 +16,6 @@ export const store = configureStore({
     cart: cartReducer,
 
     auth: authReducer,
+    scrapyardOrders: scrapyardOrdersReducer,
   },
 });

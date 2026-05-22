@@ -78,7 +78,7 @@ const Signin = () => {
     event.preventDefault();
   };
 
-  // ================= SIGN IN =================
+  // ================= SIGNIN =================
   const handleSignin = async (e) => {
     e.preventDefault();
 
@@ -93,43 +93,53 @@ const Signin = () => {
         password,
       });
 
-      if (response.status === 200) {
-        const profile = response.data.userProfile;
+      console.log("LOGIN RESPONSE:", response.data);
 
-        localStorage.clear();
-
-        // basic storage
-        localStorage.setItem("name", profile.name);
-        localStorage.setItem("email", profile.emailId);
-        localStorage.setItem("mobile", profile.mobile);
-        localStorage.setItem("token", response.data.token);
-        localStorage.setItem("role", profile.userRole);
-
-        // decode JWT
-        const payload = JSON.parse(atob(response.data.token.split(".")[1]));
-
-        const userPayload = {
-          userId: payload.userId,
-          name: profile.name,
-          email: profile.emailId,
-          role: profile.userRole,
-        };
-
-        // ✅ FIX: THIS WAS MISSING (MAIN BUG FIX)
-        localStorage.setItem("userId", payload.userId);
-
-        localStorage.setItem("user", JSON.stringify(userPayload));
-
-        // redux
-        dispatch(setToken(response.data.token));
-        dispatch(setUser(userPayload));
-
-        handleSnackbar("✅ Sign-in successful!", "success", true);
-
-        redirectBasedOnRole(profile.userRole);
-      } else {
+      if (response.status !== 200) {
         handleSnackbar("Server error!", "error", true);
+        return;
       }
+
+      const profile = response.data.userProfile;
+
+      // ✅ SAFE CHECK (VERY IMPORTANT)
+      if (!profile) {
+        handleSnackbar("User profile not found in response", "error", true);
+        return;
+      }
+
+      const token = response.data.token;
+
+      if (!token) {
+        handleSnackbar("Token missing from response", "error", true);
+        return;
+      }
+
+      const payload = JSON.parse(atob(token.split(".")[1]));
+
+      const userPayload = {
+        userId: payload.userId,
+        name: profile.name || "",
+        email: profile.email || profile.emailId || "",
+        role: profile.userRole || "",
+      };
+
+      localStorage.clear();
+
+      localStorage.setItem("name", profile.name || "");
+      localStorage.setItem("email", profile.email || profile.emailId || "");
+      localStorage.setItem("mobile", profile.mobile || "");
+      localStorage.setItem("token", token);
+      localStorage.setItem("role", profile.userRole || "");
+      localStorage.setItem("userId", payload.userId);
+      localStorage.setItem("user", JSON.stringify(userPayload));
+
+      dispatch(setToken(token));
+      dispatch(setUser(userPayload));
+
+      handleSnackbar("✅ Sign-in successful!", "success", true);
+
+      redirectBasedOnRole(profile.userRole);
     } catch (error) {
       console.error(error);
       handleSnackbar(error?.response?.data || "Login failed!", "error", true);
