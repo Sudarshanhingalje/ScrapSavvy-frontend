@@ -3,13 +3,18 @@ const TrackingIdBadge = ({ trackingId }) => {
     <div
       style={{
         background: "#f1f5f9",
-        padding: "8px 14px",
+        border: "1px solid #e2e8f0",
+        padding: "6px 14px",
         borderRadius: "8px",
-        fontWeight: "600",
+        fontWeight: "700",
+        fontSize: "13px",
         display: "inline-block",
+        color: "#0f172a",
+        fontFamily: "monospace",
+        letterSpacing: "0.05em",
       }}
     >
-      {trackingId}
+      🔖 {trackingId || "N/A"}
     </div>
   );
 };

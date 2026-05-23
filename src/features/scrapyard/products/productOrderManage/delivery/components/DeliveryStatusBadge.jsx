@@ -1,35 +1,34 @@
+import {
+  DELIVERY_STATUS_COLORS,
+  DELIVERY_STATUS_LABELS,
+} from "../utils/deliveryStatus";
+
 const DeliveryStatusBadge = ({ status }) => {
-  const getStatusColor = () => {
-    switch (status) {
-      case "DELIVERED":
-        return "#16a34a";
+  if (!status) return null;
 
-      case "OUT_FOR_DELIVERY":
-        return "#ea580c";
-
-      case "IN_TRANSIT":
-        return "#2563eb";
-
-      case "FAILED":
-        return "#dc2626";
-
-      default:
-        return "#64748b";
-    }
+  const colors = DELIVERY_STATUS_COLORS[status] || {
+    bg: "#f1f5f9",
+    color: "#475569",
+    border: "#e2e8f0",
   };
+
+  const label = DELIVERY_STATUS_LABELS[status] || status;
 
   return (
     <span
       style={{
-        backgroundColor: getStatusColor(),
-        color: "#fff",
-        padding: "6px 12px",
-        borderRadius: "8px",
+        backgroundColor: colors.bg,
+        color: colors.color,
+        border: `1.5px solid ${colors.border}`,
+        padding: "4px 12px",
+        borderRadius: "100px",
         fontSize: "12px",
-        fontWeight: "600",
+        fontWeight: "700",
+        display: "inline-block",
+        letterSpacing: "0.02em",
       }}
     >
-      {status}
+      {label}
     </span>
   );
 };

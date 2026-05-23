@@ -1,18 +1,16 @@
-const TrackingSearchBar = ({ searchTerm, setSearchTerm }) => {
+import "../styles/TrackingSearchBar.css";
+
+const TrackingSearchBar = ({ searchTerm, setSearchTerm, placeholder }) => {
   return (
-    <input
-      type="text"
-      placeholder="Search by Tracking ID"
-      value={searchTerm}
-      onChange={(e) => setSearchTerm(e.target.value)}
-      style={{
-        width: "100%",
-        padding: "12px",
-        borderRadius: "8px",
-        border: "1px solid #ddd",
-        marginBottom: "20px",
-      }}
-    />
+    <div className="tracking-search-bar">
+      <input
+        type="text"
+        className="tracking-search-input"
+        placeholder={placeholder || "Search by Tracking ID, Order ID..."}
+        value={searchTerm}
+        onChange={(e) => setSearchTerm(e.target.value)}
+      />
+    </div>
   );
 };
 

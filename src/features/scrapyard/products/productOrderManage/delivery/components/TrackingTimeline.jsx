@@ -1,33 +1,61 @@
-const timelineSteps = [
-  "ORDER_CONFIRMED",
-  "PACKED",
-  "PICKED_UP",
-  "IN_TRANSIT",
-  "OUT_FOR_DELIVERY",
-  "DELIVERED",
-];
+import "../styles/TrackingTimeline.css";
+import { TIMELINE_STEPS, getStepIndex } from "../utils/deliveryStatus";
 
 const TrackingTimeline = ({ currentStatus }) => {
-  const currentIndex = timelineSteps.indexOf(currentStatus);
+  const currentIndex = getStepIndex(currentStatus);
 
   return (
-    <div style={{ marginTop: "30px" }}>
-      <h3>Tracking Timeline</h3>
+    <div className="tracking-timeline">
+      <div className="tracking-timeline-title">Shipment Timeline</div>
 
-      {timelineSteps.map((step, index) => (
-        <div
-          key={step}
-          style={{
-            borderLeft: "4px solid",
-            borderColor: index <= currentIndex ? "#16a34a" : "#cbd5e1",
-            padding: "12px",
-            marginBottom: "10px",
-            background: "#f8fafc",
-          }}
-        >
-          {index <= currentIndex ? "✓" : "○"} {step}
-        </div>
-      ))}
+      <div className="tracking-timeline-steps">
+        {TIMELINE_STEPS.map((step, index) => {
+          const isCompleted = index < currentIndex;
+          const isCurrent = index === currentIndex;
+          const isPending = index > currentIndex;
+
+          let dotClass = "tracking-step-dot pending";
+          let labelClass = "tracking-step-label pending";
+          let stepClass = "tracking-timeline-step";
+          let dotContent = "";
+
+          if (isCompleted) {
+            dotClass = "tracking-step-dot completed";
+            labelClass = "tracking-step-label completed";
+            stepClass += " completed";
+            dotContent = "✓";
+          } else if (isCurrent) {
+            dotClass = "tracking-step-dot current";
+            labelClass = "tracking-step-label current";
+            dotContent = "●";
+          } else {
+            dotContent = String(index + 1);
+          }
+
+          return (
+            <div className={stepClass} key={step.key}>
+              <span className={dotClass}>{dotContent}</span>
+
+              <div className="tracking-step-content">
+                <div className={labelClass}>
+                  <span className="tracking-step-icon">{step.icon}</span>
+                  {step.label}
+                </div>
+
+                {isCurrent && (
+                  <div className="tracking-step-sublabel current">
+                    ● Current Status
+                  </div>
+                )}
+
+                {isPending && (
+                  <div className="tracking-step-sublabel">Upcoming</div>
+                )}
+              </div>
+            </div>
+          );
+        })}
+      </div>
     </div>
   );
 };

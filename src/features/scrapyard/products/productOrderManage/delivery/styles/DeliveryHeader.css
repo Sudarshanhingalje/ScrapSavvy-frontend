@@ -1,26 +1,55 @@
 .delivery-header-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-
-  gap: 20px;
-  margin-bottom: 30px;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 16px;
+  margin-bottom: 28px;
 }
 
-.delivery-header-card {
-  background: white;
-  padding: 24px;
-  border-radius: 16px;
+.delivery-stat-card {
+  background: #fff;
   border: 1px solid #e2e8f0;
+  border-radius: 14px;
+  padding: 20px 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
 }
 
-.delivery-header-title {
-  font-size: 16px;
+.delivery-stat-card-icon {
+  font-size: 28px;
+}
+
+.delivery-stat-card-label {
+  font-size: 13px;
   color: #64748b;
-  margin-bottom: 10px;
+  font-weight: 500;
 }
 
-.delivery-header-value {
+.delivery-stat-card-value {
   font-size: 32px;
-  font-weight: 700;
+  font-weight: 800;
   color: #0f172a;
+  line-height: 1;
+}
+
+.delivery-stat-card-value.green {
+  color: #16a34a;
+}
+
+.delivery-stat-card-value.red {
+  color: #dc2626;
+}
+
+.delivery-stat-card-value.blue {
+  color: #2563eb;
+}
+
+.delivery-stat-card-value.orange {
+  color: #ea580c;
+}
+
+@media (max-width: 600px) {
+  .delivery-header-grid {
+    grid-template-columns: 1fr 1fr;
+  }
 }

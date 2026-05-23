@@ -1,56 +1,49 @@
-import React from "react";
+import "../styles/DeliveryHeader.css";
 
 const DeliveryHeader = ({ deliveries }) => {
-  const totalDeliveries = deliveries?.length || 0;
+  const total = deliveries?.length || 0;
 
-  const deliveredOrders =
-    deliveries?.filter((item) => item.deliveryStatus === "DELIVERED").length ||
+  const delivered =
+    deliveries?.filter((d) => d.deliveryStatus === "DELIVERED").length || 0;
+
+  const failed =
+    deliveries?.filter((d) => d.deliveryStatus === "FAILED").length || 0;
+
+  const active =
+    deliveries?.filter(
+      (d) => d.deliveryStatus !== "DELIVERED" && d.deliveryStatus !== "FAILED",
+    ).length || 0;
+
+  const outForDelivery =
+    deliveries?.filter((d) => d.deliveryStatus === "OUT_FOR_DELIVERY").length ||
     0;
 
-  const failedOrders =
-    deliveries?.filter((item) => item.deliveryStatus === "FAILED").length || 0;
-
-  const activeDeliveries =
-    deliveries?.filter((item) => item.deliveryStatus !== "DELIVERED").length ||
-    0;
+  const stats = [
+    { icon: "📦", label: "Total Deliveries", value: total, cls: "" },
+    { icon: "🚚", label: "Active", value: active, cls: "blue" },
+    { icon: "✅", label: "Delivered", value: delivered, cls: "green" },
+    {
+      icon: "🏃",
+      label: "Out For Delivery",
+      value: outForDelivery,
+      cls: "orange",
+    },
+    { icon: "❌", label: "Failed", value: failed, cls: "red" },
+  ];
 
   return (
-    <div
-      style={{
-        display: "grid",
-        gridTemplateColumns: "repeat(auto-fit,minmax(220px,1fr))",
-        gap: "20px",
-        marginBottom: "30px",
-      }}
-    >
-      <div style={cardStyle}>
-        <h3>Total Deliveries</h3>
-        <h1>{totalDeliveries}</h1>
-      </div>
-
-      <div style={cardStyle}>
-        <h3>Active Deliveries</h3>
-        <h1>{activeDeliveries}</h1>
-      </div>
-
-      <div style={cardStyle}>
-        <h3>Delivered</h3>
-        <h1>{deliveredOrders}</h1>
-      </div>
-
-      <div style={cardStyle}>
-        <h3>Failed</h3>
-        <h1>{failedOrders}</h1>
-      </div>
+    <div className="delivery-header-grid">
+      {stats.map((stat) => (
+        <div className="delivery-stat-card" key={stat.label}>
+          <div className="delivery-stat-card-icon">{stat.icon}</div>
+          <div className="delivery-stat-card-label">{stat.label}</div>
+          <div className={`delivery-stat-card-value ${stat.cls}`}>
+            {stat.value}
+          </div>
+        </div>
+      ))}
     </div>
   );
-};
-
-const cardStyle = {
-  border: "1px solid #ddd",
-  borderRadius: "12px",
-  padding: "20px",
-  background: "#fff",
 };
 
 export default DeliveryHeader;

@@ -12,7 +12,7 @@
 }
 
 .delivery-management-title {
-  font-size: 32px;
+  font-size: 28px;
   font-weight: 700;
   margin-bottom: 24px;
   color: #0f172a;
@@ -20,23 +20,28 @@
 
 .delivery-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
   gap: 20px;
   margin-top: 24px;
 }
 
 .delivery-empty {
   text-align: center;
-  padding: 40px;
+  padding: 60px 40px;
   background: white;
-  border-radius: 12px;
+  border-radius: 14px;
   color: #64748b;
   margin-top: 20px;
   font-size: 16px;
+  border: 1px dashed #cbd5e1;
+}
+
+.delivery-empty-icon {
+  font-size: 48px;
+  margin-bottom: 12px;
 }
 
 /* MOBILE */
-
 @media (max-width: 991px) {
   .delivery-management-container {
     margin-left: 0;
@@ -44,6 +49,10 @@
   }
 
   .delivery-management-title {
-    font-size: 26px;
+    font-size: 22px;
+  }
+
+  .delivery-grid {
+    grid-template-columns: 1fr;
   }
 }

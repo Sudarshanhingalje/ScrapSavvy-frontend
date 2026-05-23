@@ -1,11 +1,22 @@
-const useTrackingSearch = (deliveries, searchTerm) => {
-  if (!searchTerm) {
-    return deliveries;
-  }
+import { useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { fetchDeliveries, fetchDeliveryById } from "../redux/deliveryThunk";
 
-  return deliveries.filter((delivery) =>
-    delivery?.trackingId?.toLowerCase()?.includes(searchTerm.toLowerCase()),
+const useDeliveryTracking = (id) => {
+  const dispatch = useDispatch();
+  const { selectedDelivery, loading, error } = useSelector(
+    (state) => state.delivery,
   );
+
+  useEffect(() => {
+    if (id) {
+      dispatch(fetchDeliveryById(id));
+    } else {
+      dispatch(fetchDeliveries());
+    }
+  }, [dispatch, id]);
+
+  return { selectedDelivery, loading, error };
 };
 
-export default useTrackingSearch;
+export default useDeliveryTracking;

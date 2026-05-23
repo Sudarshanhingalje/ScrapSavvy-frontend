@@ -1,25 +1,49 @@
 .delivery-filters {
   display: flex;
-  gap: 12px;
+  gap: 10px;
+  margin-bottom: 20px;
   flex-wrap: wrap;
-  margin-bottom: 24px;
 }
 
-.delivery-filter-button {
-  padding: 10px 16px;
-  border-radius: 10px;
-  border: 1px solid #cbd5e1;
-  background: white;
+.delivery-filter-btn {
+  padding: 8px 16px;
+  border-radius: 100px;
+  border: 1.5px solid #e2e8f0;
+  background: #fff;
+  color: #475569;
+  font-size: 13px;
+  font-weight: 600;
   cursor: pointer;
-  transition: 0.3s ease;
+  transition: all 0.2s;
+  white-space: nowrap;
 }
 
-.delivery-filter-button.active {
+.delivery-filter-btn:hover {
+  border-color: #2563eb;
+  color: #2563eb;
+  background: #eff6ff;
+}
+
+.delivery-filter-btn.active {
   background: #2563eb;
-  color: white;
+  color: #fff;
   border-color: #2563eb;
 }
 
-.delivery-filter-button:hover {
-  background: #eff6ff;
+.delivery-filter-btn.active-delivered {
+  background: #16a34a;
+  color: #fff;
+  border-color: #16a34a;
+}
+
+.delivery-filter-btn.active-failed {
+  background: #dc2626;
+  color: #fff;
+  border-color: #dc2626;
+}
+
+.delivery-filter-btn.active-pending {
+  background: #ca8a04;
+  color: #fff;
+  border-color: #ca8a04;
 }

@@ -1,37 +1,40 @@
-const DeliveryFilters = ({ selectedFilter, setSelectedFilter }) => {
-  const filters = [
-    "ALL",
-    "PICKUP_PENDING",
-    "IN_TRANSIT",
-    "OUT_FOR_DELIVERY",
-    "DELIVERED",
-    "FAILED",
-  ];
+import "../styles/DeliveryFilters.css";
 
+const FILTERS = [
+  { key: "ALL", label: "All" },
+  { key: "PICKUP_PENDING", label: "Pickup Pending" },
+  { key: "PICKED_UP", label: "Picked Up" },
+  { key: "IN_TRANSIT", label: "In Transit" },
+  { key: "OUT_FOR_DELIVERY", label: "Out For Delivery" },
+  { key: "DELIVERED", label: "Delivered" },
+  { key: "FAILED", label: "Failed" },
+];
+
+const ACTIVE_CLASS_MAP = {
+  DELIVERED: "active-delivered",
+  FAILED: "active-failed",
+  PICKUP_PENDING: "active-pending",
+};
+
+const DeliveryFilters = ({ selectedFilter, setSelectedFilter }) => {
   return (
-    <div
-      style={{
-        display: "flex",
-        gap: "10px",
-        marginBottom: "20px",
-        flexWrap: "wrap",
-      }}
-    >
-      {filters.map((filter) => (
-        <button
-          key={filter}
-          onClick={() => setSelectedFilter(filter)}
-          style={{
-            padding: "10px 14px",
-            borderRadius: "8px",
-            border: "1px solid #ddd",
-            background: selectedFilter === filter ? "#2563eb" : "#fff",
-            color: selectedFilter === filter ? "#fff" : "#000",
-          }}
-        >
-          {filter}
-        </button>
-      ))}
+    <div className="delivery-filters">
+      {FILTERS.map((filter) => {
+        const isActive = selectedFilter === filter.key;
+        const activeClass = isActive
+          ? ACTIVE_CLASS_MAP[filter.key] || "active"
+          : "";
+
+        return (
+          <button
+            key={filter.key}
+            className={`delivery-filter-btn ${activeClass}`}
+            onClick={() => setSelectedFilter(filter.key)}
+          >
+            {filter.label}
+          </button>
+        );
+      })}
     </div>
   );
 };

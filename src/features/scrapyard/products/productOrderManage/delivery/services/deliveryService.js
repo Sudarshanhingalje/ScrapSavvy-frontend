@@ -5,7 +5,6 @@ const API_BASE_URL = "http://localhost:8080/api/delivery";
 // ============================
 // GET ALL DELIVERIES
 // ============================
-
 export const getAllDeliveries = async () => {
   return await axios.get(API_BASE_URL);
 };
@@ -13,7 +12,6 @@ export const getAllDeliveries = async () => {
 // ============================
 // GET DELIVERY BY ID
 // ============================
-
 export const getDeliveryById = async (id) => {
   return await axios.get(`${API_BASE_URL}/${id}`);
 };
@@ -21,7 +19,6 @@ export const getDeliveryById = async (id) => {
 // ============================
 // ASSIGN DRIVER
 // ============================
-
 export const assignDriver = async (id, driverData) => {
   return await axios.put(`${API_BASE_URL}/assign-driver/${id}`, driverData);
 };
@@ -29,7 +26,6 @@ export const assignDriver = async (id, driverData) => {
 // ============================
 // UPDATE DELIVERY STATUS
 // ============================
-
 export const updateDeliveryStatus = async (id, status) => {
   return await axios.put(`${API_BASE_URL}/status/${id}`, {
     deliveryStatus: status,

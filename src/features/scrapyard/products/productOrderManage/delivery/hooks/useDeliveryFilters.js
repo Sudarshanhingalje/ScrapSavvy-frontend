@@ -1,5 +1,5 @@
 const useDeliveryFilters = (deliveries, selectedFilter) => {
-  if (!deliveries) return [];
+  if (!Array.isArray(deliveries)) return [];
 
   if (selectedFilter === "ALL") {
     return deliveries;
