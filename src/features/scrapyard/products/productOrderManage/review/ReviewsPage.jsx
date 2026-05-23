@@ -1,19 +1,30 @@
-// src/features/scrapyard/products/productOrderManage/reviews/ReviewsPage.jsx
-
 import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
+
 import ScrapyardSidebar from "../../../../../shared/layout/ScrapyardSidebar";
+
 import { getOwnerReviews } from "../../../../customer/cart/api/reviewApi";
 
-// ── Star display ──────────────────────────────────────────────────────────────
-const StarDisplay = ({ rating }) => (
-  <span style={{ color: "#f59e0b", fontSize: "15px", letterSpacing: "1px" }}>
-    {"★".repeat(rating)}
-    <span style={{ color: "#e2e8f0" }}>{"★".repeat(5 - rating)}</span>
-  </span>
-);
+// STAR DISPLAY
+const StarDisplay = ({ rating = 0 }) => {
+  const safeRating = Math.max(0, Math.min(5, Number(rating) || 0));
 
-// ── Rating badge ──────────────────────────────────────────────────────────────
+  return (
+    <span
+      style={{
+        color: "#f59e0b",
+        fontSize: "15px",
+        letterSpacing: "1px",
+      }}
+    >
+      {"★".repeat(safeRating)}
+
+      <span style={{ color: "#e2e8f0" }}>{"★".repeat(5 - safeRating)}</span>
+    </span>
+  );
+};
+
+// RATING BADGE
 const RatingBadge = ({ rating }) => {
   const colors = {
     5: { bg: "#f0fdf4", color: "#16a34a" },
@@ -22,7 +33,9 @@ const RatingBadge = ({ rating }) => {
     2: { bg: "#fff7ed", color: "#ea580c" },
     1: { bg: "#fef2f2", color: "#dc2626" },
   };
+
   const c = colors[rating] || colors[3];
+
   return (
     <span
       style={{
@@ -41,37 +54,54 @@ const RatingBadge = ({ rating }) => {
 
 const ReviewsPage = () => {
   const { user } = useSelector((state) => state.auth);
-  const ownerProfileId = user?.userProfileId;
+
+  // FRONTEND FIX
+  const ownerProfileId = user?.userId;
 
   const [reviews, setReviews] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [filter, setFilter] = useState("ALL"); // ALL | 5 | 4 | 3 | 2 | 1
+
+  const [filter, setFilter] = useState("ALL");
 
   useEffect(() => {
     if (!ownerProfileId) return;
+
     setLoading(true);
+
     getOwnerReviews(ownerProfileId)
-      .then((res) => setReviews(res.data))
-      .catch(() => setError("Could not load reviews."))
-      .finally(() => setLoading(false));
+      .then((res) => {
+        setReviews(res.data || []);
+      })
+      .catch(() => {
+        setError("Could not load reviews.");
+      })
+      .finally(() => {
+        setLoading(false);
+      });
   }, [ownerProfileId]);
 
-  // ── Derived stats ─────────────────────────────────────────────────────────
+  // AVG
   const avgRating = reviews.length
-    ? (reviews.reduce((s, r) => s + r.rating, 0) / reviews.length).toFixed(1)
+    ? (
+        reviews.reduce((s, r) => s + (Number(r.rating) || 0), 0) /
+        reviews.length
+      ).toFixed(1)
     : "—";
 
+  // DISTRIBUTION
   const distribution = [5, 4, 3, 2, 1].map((star) => ({
     star,
-    count: reviews.filter((r) => r.rating === star).length,
+    count: reviews.filter((r) => Number(r.rating) === star).length,
   }));
 
+  // FILTER
   const filtered =
     filter === "ALL"
       ? reviews
-      : reviews.filter((r) => r.rating === Number(filter));
+      : reviews.filter((r) => Number(r.rating) === Number(filter));
 
+  // DATE FORMAT
   const formatDate = (dt) =>
     new Date(dt).toLocaleDateString("en-IN", {
       day: "2-digit",
@@ -80,11 +110,23 @@ const ReviewsPage = () => {
     });
 
   return (
-    <div style={{ display: "flex", minHeight: "100vh", background: "#f1f5f9" }}>
+    <div
+      style={{
+        display: "flex",
+        minHeight: "100vh",
+        background: "#f1f5f9",
+      }}
+    >
       <ScrapyardSidebar />
 
-      <div style={{ flex: 1, padding: "30px", marginLeft: "260px" }}>
-        {/* ── Page title ── */}
+      <div
+        style={{
+          flex: 1,
+          padding: "30px",
+          marginLeft: "260px",
+        }}
+      >
+        {/* TITLE */}
         <h1
           style={{
             fontSize: "24px",
@@ -96,20 +138,35 @@ const ReviewsPage = () => {
           ⭐ Customer Reviews
         </h1>
 
+        {/* LOADING */}
         {loading && (
           <div
-            style={{ color: "#64748b", padding: "40px", textAlign: "center" }}
+            style={{
+              color: "#64748b",
+              padding: "40px",
+              textAlign: "center",
+            }}
           >
             ⏳ Loading reviews...
           </div>
         )}
+
+        {/* ERROR */}
         {error && (
-          <div style={{ color: "#dc2626", padding: "20px" }}>❌ {error}</div>
+          <div
+            style={{
+              color: "#dc2626",
+              padding: "20px",
+            }}
+          >
+            ❌ {error}
+          </div>
         )}
 
+        {/* CONTENT */}
         {!loading && !error && (
           <>
-            {/* ── Summary card ── */}
+            {/* SUMMARY */}
             <div
               style={{
                 display: "grid",
@@ -122,7 +179,7 @@ const ReviewsPage = () => {
                 marginBottom: "24px",
               }}
             >
-              {/* Big number */}
+              {/* LEFT */}
               <div
                 style={{
                   textAlign: "center",
@@ -140,15 +197,15 @@ const ReviewsPage = () => {
                 >
                   {avgRating}
                 </div>
+
                 <div
                   style={{
-                    color: "#f59e0b",
-                    fontSize: "22px",
                     marginTop: "4px",
                   }}
                 >
-                  {"★".repeat(Math.round(Number(avgRating))) || ""}
+                  <StarDisplay rating={Math.round(Number(avgRating))} />
                 </div>
+
                 <div
                   style={{
                     color: "#64748b",
@@ -160,7 +217,7 @@ const ReviewsPage = () => {
                 </div>
               </div>
 
-              {/* Distribution bars */}
+              {/* RIGHT */}
               <div
                 style={{
                   display: "flex",
@@ -173,6 +230,7 @@ const ReviewsPage = () => {
                   const pct = reviews.length
                     ? Math.round((count / reviews.length) * 100)
                     : 0;
+
                   return (
                     <div
                       key={star}
@@ -193,7 +251,9 @@ const ReviewsPage = () => {
                       >
                         {star}
                       </span>
+
                       <span style={{ color: "#f59e0b" }}>★</span>
+
                       <div
                         style={{
                           flex: 1,
@@ -218,6 +278,7 @@ const ReviewsPage = () => {
                           }}
                         />
                       </div>
+
                       <span
                         style={{
                           width: "28px",
@@ -233,7 +294,7 @@ const ReviewsPage = () => {
               </div>
             </div>
 
-            {/* ── Filter tabs ── */}
+            {/* FILTERS */}
             <div
               style={{
                 display: "flex",
@@ -259,18 +320,24 @@ const ReviewsPage = () => {
                   }}
                 >
                   {f === "ALL" ? "All" : `${f} ★`}{" "}
-                  <span style={{ opacity: 0.7, fontSize: "11px" }}>
+                  <span
+                    style={{
+                      opacity: 0.7,
+                      fontSize: "11px",
+                    }}
+                  >
                     (
                     {f === "ALL"
                       ? reviews.length
-                      : reviews.filter((r) => r.rating === Number(f)).length}
+                      : reviews.filter((r) => Number(r.rating) === Number(f))
+                          .length}
                     )
                   </span>
                 </button>
               ))}
             </div>
 
-            {/* ── Review cards ── */}
+            {/* EMPTY */}
             {filtered.length === 0 ? (
               <div
                 style={{
@@ -280,7 +347,14 @@ const ReviewsPage = () => {
                   fontSize: "15px",
                 }}
               >
-                <div style={{ fontSize: "40px", marginBottom: "12px" }}>📭</div>
+                <div
+                  style={{
+                    fontSize: "40px",
+                    marginBottom: "12px",
+                  }}
+                >
+                  📭
+                </div>
                 No reviews yet
               </div>
             ) : (
@@ -293,7 +367,7 @@ const ReviewsPage = () => {
               >
                 {filtered.map((review) => (
                   <div
-                    key={review.id}
+                    key={review.reviewId || review.id}
                     style={{
                       background: "#fff",
                       border: "1px solid #e2e8f0",
@@ -301,7 +375,7 @@ const ReviewsPage = () => {
                       padding: "18px 20px",
                     }}
                   >
-                    {/* Top row */}
+                    {/* TOP */}
                     <div
                       style={{
                         display: "flex",
@@ -322,6 +396,7 @@ const ReviewsPage = () => {
                         >
                           {review.productName}
                         </div>
+
                         <div
                           style={{
                             fontSize: "12px",
@@ -332,6 +407,7 @@ const ReviewsPage = () => {
                           Order #{review.orderId} · {review.reviewerName}
                         </div>
                       </div>
+
                       <div
                         style={{
                           display: "flex",
@@ -340,18 +416,28 @@ const ReviewsPage = () => {
                         }}
                       >
                         <RatingBadge rating={review.rating} />
-                        <span style={{ fontSize: "12px", color: "#94a3b8" }}>
+
+                        <span
+                          style={{
+                            fontSize: "12px",
+                            color: "#94a3b8",
+                          }}
+                        >
                           {formatDate(review.createdAt)}
                         </span>
                       </div>
                     </div>
 
-                    {/* Stars */}
-                    <div style={{ marginBottom: "8px" }}>
+                    {/* STARS */}
+                    <div
+                      style={{
+                        marginBottom: "8px",
+                      }}
+                    >
                       <StarDisplay rating={review.rating} />
                     </div>
 
-                    {/* Review text */}
+                    {/* TEXT */}
                     {review.reviewText ? (
                       <p
                         style={{
@@ -359,6 +445,7 @@ const ReviewsPage = () => {
                           color: "#374151",
                           margin: 0,
                           lineHeight: "1.6",
+                          wordBreak: "break-word",
                         }}
                       >
                         "{review.reviewText}"
@@ -376,9 +463,13 @@ const ReviewsPage = () => {
                       </p>
                     )}
 
-                    {/* Verified badge */}
+                    {/* VERIFIED */}
                     {review.verified && (
-                      <div style={{ marginTop: "10px" }}>
+                      <div
+                        style={{
+                          marginTop: "10px",
+                        }}
+                      >
                         <span
                           style={{
                             fontSize: "11px",

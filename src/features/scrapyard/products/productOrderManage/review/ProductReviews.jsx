@@ -1,15 +1,18 @@
-// src/features/customer/reviews/ProductReviews.jsx
-// Drop this component into the product detail modal/page
-
 import { useEffect, useState } from "react";
 import { getProductReviews } from "./reviewApi";
 
-const StarDisplay = ({ rating, size = "16px" }) => (
-  <span style={{ fontSize: size, letterSpacing: "1px" }}>
-    <span style={{ color: "#f59e0b" }}>{"★".repeat(rating)}</span>
-    <span style={{ color: "#d1d5db" }}>{"★".repeat(5 - rating)}</span>
-  </span>
-);
+// SAFE STAR DISPLAY
+const StarDisplay = ({ rating = 0, size = "16px" }) => {
+  const safeRating = Math.max(0, Math.min(5, Number(rating) || 0));
+
+  return (
+    <span style={{ fontSize: size, letterSpacing: "1px" }}>
+      <span style={{ color: "#f59e0b" }}>{"★".repeat(safeRating)}</span>
+
+      <span style={{ color: "#d1d5db" }}>{"★".repeat(5 - safeRating)}</span>
+    </span>
+  );
+};
 
 const ProductReviews = ({ productId }) => {
   const [reviews, setReviews] = useState([]);
@@ -17,15 +20,20 @@ const ProductReviews = ({ productId }) => {
 
   useEffect(() => {
     if (!productId) return;
+
     setLoading(true);
+
     getProductReviews(productId)
-      .then((res) => setReviews(res.data))
+      .then((res) => setReviews(res.data || []))
       .catch(() => setReviews([]))
       .finally(() => setLoading(false));
   }, [productId]);
 
   const avg = reviews.length
-    ? (reviews.reduce((s, r) => s + r.rating, 0) / reviews.length).toFixed(1)
+    ? (
+        reviews.reduce((s, r) => s + (Number(r.rating) || 0), 0) /
+        reviews.length
+      ).toFixed(1)
     : null;
 
   const formatDate = (dt) =>
@@ -35,22 +43,31 @@ const ProductReviews = ({ productId }) => {
       year: "numeric",
     });
 
-  if (loading)
+  if (loading) {
     return (
-      <div style={{ padding: "16px", color: "#94a3b8", fontSize: "13px" }}>
+      <div
+        style={{
+          padding: "16px",
+          color: "#94a3b8",
+          fontSize: "13px",
+        }}
+      >
         Loading reviews...
       </div>
     );
+  }
 
   return (
     <div style={{ marginTop: "20px" }}>
-      {/* Header */}
+      {/* HEADER */}
       <div
         style={{
           display: "flex",
           alignItems: "center",
           justifyContent: "space-between",
           marginBottom: "14px",
+          flexWrap: "wrap",
+          gap: "10px",
         }}
       >
         <h3
@@ -63,21 +80,40 @@ const ProductReviews = ({ productId }) => {
         >
           Customer Reviews
         </h3>
+
         {avg && (
-          <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+          <div
+            style={{
+              display: "flex",
+              alignItems: "center",
+              gap: "8px",
+            }}
+          >
             <span
-              style={{ fontSize: "22px", fontWeight: 800, color: "#0f172a" }}
+              style={{
+                fontSize: "22px",
+                fontWeight: 800,
+                color: "#0f172a",
+              }}
             >
               {avg}
             </span>
+
             <StarDisplay rating={Math.round(Number(avg))} />
-            <span style={{ fontSize: "12px", color: "#94a3b8" }}>
+
+            <span
+              style={{
+                fontSize: "12px",
+                color: "#94a3b8",
+              }}
+            >
               ({reviews.length})
             </span>
           </div>
         )}
       </div>
 
+      {/* EMPTY */}
       {reviews.length === 0 ? (
         <div
           style={{
@@ -92,10 +128,16 @@ const ProductReviews = ({ productId }) => {
           No reviews yet. Be the first to review!
         </div>
       ) : (
-        <div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
+        <div
+          style={{
+            display: "flex",
+            flexDirection: "column",
+            gap: "12px",
+          }}
+        >
           {reviews.map((r) => (
             <div
-              key={r.id}
+              key={r.reviewId || r.id}
               style={{
                 background: "#f8fafc",
                 border: "1px solid #e2e8f0",
@@ -103,6 +145,7 @@ const ProductReviews = ({ productId }) => {
                 padding: "14px 16px",
               }}
             >
+              {/* TOP */}
               <div
                 style={{
                   display: "flex",
@@ -120,8 +163,9 @@ const ProductReviews = ({ productId }) => {
                       color: "#1e293b",
                     }}
                   >
-                    {r.reviewerName}
+                    {r.reviewerName || "Anonymous"}
                   </span>
+
                   {r.verified && (
                     <span
                       style={{
@@ -139,11 +183,21 @@ const ProductReviews = ({ productId }) => {
                     </span>
                   )}
                 </div>
-                <span style={{ fontSize: "11px", color: "#94a3b8" }}>
+
+                <span
+                  style={{
+                    fontSize: "11px",
+                    color: "#94a3b8",
+                  }}
+                >
                   {formatDate(r.createdAt)}
                 </span>
               </div>
+
+              {/* STARS */}
               <StarDisplay rating={r.rating} />
+
+              {/* REVIEW TEXT */}
               {r.reviewText && (
                 <p
                   style={{
@@ -151,6 +205,7 @@ const ProductReviews = ({ productId }) => {
                     fontSize: "13px",
                     color: "#374151",
                     lineHeight: "1.55",
+                    wordBreak: "break-word",
                   }}
                 >
                   {r.reviewText}
