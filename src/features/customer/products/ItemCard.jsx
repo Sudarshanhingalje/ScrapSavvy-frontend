@@ -1,10 +1,8 @@
 import "swiper/css";
 import "swiper/css/navigation";
 import "swiper/css/pagination";
-
 import { Navigation, Pagination } from "swiper/modules";
 import { Swiper, SwiperSlide } from "swiper/react";
-
 import { API_BASE_URL } from "../../../config/env";
 import "../styles/ItemCard.css";
 
