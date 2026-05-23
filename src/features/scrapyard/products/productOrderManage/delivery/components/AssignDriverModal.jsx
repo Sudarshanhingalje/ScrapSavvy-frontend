@@ -2,48 +2,31 @@ import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { assignDeliveryDriver } from "../redux/deliveryThunk";
 import "../styles/AssignDriverModal.css";
-
-const DELIVERY_PARTNERS = [
-  "Delhivery",
-  "BlueDart",
-  "Ekart",
-  "Dunzo",
-  "Porter",
-  "Other",
-];
+import { DELIVERY_PARTNERS, DRIVERS } from "../utils/deliveryStatus";
 
 const AssignDriverModal = ({ orderId, onClose, onSuccess }) => {
   const dispatch = useDispatch();
   const { loading } = useSelector((state) => state.delivery);
 
-  const [formData, setFormData] = useState({
-    driverName: "",
-    driverPhone: "",
-    vehicleNumber: "",
-    deliveryPartner: "",
-  });
-
+  const [selectedDriverId, setSelectedDriverId] = useState("");
+  const [selectedPartnerId, setSelectedPartnerId] = useState("");
   const [errors, setErrors] = useState({});
 
+  // ── Derived: selected objects ─────────────────────────────
+  const selectedDriver = DRIVERS.find((d) => d.id === Number(selectedDriverId));
+  const selectedPartner = DELIVERY_PARTNERS.find(
+    (p) => p.id === Number(selectedPartnerId),
+  );
+
+  // ── Validation ────────────────────────────────────────────
   const validate = () => {
     const errs = {};
-    if (!formData.driverName.trim())
-      errs.driverName = "Driver name is required";
-    if (!formData.driverPhone.trim()) errs.driverPhone = "Phone is required";
-    if (!formData.vehicleNumber.trim())
-      errs.vehicleNumber = "Vehicle number is required";
-    if (!formData.deliveryPartner)
-      errs.deliveryPartner = "Select a delivery partner";
+    if (!selectedDriverId) errs.driver = "Please select a driver";
+    if (!selectedPartnerId) errs.partner = "Please select a delivery partner";
     return errs;
   };
 
-  const handleChange = (e) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
-    if (errors[e.target.name]) {
-      setErrors({ ...errors, [e.target.name]: "" });
-    }
-  };
-
+  // ── Submit ────────────────────────────────────────────────
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -53,8 +36,15 @@ const AssignDriverModal = ({ orderId, onClose, onSuccess }) => {
       return;
     }
 
+    const driverData = {
+      driverName: selectedDriver.name,
+      driverPhone: selectedDriver.phone,
+      vehicleNumber: selectedDriver.vehicleNumber,
+      deliveryPartner: selectedPartner.name,
+    };
+
     const result = await dispatch(
-      assignDeliveryDriver({ id: orderId, driverData: formData }),
+      assignDeliveryDriver({ id: orderId, driverData }),
     );
 
     if (assignDeliveryDriver.fulfilled.match(result)) {
@@ -69,85 +59,111 @@ const AssignDriverModal = ({ orderId, onClose, onSuccess }) => {
         <button className="assign-driver-modal-close" onClick={onClose}>
           ✕
         </button>
-
         <h2 className="assign-driver-modal-title">🚗 Assign Driver</h2>
 
         <form className="assign-driver-form" onSubmit={handleSubmit}>
+          {/* ── Driver Dropdown ── */}
           <div className="assign-driver-form-group">
-            <label className="assign-driver-form-label">Driver Name *</label>
-            <input
-              type="text"
-              name="driverName"
+            <label className="assign-driver-form-label">Select Driver *</label>
+            <select
               className="assign-driver-form-input"
-              placeholder="e.g. Ramesh Kumar"
-              value={formData.driverName}
-              onChange={handleChange}
-            />
-            {errors.driverName && (
+              value={selectedDriverId}
+              onChange={(e) => {
+                setSelectedDriverId(e.target.value);
+                setErrors({ ...errors, driver: "" });
+              }}
+            >
+              <option value="">— Choose a driver —</option>
+
+              <optgroup label="🏍️ Bike Drivers">
+                {DRIVERS.filter((d) => d.vehicleType === "Bike").map((d) => (
+                  <option key={d.id} value={d.id}>
+                    {d.name} — {d.vehicleBrand} ({d.vehicleNumber})
+                  </option>
+                ))}
+              </optgroup>
+
+              <optgroup label="🚗 Car Drivers">
+                {DRIVERS.filter((d) => d.vehicleType === "Car").map((d) => (
+                  <option key={d.id} value={d.id}>
+                    {d.name} — {d.vehicleBrand} ({d.vehicleNumber})
+                  </option>
+                ))}
+              </optgroup>
+            </select>
+            {errors.driver && (
               <span style={{ color: "#dc2626", fontSize: "12px" }}>
-                {errors.driverName}
+                {errors.driver}
               </span>
             )}
           </div>
 
-          <div className="assign-driver-form-group">
-            <label className="assign-driver-form-label">Driver Phone *</label>
-            <input
-              type="tel"
-              name="driverPhone"
-              className="assign-driver-form-input"
-              placeholder="e.g. 9876543210"
-              value={formData.driverPhone}
-              onChange={handleChange}
-            />
-            {errors.driverPhone && (
-              <span style={{ color: "#dc2626", fontSize: "12px" }}>
-                {errors.driverPhone}
-              </span>
-            )}
-          </div>
+          {/* ── Auto-filled driver info ── */}
+          {selectedDriver && (
+            <div
+              style={{
+                background: "#f0fdf4",
+                border: "1px solid #86efac",
+                borderRadius: "10px",
+                padding: "12px 16px",
+                display: "grid",
+                gridTemplateColumns: "1fr 1fr",
+                gap: "8px",
+                fontSize: "13px",
+              }}
+            >
+              {[
+                ["👤 Name", selectedDriver.name],
+                ["📞 Phone", selectedDriver.phone],
+                ["🚘 Vehicle", selectedDriver.vehicleBrand],
+                ["🔢 Reg No.", selectedDriver.vehicleNumber],
+              ].map(([label, value]) => (
+                <div key={label}>
+                  <div
+                    style={{
+                      color: "#64748b",
+                      fontSize: "11px",
+                      fontWeight: 600,
+                    }}
+                  >
+                    {label}
+                  </div>
+                  <div style={{ color: "#0f172a", fontWeight: 700 }}>
+                    {value}
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
 
-          <div className="assign-driver-form-group">
-            <label className="assign-driver-form-label">Vehicle Number *</label>
-            <input
-              type="text"
-              name="vehicleNumber"
-              className="assign-driver-form-input"
-              placeholder="e.g. MH-12-AB-1234"
-              value={formData.vehicleNumber}
-              onChange={handleChange}
-            />
-            {errors.vehicleNumber && (
-              <span style={{ color: "#dc2626", fontSize: "12px" }}>
-                {errors.vehicleNumber}
-              </span>
-            )}
-          </div>
-
+          {/* ── Delivery Partner Dropdown ── */}
           <div className="assign-driver-form-group">
             <label className="assign-driver-form-label">
               Delivery Partner *
             </label>
             <select
-              name="deliveryPartner"
               className="assign-driver-form-input"
-              value={formData.deliveryPartner}
-              onChange={handleChange}
+              value={selectedPartnerId}
+              onChange={(e) => {
+                setSelectedPartnerId(e.target.value);
+                setErrors({ ...errors, partner: "" });
+              }}
             >
-              <option value="">Select Partner</option>
+              <option value="">— Choose a partner —</option>
               {DELIVERY_PARTNERS.map((p) => (
-                <option key={p} value={p}>
-                  {p}
+                <option key={p.id} value={p.id}>
+                  {p.icon} {p.name}
                 </option>
               ))}
             </select>
-            {errors.deliveryPartner && (
+            {errors.partner && (
               <span style={{ color: "#dc2626", fontSize: "12px" }}>
-                {errors.deliveryPartner}
+                {errors.partner}
               </span>
             )}
           </div>
 
+          {/* ── Submit ── */}
           <button
             type="submit"
             className="assign-driver-submit-btn"

@@ -44,7 +44,7 @@ import OutForDeliveryPage from "../features/scrapyard/products/productOrderManag
 import PickupPendingPage from "../features/scrapyard/products/productOrderManage/delivery/pages/PickupPendingPage";
 import TrackingPage from "../features/scrapyard/products/productOrderManage/delivery/pages/TrackingPage";
 import TrackingSearchPage from "../features/scrapyard/products/productOrderManage/delivery/pages/TrackingSearchPage";
-
+import ReviewsPage from "../features/scrapyard/products/productOrderManage/review/ReviewsPage";
 function AppRoutes() {
   return (
     <>
@@ -187,6 +187,7 @@ function AppRoutes() {
         <Route path="/tracking/:trackingId" element={<TrackingPage />} />
 
         <Route path="/tracking-search" element={<TrackingSearchPage />} />
+        <Route path="/scrapyard/reviews" element={<ReviewsPage />} />
 
         {/* <Route path="*" element={<Navigate to="/" />} /> */}
       </Routes>

@@ -7,6 +7,7 @@ import {
   faPlusCircle,
   faShoppingCart,
   faSignOutAlt,
+  faStar,
   faTachometerAlt,
   faTruck,
   faUser,
@@ -112,6 +113,17 @@ const ScrapyardSidebar = () => {
           to: "/scrapyard/delivery/pickup-pending",
           icon: faTruck,
           label: "Pickup Pending",
+        },
+      ],
+    },
+
+    {
+      section: "CUSTOMER FEEDBACK",
+      items: [
+        {
+          to: "/scrapyard/reviews",
+          icon: faStar,
+          label: "Reviews",
         },
       ],
     },

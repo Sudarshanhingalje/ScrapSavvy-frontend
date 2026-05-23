@@ -59,3 +59,103 @@ export const TIMELINE_STEPS = [
 export const getStepIndex = (status) => {
   return TIMELINE_STEPS.findIndex((s) => s.key === status);
 };
+
+// ─────────────────────────────────────────────────────────────
+// DRIVER CONSTANTS
+// 7 Bike drivers + 3 Car drivers = 10 total
+// ─────────────────────────────────────────────────────────────
+
+export const DRIVERS = [
+  // ── BIKE DRIVERS ─────────────────────────────────────────
+  {
+    id: 1,
+    name: "Ramesh Patil",
+    phone: "9823041567",
+    vehicleType: "Bike",
+    vehicleNumber: "MH-09-AB-4321",
+    vehicleBrand: "Honda Activa",
+  },
+  {
+    id: 2,
+    name: "Suresh Kamble",
+    phone: "9765432190",
+    vehicleType: "Bike",
+    vehicleNumber: "MH-09-CD-7865",
+    vehicleBrand: "TVS Jupiter",
+  },
+  {
+    id: 3,
+    name: "Mahesh Jadhav",
+    phone: "9881234560",
+    vehicleType: "Bike",
+    vehicleNumber: "MH-09-EF-1122",
+    vehicleBrand: "Bajaj Pulsar",
+  },
+  {
+    id: 4,
+    name: "Ganesh Shinde",
+    phone: "9970112345",
+    vehicleType: "Bike",
+    vehicleNumber: "MH-09-GH-3344",
+    vehicleBrand: "Hero Splendor",
+  },
+  {
+    id: 5,
+    name: "Anil Bhosale",
+    phone: "9823765401",
+    vehicleType: "Bike",
+    vehicleNumber: "MH-09-IJ-5566",
+    vehicleBrand: "Royal Enfield",
+  },
+  {
+    id: 6,
+    name: "Vijay Mane",
+    phone: "9765001234",
+    vehicleType: "Bike",
+    vehicleNumber: "MH-09-KL-7788",
+    vehicleBrand: "Yamaha FZ",
+  },
+  {
+    id: 7,
+    name: "Rajesh Salunkhe",
+    phone: "9890456123",
+    vehicleType: "Bike",
+    vehicleNumber: "MH-09-MN-9900",
+    vehicleBrand: "Honda Shine",
+  },
+
+  // ── CAR DRIVERS ──────────────────────────────────────────
+  {
+    id: 8,
+    name: "Santosh Desai",
+    phone: "9823190045",
+    vehicleType: "Car",
+    vehicleNumber: "MH-09-OP-2211",
+    vehicleBrand: "Maruti Swift",
+  },
+  {
+    id: 9,
+    name: "Prakash Kulkarni",
+    phone: "9765876543",
+    vehicleType: "Car",
+    vehicleNumber: "MH-09-QR-4433",
+    vehicleBrand: "Hyundai i20",
+  },
+  {
+    id: 10,
+    name: "Deepak Gaikwad",
+    phone: "9890123789",
+    vehicleType: "Car",
+    vehicleNumber: "MH-09-ST-6655",
+    vehicleBrand: "Tata Nexon",
+  },
+];
+
+// ─────────────────────────────────────────────────────────────
+// DELIVERY PARTNERS
+// ─────────────────────────────────────────────────────────────
+
+export const DELIVERY_PARTNERS = [
+  { id: 1, name: "ScrapSavvy Own Delivery", icon: "🟢" },
+  { id: 2, name: "Delhivery", icon: "📦" },
+];
