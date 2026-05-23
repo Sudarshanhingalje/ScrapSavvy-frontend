@@ -34,6 +34,8 @@ import OrderDetailsPage from "../features/scrapyard/products/productOrderManage/
 import OrdersPage from "../features/scrapyard/products/productOrderManage/orders/pages/OrdersPage";
 import ProtectedRoute from "../routes/ProtectedRoute";
 
+import CustomerSetting from "../features/customer/pages/CustomerSetting";
+import UpdatePricesPage from "../features/scrapyard/pages/UpdatePricesPage";
 import AssignDriverPage from "../features/scrapyard/products/productOrderManage/delivery/pages/AssignDriverPage";
 import DeliveredPage from "../features/scrapyard/products/productOrderManage/delivery/pages/DeliveredPage";
 import DeliveryDetailsPage from "../features/scrapyard/products/productOrderManage/delivery/pages/DeliveryDetailsPage";
@@ -55,32 +57,29 @@ function AppRoutes() {
         <Route path="/forgotPassword" element={<ForgotPassword />} />
 
         {/* Company */}
-        <Route path="/company-dashboard" element={<CompanyDashboard />} />
-        <Route path="/company-dashboard/scrap-order" element={<ScrapOrder />} />
+        <Route path="/companydashboard" element={<CompanyDashboard />} />
+        <Route path="/companydashboard/scraporder" element={<ScrapOrder />} />
         <Route
-          path="/company-dashboard/orders-history"
+          path="/companydashboard/ordershistory"
           element={<OrdersHistory />}
         />
-        <Route path="/com-list-of-scraps" element={<CompScrapsTable />} />
+        <Route path="/comlistofscraps" element={<CompScrapsTable />} />
         <Route
-          path="/company-payments"
+          path="/companypayments"
           element={<CompPaymentsReceivedTable />}
         />
-        <Route path="/company-profile" element={<CompanyProfile />} />
+        <Route path="/companyprofile" element={<CompanyProfile />} />
 
         {/* Scrapyard */}
-        <Route path="/scrapyard-dashboard" element={<ScrapyardDashboard />} />
+        <Route path="/scrapyarddashboard" element={<ScrapyardDashboard />} />
         <Route path="/scraporders" element={<ScrapOrders />} />
         <Route path="/customerorders" element={<Customerorders />} />
 
-        <Route
-          path="/scrapyard-transactions"
-          element={<RecentTransactions />}
-        />
+        <Route path="/scrapyardtransactions" element={<RecentTransactions />} />
 
-        <Route path="/scrapyard-products/add" element={<ProductsPage />} />
+        <Route path="/scrapyardproducts/add" element={<ProductsPage />} />
         <Route
-          path="/scrapyard-products/allproducts"
+          path="/scrapyardproducts/allproducts"
           element={<AllProducts />}
         />
         {/* <Route
@@ -91,23 +90,24 @@ function AppRoutes() {
         <Route path="/scrapyardprofile" element={<ScrapyardProfile />} />
 
         {/* Customer */}
-        <Route path="/customer-dashboard" element={<CustomerDashboard />} />
+        <Route path="/customerdashboard" element={<CustomerDashboard />} />
         <Route
-          path="/customer-dashboard/scrap-sell"
+          path="/customerdashboard/scrapsell"
           element={<CustomerSells />}
         />
         <Route
-          path="/customer-dashboard/cuordershistory"
+          path="/customerdashboard/cuordershistory"
           element={<CustomerOrdersHistory />}
         />
 
         <Route path="/cuProductorders" element={<MyOrders />} />
-        <Route path="/cus-list-of-scraps" element={<CustomerProductPage />} />
+        <Route path="/cuslistofscraps" element={<CustomerProductPage />} />
         <Route
-          path="/customer-transactions"
+          path="/customertransactions"
           element={<CustomerTransactions />}
         />
-        <Route path="/customer-profile" element={<CustomerProfile />} />
+        <Route path="/customerprofile" element={<CustomerProfile />} />
+        <Route path="/customersetting" element={<CustomerSetting />} />
 
         {/* Checkout */}
         <Route
@@ -170,7 +170,7 @@ function AppRoutes() {
           element={<FailedDeliveriesPage />}
         />
         <Route
-          path="/scrapyard/delivery/pickup-pending"
+          path="/scrapyard/delivery/pickuppending"
           element={<PickupPendingPage />}
         />
 
@@ -189,6 +189,11 @@ function AppRoutes() {
         <Route path="/tracking-search" element={<TrackingSearchPage />} />
         <Route path="/scrapyard/reviews" element={<ReviewsPage />} />
 
+        {/* ✅ Settings - Update Prices */}
+        <Route
+          path="/scrapyardsettings/updateprices"
+          element={<UpdatePricesPage />}
+        />
         {/* <Route path="*" element={<Navigate to="/" />} /> */}
       </Routes>
 

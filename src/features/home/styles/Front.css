@@ -234,14 +234,14 @@ img {
 }
 
 /* ════════════════════════════════════
-   HERO
+   HERO — 3-column layout
 ════════════════════════════════════ */
 .sp-hero {
   min-height: 100vh;
   background: linear-gradient(135deg, #232526, #414345);
 
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: 1fr 360px 1fr; /* left | video | right */
   align-items: center;
   padding: 0 5vw;
   position: relative;
@@ -279,7 +279,7 @@ img {
   position: relative;
   z-index: 2;
   padding: 140px 0 80px;
-  max-width: 540px;
+  max-width: 480px;
 }
 
 .sp-hero__tag {
@@ -310,7 +310,7 @@ img {
 
 .sp-hero__h1 {
   font-family: var(--font-display);
-  font-size: clamp(3.8rem, 6.5vw, 7rem);
+  font-size: clamp(3.2rem, 5vw, 6.5rem);
   line-height: 0.92;
   color: var(--cream);
   letter-spacing: 0.01em;
@@ -323,11 +323,11 @@ img {
 }
 
 .sp-hero__sub {
-  font-size: 1.05rem;
+  font-size: 1rem;
   color: rgba(244, 240, 230, 0.58);
   line-height: 1.72;
   margin: 24px 0 44px;
-  max-width: 400px;
+  max-width: 380px;
   animation: fadeUp 0.8s 0.26s var(--ease-out) both;
 }
 
@@ -336,6 +336,26 @@ img {
   gap: 16px;
   align-items: center;
   animation: fadeUp 0.8s 0.4s var(--ease-out) both;
+}
+
+/* ── Center col — video ── */
+.sp-hero__video {
+  position: relative;
+
+  z-index: 1;
+  display: flex;
+  top: 260px;
+
+  align-items: center;
+  padding: 120px 0 60px;
+  animation: fadeUp 1s 0.3s var(--ease-out) both;
+}
+
+.hero-video {
+  width: 100%;
+  max-width: 350px;
+  aspect-ratio: 16/ 9;
+  object-fit: cover;
 }
 
 /* ── Right col — graphic ── */
@@ -349,15 +369,15 @@ img {
 }
 
 .hero-graphic {
-  width: 420px;
-  height: 420px;
+  width: 380px;
+  height: 380px;
   position: relative;
   animation: fadeUp 1s 0.5s var(--ease-out) both;
 }
 
 .hero-orbit {
-  width: 420px;
-  height: 420px;
+  width: 380px;
+  height: 380px;
   border-radius: 50%;
   border: 1.5px dashed rgba(107, 124, 69, 0.4);
   display: flex;
@@ -367,8 +387,8 @@ img {
 }
 
 .hero-core {
-  width: 290px;
-  height: 290px;
+  width: 260px;
+  height: 260px;
   border-radius: 50%;
   background: radial-gradient(
     circle at 38% 38%,
@@ -385,7 +405,7 @@ img {
 }
 
 .hero-emoji {
-  font-size: 5.5rem;
+  font-size: 5rem;
   line-height: 1;
   animation: spin 28s linear infinite;
 }
@@ -423,7 +443,7 @@ img {
 
 .stat-pill__num {
   font-family: var(--font-display);
-  font-size: 1.6rem;
+  font-size: 1.5rem;
   color: var(--rust-light);
   display: block;
   line-height: 1;
@@ -890,7 +910,7 @@ img {
    CTA BAND
 ════════════════════════════════════ */
 .sp-cta {
-  padding: 80px 5vw;
+  padding: 5px 5vw;
   background: var(--rust);
   display: flex;
   align-items: center;
@@ -1001,9 +1021,27 @@ img {
 /* ════════════════════════════════════
    RESPONSIVE
 ════════════════════════════════════ */
+
+/* Tablet-large: hide orbit graphic, keep video */
+@media (max-width: 1200px) {
+  .sp-hero {
+    grid-template-columns: 1fr 300px; /* left | video only */
+  }
+  .sp-hero__right {
+    display: none;
+  }
+  .hero-video {
+    max-width: 500px;
+  }
+}
+
+/* Tablet: hide video too, single column */
 @media (max-width: 960px) {
   .sp-hero {
     grid-template-columns: 1fr;
+  }
+  .sp-hero__video {
+    display: none;
   }
   .sp-hero__right {
     display: none;
@@ -1048,4 +1086,35 @@ img {
     flex-direction: column;
     gap: 8px;
   }
+}
+
+/* ── Logo ── */
+.sp-nav__logo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  text-decoration: none;
+}
+.sp-nav__booklogo {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  text-decoration: none;
+}
+.sp-nav__booklogo-img {
+  width: 400px;
+  height: 400px;
+  object-fit: scale-down;
+}
+
+.sp-nav__logo-img {
+  width: 200px;
+  height: 150px;
+  object-fit: scale-down;
+}
+
+.sp-nav__logo-text {
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: #fff;
 }

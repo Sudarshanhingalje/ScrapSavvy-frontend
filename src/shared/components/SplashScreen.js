@@ -1,4 +1,4 @@
-import logo from "../../assets/images/scrapsavvy-logo.svg";
+import logo from "../../assets/images/scrapsavvylogo.png";
 import "../../static/SplashScreen.css";
 
 const SplashScreen = () => {

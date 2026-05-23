@@ -12,6 +12,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 
+import scrapsavvylogo from "../../assets/images/scrapsavvylogo.png";
 import "../../static/Sidebar.css";
 import { BRANDNAME } from "../utils/Utils";
 
@@ -38,7 +39,13 @@ const CustomerSidebar = () => {
       {/* ================= DESKTOP SIDEBAR ================= */}
 
       <div id="sidebar-wrapper">
-        <div className="sidebar-heading">{BRANDNAME}</div>
+        <div className="sidebar-heading">
+          <img
+            src={scrapsavvylogo}
+            alt={BRANDNAME}
+            className="sidebar-logo-img"
+          />
+        </div>
 
         {/* ================= MAIN MENU ================= */}
 
@@ -46,7 +53,7 @@ const CustomerSidebar = () => {
 
         <div className="list-group list-group-flush">
           <Link
-            to="/customer-dashboard"
+            to="/customerdashboard"
             className={linkClass("/customer-dashboard")}
           >
             <FontAwesomeIcon icon={faTachometerAlt} className="icon" />
@@ -60,7 +67,7 @@ const CustomerSidebar = () => {
 
         <div className="list-group list-group-flush">
           <Link
-            to="/customer-dashboard/scrap-sell"
+            to="/customerdashboard/scrapsell"
             className={linkClass("/customer-dashboard/scrap-sell")}
           >
             <FontAwesomeIcon icon={faClipboardList} className="icon" />
@@ -68,7 +75,7 @@ const CustomerSidebar = () => {
           </Link>
 
           <Link
-            to="/customer-dashboard/cuordershistory"
+            to="/customerdashboard/cuordershistory"
             className={linkClass("/customer-dashboard/cuordershistory")}
           >
             <FontAwesomeIcon icon={faShoppingCart} className="icon" />
@@ -87,7 +94,7 @@ const CustomerSidebar = () => {
           </Link>
 
           <Link
-            to="/cus-list-of-scraps"
+            to="/cuslistofscraps"
             className={linkClass("/cus-list-of-scraps")}
           >
             <FontAwesomeIcon icon={faBoxOpen} className="icon" />
@@ -101,7 +108,7 @@ const CustomerSidebar = () => {
 
         <div className="list-group list-group-flush">
           <Link
-            to="/customer-profile"
+            to="/customerprofile"
             className={linkClass("/customer-profile")}
           >
             <FontAwesomeIcon icon={faUser} className="icon" />
@@ -109,7 +116,7 @@ const CustomerSidebar = () => {
           </Link>
 
           <Link
-            to="/customer-settings"
+            to="/customersetting"
             className={linkClass("/customer-settings")}
           >
             <FontAwesomeIcon icon={faCog} className="icon" />
@@ -154,7 +161,11 @@ const CustomerSidebar = () => {
         }}
       >
         <div className="offcanvas-header">
-          <h5 className="offcanvas-title">{BRANDNAME}</h5>
+          <img
+            src={scrapsavvylogo}
+            alt={BRANDNAME}
+            className="sidebar-logo-img"
+          />
 
           <button
             type="button"
@@ -170,7 +181,7 @@ const CustomerSidebar = () => {
 
           <div className="list-group list-group-flush">
             <Link
-              to="/customer-dashboard"
+              to="/customerdashboard"
               className={linkClass("/customer-dashboard")}
               onClick={closeOffcanvas}
             >
@@ -185,7 +196,7 @@ const CustomerSidebar = () => {
 
           <div className="list-group list-group-flush ">
             <Link
-              to="/customer-dashboard/scrap-sell"
+              to="/customerdashboard/scrapsell"
               className={linkClass("/customer-dashboard/scrap-sell")}
               onClick={closeOffcanvas}
             >
@@ -194,7 +205,7 @@ const CustomerSidebar = () => {
             </Link>
 
             <Link
-              to="/customer-dashboard/customer-orders-history"
+              to="/customerdashboard/customerordershistory"
               className={linkClass(
                 "/customer-dashboard/customer-orders-history",
               )}
@@ -220,7 +231,7 @@ const CustomerSidebar = () => {
             </Link>
 
             <Link
-              to="/cus-list-of-scraps"
+              to="/cuslistofscraps"
               className={linkClass("/cus-list-of-scraps")}
               onClick={closeOffcanvas}
             >
@@ -235,7 +246,7 @@ const CustomerSidebar = () => {
 
           <div className="list-group list-group-flush">
             <Link
-              to="/customer-profile"
+              to="/customerprofile"
               className={linkClass("/customer-profile")}
               onClick={closeOffcanvas}
             >
@@ -244,7 +255,7 @@ const CustomerSidebar = () => {
             </Link>
 
             <Link
-              to="/customer-settings"
+              to="/customersettings"
               className={linkClass("/customer-settings")}
               onClick={closeOffcanvas}
             >

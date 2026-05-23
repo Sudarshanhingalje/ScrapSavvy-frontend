@@ -1,26 +1,52 @@
 import { useEffect } from "react";
+import frontpageimg1 from "../../assets/images/frontpageimg1.png";
+import "../../static/CelebrationModal.css";
 
-const CelebrationModal = ({ show, onClose, message = "Success!" }) => {
+/**
+ * CelebrationModal – Split Panel Style
+ */
+
+const CelebrationModal = ({
+  show,
+  onClose,
+  message = "Thank you for shopping with Scrap Savvy! Your order has been placed successfully. Track your order to stay updated on delivery.",
+  title = "Order Confirmed!",
+  badge = "ORDER CONFIRMED",
+  btnText = "Track My Order",
+  autoClose = 0,
+}) => {
   useEffect(() => {
-    if (show) {
+    if (show && autoClose > 0) {
       const timer = setTimeout(() => {
         onClose?.();
-      }, 2500);
+      }, autoClose);
 
       return () => clearTimeout(timer);
     }
-  }, [show, onClose]);
+  }, [show, onClose, autoClose]);
 
   if (!show) return null;
 
   return (
-    <div className="ce-overlay">
-      <div className="ce-modal">
-        <div className="ce-emoji">🎉💥✨</div>
+    <div className="ce-overlay" onClick={onClose}>
+      <div className="ce-modal" onClick={(e) => e.stopPropagation()}>
+        {/* LEFT PANEL */}
+        <div className="ce-left-panel">
+          <img src={frontpageimg1} alt="ScrapSavvy" className="ce-mascot-img" />
+        </div>
 
-        <h2 className="ce-title">Boom!</h2>
+        {/* RIGHT PANEL */}
+        <div className="ce-right-panel">
+          {badge && <span className="ce-badge">{badge}</span>}
 
-        <p className="ce-msg">{message}</p>
+          <h2 className="ce-title">{title}</h2>
+
+          <p className="ce-msg">{message}</p>
+
+          <button className="ce-close-btn" onClick={onClose}>
+            {btnText}
+          </button>
+        </div>
       </div>
     </div>
   );

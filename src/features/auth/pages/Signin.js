@@ -49,11 +49,11 @@ const Signin = () => {
   const redirectBasedOnRole = (role) => {
     setTimeout(() => {
       if (role === "company") {
-        navigate("/company-dashboard");
+        navigate("/companydashboard");
       } else if (role === "scrapyard") {
-        navigate("/scrapyard-dashboard");
+        navigate("/scrapyarddashboard");
       } else if (role === "customer") {
-        navigate("/customer-dashboard");
+        navigate("/customerdashboard");
       }
     }, 1000);
   };

@@ -93,8 +93,6 @@ const ScrapyardDashboard = () => {
             <ScrapDistribution data={scrapDistributionData} />
           </div>
 
-          <UpdatePriceForm onSuccess={refresh} />
-
           <div className="sd-grid-bottom">
             <RevenueChart data={revenueChartData} />
             <InventorySummary inventory={inventory} />

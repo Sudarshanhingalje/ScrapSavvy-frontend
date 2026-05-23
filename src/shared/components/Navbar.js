@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
+import scrapsavvylogo from "../../assets/images/scrapsavvylogo.png";
 
 import "../../shared/layout/styles/Nav.css";
 
@@ -47,9 +48,11 @@ const Navbar = () => {
 
         <div className="logo">
           <Link to="/" className="sp-nav__logo">
-            <span className="sp-nav__logo-mark">♻</span>
-
-            <span className="sp-nav__logo-text">ScrapSavvy</span>
+            <img
+              src={scrapsavvylogo}
+              alt="ScrapSavvy Logo"
+              className="sp-nav__logo-img"
+            />
           </Link>
         </div>
 

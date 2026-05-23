@@ -1,0 +1,158 @@
+/* ═══════════════════════════════════════
+   CelebrationModal.css  –  Split Panel Style
+═══════════════════════════════════════ */
+
+/* ── Overlay backdrop ── */
+.ce-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  background: rgba(0, 0, 0, 0.6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  animation: ce-fade-in 0.25s ease both;
+}
+
+@keyframes ce-fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+/* ── Modal box ── */
+.ce-modal {
+  display: flex;
+  width: 420px;
+  max-width: 92vw;
+  border-radius: 20px;
+  overflow: hidden;
+  box-shadow: 0 24px 64px rgba(0, 0, 0, 0.4);
+  animation: ce-pop-in 0.38s cubic-bezier(0.28, 1, 0.36, 1) both;
+  background: #ffffff;
+}
+
+@keyframes ce-pop-in {
+  from {
+    opacity: 0;
+    transform: scale(0.84) translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+/* ── Left green panel ── */
+.ce-left-panel {
+  width: 130px;
+  flex-shrink: 0;
+  background: #00000000;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  overflow: hidden;
+  position: relative;
+}
+
+/* subtle circle decoration inside green panel */
+.ce-left-panel::before {
+  content: "";
+  position: absolute;
+  top: -30px;
+  left: -30px;
+  width: 130px;
+  height: 130px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.07);
+}
+
+.ce-left-panel::after {
+  content: "";
+  position: absolute;
+  bottom: -20px;
+  right: -20px;
+  width: 90px;
+  height: 90px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.06);
+}
+
+/* ── Mascot image inside green panel ── */
+.ce-mascot-img {
+  width: 150px;
+  object-fit: contain;
+  margin-bottom: -4px;
+  position: relative;
+  z-index: 1;
+}
+
+/* ── Right content panel ── */
+.ce-right-panel {
+  flex: 1;
+  padding: 22px 18px 18px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 8px;
+}
+
+/* ── Badge ── */
+.ce-badge {
+  display: inline-block;
+  background: #dcfce7;
+  color: #14532d;
+  font-size: 0.65rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  padding: 3px 10px;
+  border-radius: 100px;
+  align-self: flex-start;
+}
+
+/* ── Title ── */
+.ce-title {
+  font-size: 1.15rem;
+  font-weight: 800;
+  color: #111827;
+  line-height: 1.2;
+  margin: 0;
+}
+
+/* ── Message ── */
+.ce-msg {
+  font-size: 0.78rem;
+  color: #6b7280;
+  line-height: 1.55;
+  margin: 0;
+}
+
+/* ── Close / CTA button ── */
+.ce-close-btn {
+  margin-top: 6px;
+  padding: 9px 20px;
+  background: #16a34a;
+  color: #ffffff;
+  border: none;
+  border-radius: 10px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  cursor: pointer;
+  transition:
+    background 0.2s,
+    transform 0.15s;
+  align-self: flex-start;
+}
+
+.ce-close-btn:hover {
+  background: #15803d;
+  transform: translateY(-1px);
+}
+
+.ce-close-btn:active {
+  transform: scale(0.97);
+}

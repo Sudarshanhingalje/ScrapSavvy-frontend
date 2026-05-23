@@ -10,6 +10,8 @@ import authReducer from "../redux/actions/authSlice";
 
 import trackingReducer from "../features/scrapyard/products/productOrderManage/delivery/redux/trackingSlice";
 
+import reviewsReducer from "../features/home/redux/reviewsSlice";
+
 export const store = configureStore({
   reducer: {
     scrapRates: scrapRatesReducer,
@@ -24,5 +26,7 @@ export const store = configureStore({
     delivery: deliveryReducer,
 
     tracking: trackingReducer,
+
+    reviews: reviewsReducer,
   },
 });

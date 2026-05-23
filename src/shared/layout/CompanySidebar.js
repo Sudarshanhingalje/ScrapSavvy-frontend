@@ -7,6 +7,7 @@ import {
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useState } from "react";
 import { Link, useLocation } from "react-router-dom";
+import scrapsavvylogo from "../../assets/images/scrapsavvylogo.png";
 import "../../static/Sidebar.css";
 import { BRANDNAME } from "../utils/Utils";
 
@@ -23,19 +24,19 @@ const CompanySidebar = () => {
     {
       section: "MAIN",
       items: [
-        { to: "/company-dashboard", label: "Dashboard", icon: faTachometerAlt },
+        { to: "/companydashboard", label: "Dashboard", icon: faTachometerAlt },
       ],
     },
     {
       section: "ORDERS",
       items: [
         {
-          to: "/company-dashboard/scrap-order",
+          to: "/companydashboard/scraporder",
           label: "Scrap Orders",
           icon: faClipboardList,
         },
         {
-          to: "/company-dashboard/orders-history",
+          to: "/companydashboard/ordershistory",
           label: "Order History",
           icon: faClipboardList,
         },
@@ -45,7 +46,7 @@ const CompanySidebar = () => {
       section: "PRODUCTS",
       items: [
         {
-          to: "/cus-list-of-scraps",
+          to: "/cuslistofscraps",
           label: "Products",
           icon: faClipboardList,
         },
@@ -59,19 +60,25 @@ const CompanySidebar = () => {
     {
       section: "FINANCE",
       items: [
-        { to: "/company-payments", label: "Payments", icon: faCreditCard },
+        { to: "/companypayments", label: "Payments", icon: faCreditCard },
       ],
     },
     {
       section: "ACCOUNT",
-      items: [{ to: "/company-profile", label: "Profile", icon: faUser }],
+      items: [{ to: "/companyprofile", label: "Profile", icon: faUser }],
     },
   ];
 
   return (
     <>
       <div id="sidebar-wrapper">
-        <div className="sidebar-heading">{BRANDNAME}</div>
+        <div className="sidebar-heading">
+          <img
+            src={scrapsavvylogo}
+            alt={BRANDNAME}
+            className="sidebar-logo-img"
+          />
+        </div>
 
         {navItems.map((group) => (
           <div key={group.section}>

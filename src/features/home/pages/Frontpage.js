@@ -1,6 +1,11 @@
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
+import booklogo from "../../../assets/images/advimg2.png";
+import scrapsavvylogo from "../../../assets/images/scrapsavvylogo.png";
+
+import frontpagevideo from "../../../assets/video/advvideo1.mp4";
+import ReviewMarquee from "../../../features/home/pages/ReviewMarquee";
 import "../../../features/home/styles/Front.css";
 import { getScrapRates } from "../../../features/scrapRates/redux/scrapRatesThunk";
 import {
@@ -17,16 +22,12 @@ function Frontpage() {
 
   const dispatch = useDispatch();
 
-  // 🔥 READ PRICES FROM REDUX
   const prices = useSelector((state) => state.scrapRates.data);
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 50);
     window.addEventListener("scroll", onScroll, { passive: true });
-
-    // 🔥 DISPATCH THUNK TO LOAD PRICES (ownerId = 2 matches your DB)
     dispatch(getScrapRates(2));
-
     return () => window.removeEventListener("scroll", onScroll);
   }, [dispatch]);
 
@@ -36,8 +37,11 @@ function Frontpage() {
       <header className={`sp-nav${scrolled ? " scrolled" : ""}`}>
         <div className="sp-nav__inner">
           <Link to="/" className="sp-nav__logo">
-            <span className="sp-nav__logo-mark">♻</span>
-            <span className="sp-nav__logo-text">ScrapSavvy</span>
+            <img
+              src={scrapsavvylogo}
+              alt="ScrapSavvy Logo"
+              className="sp-nav__logo-img"
+            />
           </Link>
 
           <nav className="sp-nav__links">
@@ -54,6 +58,7 @@ function Frontpage() {
 
       {/* ══════════════ HERO ══════════════ */}
       <section className="sp-hero">
+        {/* ── Left col ── */}
         <div className="sp-hero__left">
           <div className="sp-hero__tag">
             <span className="sp-hero__tag-dot" />
@@ -96,6 +101,19 @@ function Frontpage() {
           </div>
         </div>
 
+        {/* ══ VIDEO COLUMN — center ══ */}
+        <div className="sp-hero__video">
+          <video
+            src={frontpagevideo}
+            autoPlay
+            loop
+            muted
+            playsInline
+            className="hero-video"
+          />
+        </div>
+
+        {/* ── Right col — graphic ── */}
         <div className="sp-hero__right">
           <div className="hero-graphic">
             <div className="hero-orbit">
@@ -236,22 +254,18 @@ function Frontpage() {
 
           <div className="rates-grid">
             {MATERIALS.map((m) => {
-              // prices shape: { Metal: { customerPrice: 35, companyPrice: 45 }, ... }
               const rateObj = prices?.[m.name];
               const customerPrice = rateObj?.customerPrice;
 
               return (
                 <div className="rate-card" key={m.name}>
                   <div className="rate-card__emoji">{m.emoji}</div>
-
                   <div className="rate-card__name">{m.name}</div>
-
                   <div className="rate-card__price">
                     {customerPrice !== undefined
                       ? `₹${customerPrice}/kg`
                       : m.price}
                   </div>
-
                   <div className="rate-card__note">{m.note}</div>
                 </div>
               );
@@ -259,6 +273,8 @@ function Frontpage() {
           </div>
         </div>
       </section>
+
+      <ReviewMarquee />
 
       {/* ══════════════ CTA BAND ══════════════ */}
       <div className="sp-cta">
@@ -272,6 +288,13 @@ function Frontpage() {
             Free pickup · Instant payment · Zero hassle
           </p>
         </div>
+        <Link to="/" className="sp-nav__booklogo">
+          <img
+            src={booklogo}
+            alt="ScrapSavvy Logo"
+            className="sp-nav__booklogo-img"
+          />
+        </Link>
         <Link to="/signin" className="btn-white">
           Book a Collection →
         </Link>
@@ -286,8 +309,8 @@ function Frontpage() {
               <span className="footer-brand__name">ScrapSavvy</span>
             </div>
             <p className="footer-brand__desc">
-              Pune's most reliable scrap pickup service. We turn your waste into
-              value while keeping the planet clean.
+              Pune's-kolhapur's most reliable scrap pickup service. We turn your
+              waste into value while keeping the planet clean.
             </p>
           </div>
 
@@ -301,15 +324,18 @@ function Frontpage() {
 
           <div className="footer-col">
             <span className="footer-col__heading">Contact</span>
-            <a href="mailto:hello@scrapsavvy.in">hello@scrapsavvy.in</a>
+            <a href="mailto:hello@scrapsavvy.in">support@scrapsavvy.in</a>
             <a href="tel:+919876543210">+91 98765 43210</a>
-            <a href="#top">Pune, Maharashtra</a>
+            <a href="#top">
+              Plot No. 47, Industrial Area, Bhosari, Pune, Maharashtra – 411026
+            </a>
           </div>
         </div>
 
         <div className="footer-bottom">
-          <p>© 2025 ScrapSavvy. All rights reserved.</p>
+          <p>© 2026 ScrapSavvy. All rights reserved.</p>
           <p>Made in Pune 🇮🇳</p>
+          <p>GSTIN: 27AABCS1234F1Z5</p>
         </div>
       </footer>
     </>

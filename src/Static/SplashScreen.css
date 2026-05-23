@@ -13,37 +13,14 @@
   align-items: center;
   z-index: 9999;
   gap: 36px;
-  animation: fadeOut 0.7s ease 4.5s forwards;
+  animation: fadeOut 5ms ease 4.5s forwards;
 
   /* Industrial scrapyard background */
-  background-color: #1a1a1a;
-  background-image:
-    /* Rusted metal diagonal stripes */
-    repeating-linear-gradient(
-      -55deg,
-      transparent,
-      transparent 40px,
-      rgba(255, 255, 255, 0.015) 40px,
-      rgba(255, 255, 255, 0.015) 80px
-    ),
-    /* Warm rust glow bottom-left */
-    radial-gradient(
-        ellipse at 15% 85%,
-        rgba(180, 70, 20, 0.25) 0%,
-        transparent 55%
-      ),
-    /* Amber scrap glow top-right */
-    radial-gradient(
-        ellipse at 85% 15%,
-        rgba(200, 130, 20, 0.18) 0%,
-        transparent 50%
-      ),
-    /* Center soft spotlight */
-    radial-gradient(ellipse at 50% 50%, rgba(60, 50, 40, 0.6) 0%, #111 80%);
+  background-color: #ffffff;
 }
 
 /* Subtle noise grain overlay */
-.splash-container::before {
+/* .splash-container::before {
   content: "";
   position: absolute;
   inset: 0;
@@ -51,19 +28,7 @@
   background-size: 200px 200px;
   opacity: 0.35;
   pointer-events: none;
-}
-
-/* Metal grid lines */
-.splash-container::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  background-image:
-    linear-gradient(rgba(255, 255, 255, 0.025) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(255, 255, 255, 0.025) 1px, transparent 1px);
-  background-size: 60px 60px;
-  pointer-events: none;
-}
+} */
 
 /* ── Logo ── */
 .splash-logo {
@@ -98,7 +63,7 @@
   width: 52px;
   height: 52px;
   opacity: 0;
-  animation: showLoader 0.4s ease 1.5s forwards;
+  animation: showLoader 5s ease 1.5s forwards;
 }
 
 @keyframes showLoader {
@@ -146,7 +111,7 @@
   color: rgba(255, 255, 255, 0.35);
   margin-top: -20px;
   opacity: 0;
-  animation: showLoader 2s ease 1.8s forwards;
+  animation: showLoader 50s ease 1.8s forwards;
 }
 
 /* ── Fade out ── */
