@@ -33,6 +33,18 @@ import ScrapyardProfile from "../features/scrapyard/pages/ScrapyardProfile";
 import OrderDetailsPage from "../features/scrapyard/products/productOrderManage/orders/pages/OrderDetailsPage";
 import OrdersPage from "../features/scrapyard/products/productOrderManage/orders/pages/OrdersPage";
 import ProtectedRoute from "../routes/ProtectedRoute";
+
+import AssignDriverPage from "../features/scrapyard/products/productOrderManage/delivery/pages/AssignDriverPage";
+import DeliveredPage from "../features/scrapyard/products/productOrderManage/delivery/pages/DeliveredPage";
+import DeliveryDetailsPage from "../features/scrapyard/products/productOrderManage/delivery/pages/DeliveryDetailsPage";
+import DeliveryManagementPage from "../features/scrapyard/products/productOrderManage/delivery/pages/DeliveryManagementPage";
+import FailedDeliveriesPage from "../features/scrapyard/products/productOrderManage/delivery/pages/FailedDeliveriesPage";
+import InTransitPage from "../features/scrapyard/products/productOrderManage/delivery/pages/InTransitPage";
+import OutForDeliveryPage from "../features/scrapyard/products/productOrderManage/delivery/pages/OutForDeliveryPage";
+import PickupPendingPage from "../features/scrapyard/products/productOrderManage/delivery/pages/PickupPendingPage";
+import TrackingPage from "../features/scrapyard/products/productOrderManage/delivery/pages/TrackingPage";
+import TrackingSearchPage from "../features/scrapyard/products/productOrderManage/delivery/pages/TrackingSearchPage";
+
 function AppRoutes() {
   return (
     <>
@@ -131,6 +143,50 @@ function AppRoutes() {
           path="/scrapyard/orders/:orderId"
           element={<OrderDetailsPage />}
         />
+        <Route
+          path="/scrapyard/delivery/:id"
+          element={<DeliveryDetailsPage />}
+        />
+
+        {/* DELIVERY MANAGEMENT */}
+        <Route
+          path="/scrapyard/delivery"
+          element={<DeliveryManagementPage />}
+        />
+        <Route
+          path="/scrapyard/delivery/out-for-delivery"
+          element={<OutForDeliveryPage />}
+        />
+        <Route
+          path="/scrapyard/delivery/in-transit"
+          element={<InTransitPage />}
+        />
+        <Route
+          path="/scrapyard/delivery/delivered"
+          element={<DeliveredPage />}
+        />
+        <Route
+          path="/scrapyard/delivery/failed"
+          element={<FailedDeliveriesPage />}
+        />
+        <Route
+          path="/scrapyard/delivery/pickup-pending"
+          element={<PickupPendingPage />}
+        />
+
+        <Route
+          path="/scrapyard/delivery/:id"
+          element={<DeliveryDetailsPage />}
+        />
+
+        <Route
+          path="/scrapyard/assign-driver/:id"
+          element={<AssignDriverPage />}
+        />
+
+        <Route path="/tracking/:trackingId" element={<TrackingPage />} />
+
+        <Route path="/tracking-search" element={<TrackingSearchPage />} />
 
         {/* <Route path="*" element={<Navigate to="/" />} /> */}
       </Routes>

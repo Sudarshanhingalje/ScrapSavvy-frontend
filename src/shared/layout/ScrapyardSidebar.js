@@ -8,6 +8,7 @@ import {
   faShoppingCart,
   faSignOutAlt,
   faTachometerAlt,
+  faTruck,
   faUser,
 } from "@fortawesome/free-solid-svg-icons";
 
@@ -71,6 +72,46 @@ const ScrapyardSidebar = () => {
           to: "/scrapyard/orders",
           icon: faClipboardList,
           label: "Product Orders",
+        },
+      ],
+    },
+    {
+      section: "DELIVERY MANAGEMENT",
+      items: [
+        {
+          to: "/scrapyard/delivery",
+          icon: faTruck,
+          label: "All Deliveries",
+        },
+
+        {
+          to: "/scrapyard/delivery/out-for-delivery",
+          icon: faTruck,
+          label: "Out For Delivery",
+        },
+
+        {
+          to: "/scrapyard/delivery/in-transit",
+          icon: faTruck,
+          label: "In Transit",
+        },
+
+        {
+          to: "/scrapyard/delivery/delivered",
+          icon: faTruck,
+          label: "Delivered Orders",
+        },
+
+        {
+          to: "/scrapyard/delivery/failed",
+          icon: faTruck,
+          label: "Failed Deliveries",
+        },
+
+        {
+          to: "/scrapyard/delivery/pickup-pending",
+          icon: faTruck,
+          label: "Pickup Pending",
         },
       ],
     },

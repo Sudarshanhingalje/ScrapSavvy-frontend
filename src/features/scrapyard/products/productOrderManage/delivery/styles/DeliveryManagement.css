@@ -1,0 +1,49 @@
+.delivery-layout {
+  display: flex;
+  min-height: 100vh;
+  background: #f1f5f9;
+}
+
+.delivery-management-container {
+  flex: 1;
+  padding: 30px;
+  margin-left: 260px;
+  min-height: 100vh;
+}
+
+.delivery-management-title {
+  font-size: 32px;
+  font-weight: 700;
+  margin-bottom: 24px;
+  color: #0f172a;
+}
+
+.delivery-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: 20px;
+  margin-top: 24px;
+}
+
+.delivery-empty {
+  text-align: center;
+  padding: 40px;
+  background: white;
+  border-radius: 12px;
+  color: #64748b;
+  margin-top: 20px;
+  font-size: 16px;
+}
+
+/* MOBILE */
+
+@media (max-width: 991px) {
+  .delivery-management-container {
+    margin-left: 0;
+    padding: 20px;
+  }
+
+  .delivery-management-title {
+    font-size: 26px;
+  }
+}

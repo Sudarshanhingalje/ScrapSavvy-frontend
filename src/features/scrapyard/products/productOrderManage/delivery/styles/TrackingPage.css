@@ -1,0 +1,29 @@
+.tracking-page {
+  padding: 24px;
+  background: #f8fafc;
+  min-height: 100vh;
+}
+
+.tracking-title {
+  font-size: 30px;
+  font-weight: 700;
+  margin-bottom: 20px;
+}
+
+.tracking-section {
+  background: white;
+  border-radius: 16px;
+  padding: 24px;
+  margin-top: 20px;
+  border: 1px solid #e2e8f0;
+}
+
+.tracking-info {
+  margin-bottom: 14px;
+  color: #334155;
+}
+
+.tracking-label {
+  font-weight: 700;
+  color: #0f172a;
+}

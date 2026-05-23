@@ -1,0 +1,32 @@
+.delivery-table {
+  width: 100%;
+  border-collapse: collapse;
+  background: white;
+  border-radius: 14px;
+  overflow: hidden;
+}
+
+.delivery-table thead {
+  background: #2563eb;
+  color: white;
+}
+
+.delivery-table th,
+.delivery-table td {
+  padding: 16px;
+  text-align: left;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.delivery-table tr:hover {
+  background: #f8fafc;
+}
+
+.delivery-table-button {
+  background: #2563eb;
+  color: white;
+  border: none;
+  padding: 8px 14px;
+  border-radius: 8px;
+  cursor: pointer;
+}

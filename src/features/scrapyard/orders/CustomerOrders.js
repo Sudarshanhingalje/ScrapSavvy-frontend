@@ -430,7 +430,7 @@ const CustomerOrders = () => {
     const token = localStorage.getItem("token");
     try {
       const res = await fetch(
-        `http://localhost:8080/api/scrap-orders/${id}/status?status=${status}`,
+        `http://localhost:8080/api/scraporders/${id}/status?status=${status}`,
         { method: "PUT", headers: { Authorization: `Bearer ${token}` } },
       );
       const text = await res.text();
@@ -457,7 +457,7 @@ const CustomerOrders = () => {
     const token = localStorage.getItem("token");
     try {
       const res = await fetch(
-        `http://localhost:8080/api/scrap-orders/${selectedOrder.id}/schedule`,
+        `http://localhost:8080/api/scraporders/${selectedOrder.id}/schedule`,
         {
           method: "PUT",
           headers: {
@@ -484,22 +484,19 @@ const CustomerOrders = () => {
   // ================= PAYMENT SUCCESS UPDATE =================
   const updatePayment = async (id, method, status, amount, paymentId = "") => {
     const token = localStorage.getItem("token");
-    await fetch(
-      `http://localhost:8080/api/scrap-orders/${id}/payment-success`,
-      {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify({
-          paymentMethod: method,
-          paymentStatus: status,
-          paidAmount: amount,
-          paymentId,
-        }),
+    await fetch(`http://localhost:8080/api/scraporders/${id}/paymentsuccess`, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
       },
-    );
+      body: JSON.stringify({
+        paymentMethod: method,
+        paymentStatus: status,
+        paidAmount: amount,
+        paymentId,
+      }),
+    });
     if (status === "PAID") await updateStatus(id, "COMPLETED");
     fetchOrders();
   };
@@ -525,7 +522,7 @@ const CustomerOrders = () => {
     if (!window.confirm("Delete this order permanently?")) return;
     const token = localStorage.getItem("token");
     try {
-      const res = await fetch(`http://localhost:8080/api/scrap-orders/${id}`, {
+      const res = await fetch(`http://localhost:8080/api/scraporders/${id}`, {
         method: "DELETE",
         headers: { Authorization: `Bearer ${token}` },
       });

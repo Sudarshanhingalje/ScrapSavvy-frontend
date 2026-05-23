@@ -86,6 +86,14 @@ const OrderFooter = ({ order, setShowTrack, showTrack, onHide }) => {
           Download Invoice
         </button>
       )}
+      {order.orderStatus === "DELIVERED" && (
+        <button
+          className="btn btn-rate"
+          // onClick={() => handleDownloadInvoice(order.orderId)}
+        >
+          Return Request
+        </button>
+      )}
 
       {/* BUY AGAIN */}
       {buttons.includes("buyAgain") && (

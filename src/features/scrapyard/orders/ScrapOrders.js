@@ -67,7 +67,7 @@ const ScrapOrders = () => {
   }, []);
 
   const clearOrder = (id) => {
-    fetch(`http://localhost:8080/api/scrap-orders/${id}`, { method: "DELETE" })
+    fetch(`http://localhost:8080/api/scraporders/${id}`, { method: "DELETE" })
       .then((res) => {
         if (!res.ok) throw new Error("Failed to delete");
         return res.text();
@@ -81,7 +81,7 @@ const ScrapOrders = () => {
 
     try {
       const res = await fetch(
-        `http://localhost:8080/api/scrap-orders/${id}/status?status=${status}`,
+        `http://localhost:8080/api/scraporders/${id}/status?status=${status}`,
         {
           method: "PUT",
           headers: {
