@@ -14,24 +14,29 @@ import "../styles/myOrders.css";
 const MyOrders = () => {
   const { orders, loading, error } = useMyOrders();
 
-  // ✅ ADD THIS
   const [hiddenOrders, setHiddenOrders] = useState([]);
 
-  // ✅ HIDE HANDLER
   const handleHideOrder = (orderId) => {
     setHiddenOrders((prev) => [...prev, orderId]);
   };
 
-  // ✅ FILTER ORDERS
   const visibleOrders = orders.filter(
     (order) => !hiddenOrders.includes(order.orderId),
   );
 
   return (
-    <div className="orders-layout">
+    <div style={{ display: "flex", height: "100vh", overflow: "hidden" }}>
       <CustomerSidebar />
 
-      <div className="orders-content">
+      <div
+        style={{
+          flex: 1,
+          overflowY: "auto",
+          padding: "24px",
+          background: "#f1f3f6",
+          minWidth: 0,
+        }}
+      >
         <div className="orders-header">
           <h1>My Orders</h1>
           <p>Track all your purchased scrap products</p>
@@ -54,7 +59,7 @@ const MyOrders = () => {
             <OrderCard
               key={order.orderId}
               order={order}
-              onHide={handleHideOrder} // ✅ IMPORTANT FIX
+              onHide={handleHideOrder}
             />
           ))}
       </div>

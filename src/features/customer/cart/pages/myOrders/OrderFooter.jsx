@@ -1,26 +1,32 @@
-// src/features/customer/cart/components/myOrders/OrderFooter.jsx
+// src/features/customer/cart/pages/myOrders/OrderFooter.jsx
 
+import { useState } from "react";
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { addToCart } from "../../../redux/cartSlice";
 import { cancelOrder, getOrderInvoice } from "../../api/orderApi";
 import { BUTTON_CONFIG } from "../../utils/myOrderConstants";
 import { generateProductInvoice } from "../ProductInvoice";
+import RateReviewModal from "../myOrders/RateReviewModal";
+
 const OrderFooter = ({ order, setShowTrack, showTrack, onHide }) => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
+  const [showRateModal, setShowRateModal] = useState(false);
+
   const statusKey = order.orderStatus?.toUpperCase();
   const buttons = BUTTON_CONFIG[statusKey] || BUTTON_CONFIG["PROCESSING"];
+
   const handleDownloadInvoice = async (orderId) => {
     try {
-      const order = await getOrderInvoice(orderId);
-      generateProductInvoice(order);
+      const inv = await getOrderInvoice(orderId);
+      generateProductInvoice(inv);
     } catch (err) {
       alert("Invoice generation failed");
     }
   };
-  // BUY AGAIN
+
   const handleBuyAgain = () => {
     order.items.forEach((item) => {
       dispatch(
@@ -33,11 +39,9 @@ const OrderFooter = ({ order, setShowTrack, showTrack, onHide }) => {
         }),
       );
     });
-
     navigate("/checkout");
   };
 
-  // CANCEL ORDER
   const handleCancel = async () => {
     try {
       await cancelOrder(order.orderId);
@@ -51,57 +55,71 @@ const OrderFooter = ({ order, setShowTrack, showTrack, onHide }) => {
     order.orderStatus === "PENDING" || order.orderStatus === "ACCEPTED";
 
   return (
-    <div className="order-footer">
-      {/* CANCEL */}
-      {buttons.includes("cancelOrder") && isCancelable && (
-        <button className="btn btn-cancel" onClick={handleCancel}>
-          Cancel Order
-        </button>
-      )}
+    <>
+      <div className="order-footer">
+        {/* CANCEL */}
+        {buttons.includes("cancelOrder") && isCancelable && (
+          <button className="btn btn-cancel" onClick={handleCancel}>
+            Cancel Order
+          </button>
+        )}
 
-      {/* CLEAR / HIDE */}
-      <button className="btn btn-clear" onClick={() => onHide(order.orderId)}>
-        Clear from History
-      </button>
+        {/* CLEAR */}
+        <button className="btn btn-clear" onClick={() => onHide(order.orderId)}>
+          Clear from History
+        </button>
 
-      {/* TRACK */}
-      {buttons.includes("trackOrder") && (
-        <button
-          className="btn btn-outline"
-          onClick={() => setShowTrack(!showTrack)}
-        >
-          {showTrack ? "Hide Tracking" : "Track Order"}
-        </button>
-      )}
+        {/* TRACK */}
+        {buttons.includes("trackOrder") && (
+          <button
+            className={`btn ${showTrack ? "btn-primary" : "btn-outline"}`}
+            onClick={() => setShowTrack(!showTrack)}
+          >
+            {showTrack ? "Hide Tracking" : "Track Order"}
+          </button>
+        )}
 
-      {/* RATE */}
-      {buttons.includes("rateReview") && (
-        <button className="btn btn-rate">Rate & Review</button>
-      )}
-      {order.orderStatus === "DELIVERED" && (
-        <button
-          className="btn btn-primary"
-          onClick={() => handleDownloadInvoice(order.orderId)}
-        >
-          Download Invoice
-        </button>
-      )}
-      {order.orderStatus === "DELIVERED" && (
-        <button
-          className="btn btn-rate"
-          // onClick={() => handleDownloadInvoice(order.orderId)}
-        >
-          Return Request
-        </button>
-      )}
+        {/* RATE & REVIEW */}
+        {buttons.includes("rateReview") && (
+          <button
+            className="btn btn-rate"
+            onClick={() => setShowRateModal(true)}
+          >
+            Rate &amp; Review
+          </button>
+        )}
 
-      {/* BUY AGAIN */}
-      {buttons.includes("buyAgain") && (
-        <button className="btn btn-primary" onClick={handleBuyAgain}>
-          Buy Again
-        </button>
+        {/* INVOICE */}
+        {order.orderStatus === "DELIVERED" && (
+          <button
+            className="btn btn-primary"
+            onClick={() => handleDownloadInvoice(order.orderId)}
+          >
+            Download Invoice
+          </button>
+        )}
+
+        {/* RETURN */}
+        {order.orderStatus === "DELIVERED" && (
+          <button className="btn btn-rate">Return Request</button>
+        )}
+
+        {/* BUY AGAIN */}
+        {buttons.includes("buyAgain") && (
+          <button className="btn btn-primary" onClick={handleBuyAgain}>
+            Buy Again
+          </button>
+        )}
+      </div>
+
+      {/* RATE & REVIEW MODAL */}
+      {showRateModal && (
+        <RateReviewModal
+          order={order}
+          onClose={() => setShowRateModal(false)}
+        />
       )}
-    </div>
+    </>
   );
 };
 

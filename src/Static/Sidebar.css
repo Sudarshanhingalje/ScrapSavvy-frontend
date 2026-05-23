@@ -2,7 +2,15 @@
    Sidebar.css  —  ScrapSavvy · Clean Light Theme
    Shared across: ScrapyardSidebar, CustomerSidebar, CompanySidebar
 ═══════════════════════════════════════════════════════════════ */
+html,
+body {
+  height: 100%;
+  overflow-y: auto;
+}
 
+#root {
+  min-height: 100%;
+}
 /* ── Font ── */
 @import url("https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&display=swap");
 
