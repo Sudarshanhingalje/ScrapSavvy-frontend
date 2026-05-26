@@ -128,7 +128,6 @@ Guidelines:
       { code: "mr", name: "मराठी", locale: "mr-IN", flag: "🇮🇳" },
     ];
   },
-
   /**
    * Log debug information
    * @param {string} action - Action name
