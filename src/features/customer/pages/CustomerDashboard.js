@@ -8,6 +8,7 @@ import CustomerLiveRates from "../../customer/dashboard/CustomerLiveRates";
 
 import { fetchProducts } from "../redux/customerProductSlice";
 
+import AIAssistant from "../../ai-assistant/components/Aiassistant";
 import { RUNNING_ADS } from "../constants/customerConstants";
 import CustomerAdsBar from "../dashboard/CustomerAdsBar";
 import CustomerTopbar from "../dashboard/CustomerTopbar";
@@ -72,6 +73,7 @@ const CustomerDashboard = () => {
           onClose={() => setSelectedProduct(null)}
         />
       )}
+      <AIAssistant />
     </div>
   );
 };
