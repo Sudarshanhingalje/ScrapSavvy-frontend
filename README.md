@@ -1,73 +1,129 @@
-# Getting Started with Create React App
+# ♻️ ScrapSavvy - Tech-Enabled Scrap Pickup & Recycling Platform
 
-This project was bootstrapped with [Create React App]
+ScrapSavvy is an online, eco-friendly scrap collection, recycling management, and upcycled product marketplace. It bridges the gap between individual households (customers), bulk scrap producers (companies), drivers (logistics), and recycling facilities (scrapyards) to promote sustainable waste management and track ESG benefits.
 
-(https://github.com/facebook/create-react-app).
-<img width="2248" height="2165" alt="diagram-export-7-5-2026-10_33_42-PM" src="https://github.com/user-attachments/assets/f1c64579-005b-434e-8fa6-82701b898cf1" />
+<p align="center">
+  <img width="800" alt="diagram-export-7-5-2026-10_33_42-PM" src="https://github.com/user-attachments/assets/f1c64579-005b-434e-8fa6-82701b898cf1" />
+</p>
 
-## Available Scripts
+---
 
-In the project directory, you can run:
+## 🛠️ Technology Stack
 
-### `npm start`
+### 🎨 Frontend
+*   **Core UI Engine**: React.js (v18.3.1)
+*   **State Management**: Redux Toolkit (v2.11.2) & React Redux
+*   **Routing**: React Router DOM (v6.26.0)
+*   **Styling & Components**: Material UI (v5.16.6), Emotion, FontAwesome, React Icons
+*   **Real-time Feed**: SockJS Client & STOMP JS (WebSockets)
+*   **Data Plots & Charts**: Chart.js & React Chartjs 2
+*   **Animations**: Framer Motion & Swiper
+*   **Utilities**: Axios, SweetAlert2, React Toastify, jsPDF, jspdf-autotable
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+### ⚙️ Backend (Spring Boot REST API)
+*   **Language & Runtime**: Java 17
+*   **Framework**: Spring Boot (v3.2.5) with Web, WebSockets, Security, and Data JPA
+*   **Database**: MySQL
+*   **Security**: JWT Token Authentication (JJWT v0.11.5)
+*   **Integrations**:
+    *   **Razorpay SDK**: Fast and secure digital payouts.
+    *   **Google Gemini API**: Dynamic AI virtual chat assistant.
+*   **Docs & Tools**: Swagger/OpenAPI UI, Project Lombok, Dotenv config.
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+---
 
-### `npm test`
+## 👥 Platform Roles & Workflows
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+### 1. User Roles
+*   **Individual Customer**: Browse rates, book/schedule standard pickups, chat with AI, shop upcycled products.
+*   **Bulk Company**: Sell bulk warehouse/industrial waste, bid on scrap lots, track green ESG metrics (CO2 offsets).
+*   **Scrapyard Owner**: View pending requests, update rate cards, assign drivers, verify collection weights, and process instant bank payouts.
+*   **Driver**: Navigate to pickup locations, physically verify/weigh scrap, and update tracking stages (*Dispatched ➡️ Collected*).
 
-### `npm run build`
+### 2. Main Workflows
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+#### Customer to Scrapyard Flow
+```mermaid
+sequenceDiagram
+    autonumber
+    actor Customer as Customer (Seller)
+    actor Driver as Driver (Logistics)
+    actor Owner as Scrapyard Owner (Buyer)
+    
+    Customer->>Customer: Browse current live rates
+    Customer->>Customer: Select items, upload photos & schedule slot
+    Customer->>Owner: Submit Scrap Sale Request
+    Owner->>Driver: Assign Order to Driver
+    Driver->>Customer: Navigate to customer location
+    Note over Driver, Customer: Physical inspection & weighing
+    Driver->>Owner: Submit Verified weight & item details
+    Owner->>Customer: Trigger direct bank account payout (Razorpay)
+    Owner->>Owner: Increment inventory balances
+```
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+#### Company to Scrapyard Flow (Bidding & ESG)
+```mermaid
+sequenceDiagram
+    autonumber
+    actor Company as Company (Bulk Seller)
+    actor Owner as Scrapyard Owner (Buyer)
+    
+    Company->>Company: List bulk scrap lot (e.g., 5 Tons Iron scrap)
+    Company->>Owner: Publish Auction/Bid Board Request
+    Owner->>Company: Submit price quotes (Bidding Board)
+    Company->>Owner: Accept best bid & declare winner
+    Owner->>Company: Dispatch vehicles & collect scrap
+    Owner->>Company: Release payment
+    Company->>Company: View environmental ESG Metrics (CO2 offsets)
+```
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+---
 
-### `npm run eject`
+## 🚀 Getting Started
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+### Prerequisites
+*   Node.js (v18+)
+*   npm (v9+)
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+### Installation
+1. Clone the repository:
+   ```bash
+   git clone https://github.com/Sudarshanhingalje/ScrapSavvy-frontend.git
+   cd ScrapSavvy-frontend
+   ```
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+2. Install dependencies:
+   ```bash
+   npm install
+   ```
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+3. Create a `.env` file in the root directory and add your backend API URL:
+   ```env
+   REACT_APP_API_URL=http://localhost:8080
+   ```
 
-## Learn More
+4. Launch the local development server:
+   ```bash
+   npm start
+   ```
+   Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+---
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+## 📂 Folder Structure Overview
 
-### Code Splitting
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
-
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+```text
+src/
+├── app/               # Redux store config and root reducer
+├── assets/            # Static assets (images, logos, videos)
+├── config/            # App environments and API configurations
+├── context/           # React context providers (e.g., CartContext)
+├── features/          # Feature modules (AI assistant, Auth, Company, Customer)
+│   ├── ai-assistant/  # AI Chat panel and wave animations
+│   ├── auth/          # Authentication pages (Login, Signin, Reset)
+│   ├── company/       # Company bids, contracts, ESG tracking, and dashboards
+│   └── customer/      # Customer pickup forms, dashboard, cart, and reviews
+├── Static/            # Sidebar, Splash screens, and global css files
+├── App.js             # Root component and main router configuration
+└── index.js           # Entry point
+```
